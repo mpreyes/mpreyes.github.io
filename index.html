@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A personal portfolio site where I showcase projects, my resume, & relevant links.">
+    
+    <meta name="author" content="Madelyn Reyes">
+
+    <title>Madelyn Reyes</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/grayscale.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/photoswipe.css"> 
+
+<!-- Skin CSS file (styling of UI - buttons, caption, etc.)
+     In the folder of skin CSS file there are also:
+     - .png and .svg icons sprite, 
+     - preloader.gif (for browsers that do not support CSS animations) -->
+<link rel="stylesheet" href="css/default-skin/default-skin.css"> 
+
+<!-- Core JS file -->
+<script src="js/photoswipe.min.js"></script> 
+
+<!-- UI JS file -->
+<script src="js/photoswipe-ui-default.min.js"></script> 
+
+
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top"><mark>Madelyn Reyes</mark></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about"><mark>About</mark></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#projects"><mark>Projects</mark></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link js-scroll-trigger" href="img/MadelynReyesResume2019.png" target="_blank"><mark>Resume</mark></a>
+              </li>
+
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#skills"><mark>Skills & Links</mark></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+
+          
+    <!-- Header -->
+    <header class="masthead">
+      <div class="container d-flex h-100 align-items-center">
+        <!-- <div class="mx-auto text-center"> -->
+
+          <!-- <h1 class="mx-auto my-0 text-uppercase">Madelyn Reyes</h1>
+          <h2 class="text-white-50 mx-auto mt-2 mb-5">A free, responsive, one page Bootstrap theme created by Start Bootstrap.</h2> -->
+  
+          
+          <div class="container desk">
+              <div class="row justify-content-between">
+                
+                  <div class="col-lg-2 col-md-3 col-sm-12 align-self-center">
+             
+                          <img src="img/coffee.png" onclick="openPhotoSwipe(0)" class="img-fluid" alt="coffee cup">
+                
+              
+                  </div>
+
+                  <div class="col-lg-2 col-md-3 align-self-end offset-md-2 col-sm-12">
+
+                          <img src="img/headphones.png" onclick="openPhotoSwipe(1)" class="img-fluid" alt="headphones">
+
+                  </div>
+
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                          <img src="img/computer.png" onclick="openPhotoSwipe(2)" class="img-fluid" alt="computer">
+
+    
+                  </div>
+                </div>
+           
+
+              <div class="row">
+                  <div class="col-lg-3 col-md-3 align-self-start col-sm-12">
+
+                          <img src="img/papers.png" onclick="openPhotoSwipe(3)"  class="img-fluid" alt="papers and pens">
+ 
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 align-self-center offset-md-1 col-sm-12">
+                          <img src="img/book.png" onclick="openPhotoSwipe(4)" class="img-fluid" alt="book">
+
+                    </div>
+                
+                  <div class="col-lg-2 col-md-2  offset-md-1 col-sm-12">
+                          <img src="img/planner.png" onclick="openPhotoSwipe(5)"  class="img-fluid" alt="planner">
+                  </div>
+                  <div class="col-lg-2 col-md-2  align-self-end col-sm-12">
+  
+                          <img src="img/cookies.png" onclick="openPhotoSwipe(6)"  class="img-fluid" alt="cookies">
+                  </div>
+                </div>
+
+  
+      </div>
+    </header>
+
+
+    <!-- About Section -->
+
+    <section id="about" class="about-section text-center">
+      <div class="container">
+            <h2 class="text-white mb-4 text-center">Hire me</h2>
+            <p class="text-white-50"> 
+              Is that too forward? Above, you'll find a fairly decent portrayal of my desk. Missing is my trusty thermos, 
+              ( I couldn't get a good picture of it), my glasses, and a lot more books and colorful pens. I'm a Computer Science senior studying at Lipscomb
+              University set to graduate in May of 2019. My hobbies include reading, programming, 
+              and being outdoors. </p>
+        </div>
+        <img src="img/outdoors.png" class="img-fluid" alt="">
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+            <!-- <div class="gallery">
+        <img src="img/computer.png" onclick="lightbox(0)" style="width:auto; height:140px;" />
+        <img src="img/coffee.png" onclick="lightbox(1)" style="width:auto; height:140px;" /><br />
+        <img src="img/coffee.png" onclick="lightbox(2)" />
+            </div> -->
+
+    <section id="projects" class="projects-section bg-light">
+      <div class="container">
+
+
+            
+
+
+        <!-- Featured Project Row -->
+        <!-- <div class="row align-items-center no-gutters mb-4 mb-lg-5">
+          <div class="col-xl-8 col-lg-7">
+            <img class="img-fluid mb-3 mb-lg-0" src="img/bg-masthead.jpg" alt="">
+          </div>
+          <div class="col-xl-4 col-lg-5">
+            <div class="featured-text text-center text-lg-left">
+              <h4>Project 1</h4>
+              <p class="text-black-50 mb-0">Grayscale is open source and MIT licensed. This means you can use it for any project - even commercial projects! Download it, customize it, and publish your website!</p>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Project One Row -->
+        <div class="row justify-content-center no-gutters mb-5 mb-lg-0">
+          <div class="col-lg-6">
+            <a href="https://github.com/mpreyes/BisonMatch2.0" target="_blank">
+            <img class="img-fluid" src="img/purplebison.png" alt="The BisonMatch logo">
+            </a>
+          </div>
+          <div class="col-lg-6">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-left">
+                  <h4 class="text-white">BisonMatch 3.0 </h4>
+                  <p class="mb-0 text-white-50">A valentine's day matching service created as a fundraising effort for the LU ACM student chapter.</p>
+                  <p class="mb-0 text-primary">(JavaScript, HTML/CSS, PHP, SQL)</p>
+                  <hr class="d-none d-lg-block mb-0 ml-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Two Row -->
+        <div class="row justify-content-center no-gutters">
+          <div class="col-lg-6">
+            <a href="https://github.com/mpreyes/syllabDash" target="_blank">
+            <img class="img-fluid" src="img/syllabDash.png" alt="">
+            </a>
+          </div>
+          <div class="col-lg-6 order-lg-first">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-right">
+                  <h4 class="text-white">SyllabDash</h4>
+                  <p class="mb-0 text-white-50">syllabus parser that finds and extracts assignments and uploads them to a user's google calendar.</p>
+                  <p class="mb-0 text-primary">(Python, Django, Memcached)</p>
+                  <hr class="d-none d-lg-block mb-0 mr-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-center no-gutters mb-5 mb-lg-0">
+            <div class="col-lg-6">
+                <a href="https://github.com/mpreyes/MASH-Adventure" target="_blank">
+              <img class="img-fluid" src="img/mash_icon_resized.png" alt="Mash Adventure icon">
+
+              </a>
+            </div>
+            <div class="col-lg-6">
+              <div class="bg-black text-center h-100 project">
+                <div class="d-flex h-100">
+                  <div class="project-text w-100 my-auto text-center text-lg-left">
+                    <h4 class="text-white">Mash Adventure </h4>
+                    <p class="mb-0 text-white-50">An app that combines M.A.S.H, choose your own adventure books, and good ol'
+                      story-driven gameplay. 
+                      <p class="mb-0 text-primary">(React Native, JavaScript, HTML/CSS)</p>
+                      
+                    </p>
+                    <hr class="d-none d-lg-block mb-0 ml-0">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+      </div>
+    </section>
+
+    <!-- Signup Section -->
+    <section id="skills" class="signup-section">
+      <div class="container">
+      <div class="row">
+          <div class="col-md-10 col-lg-8 mx-auto text-center">
+            <i class="fas fa-user-check fa-2x mb-2 text-white"></i>
+            <h2 class="text-white mb-5">I am a skilled individual</h2>
+          </div>
+          </div>
+            
+            <div class="row">
+            <div class="card-columns">
+    
+                <div class="card border-dark mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Java</div>
+                    <div class="card-body text-dark">
+                      <h5 class="card-title">Proficient</h5>
+                      <p class="card-text">My main programming language.</p>
+                    </div>
+                  </div>
+
+                  <div class="card border-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Python</div>
+                      <div class="card-body text-dark">
+                        <h5 class="card-title">Proficient</h5>
+                        <p class="card-text">My first programming language.</p>
+                      </div>
+                    </div>
+
+                       <div class="card border-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">SQL</div>
+                      <div class="card-body text-dark">
+                        <h5 class="card-title">Proficient</h5>
+                        <p class="card-text">Able to create simple CRUD queries.</p>
+                      </div>
+                    </div>
+
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">JavaScript</div>
+                      <div class="card-body text-dark">
+                        <h5 class="card-title">Currently learning</h5>
+                        <p class="card-text">To create dynamic web pages.</p>
+                      </div>
+                    </div>
+
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">HTML/CSS</div>
+                      <div class="card-body text-dark">
+                        <h5 class="card-title">Proficient</h5>
+                        <p class="card-text">With experience making websites.</p>
+                      </div>
+                    </div>
+
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">C++,C#,C</div>
+                      <div class="card-body text-dark">
+                        <h5 class="card-title">Familiar</h5>
+                        <p class="card-text">Some experience with these languages for specific tasks like implementing computer graphics
+                          algorithms, solving competition programming problems, and writing a simple compiler, respectively.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Typescript, PHP, & R</div>
+                        <div class="card-body text-dark">
+                          <h5 class="card-title">Prior experience</h5>
+                          <p class="card-text">I will nod if you ask me if I know about these languages, however, don't probe too deeply
+                            because it's been a while.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card border-dark mb-3" style="max-width: 18rem;">
+                          <div class="card-header">English & Spanish</div>
+                          <div class="card-body text-dark">
+                            <h5 class="card-title">Fluent</h5>
+                            <p class="card-text">My most fluent languages. You can ask me any question in English or Spanish and I'll know 
+                              the answer without googling it.
+                            </p>
+                          </div>
+                        </div>
+
+          </div>
+          </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section bg-black">
+      <div class="container">
+
+        <div class="row">
+
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-map-marked-alt text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">Address</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">Nashville, TN</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-envelope text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">Email</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">
+                  <a href="mailto:reyes.madelyn.mr@gmail.com">reyes.madelyn.mr@gmail.com</a>
+                  <a href="mailto:mpreyes@mail.lipscomb.edu">mpreyes@mail.lipscomb.edu</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-mobile-alt text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">Phone</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">+1 (615) 796-8425</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="social d-flex justify-content-center">
+            <a href="https://open.kattis.com/users/madelyn-reyes" target="_blank" class="mx-2">
+              <i class="fas fa-code"></i>
+            </a>
+
+          <a href="https://www.goodreads.com/mpreyes" target="_blank" class="mx-2">
+            <i class="fab fa-goodreads"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/madelyn-reyes/" target="_blank" class="mx-2">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://github.com/mpreyes" target="_blank" class="mx-2">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!--   Background of PhotoSwipe. 
+           It's a separate element as animating opacity is faster than rgba(). -->
+      <div class="pswp__bg"></div>
+  
+      <!-- Slides wrapper with overflow:hidden. -->
+      <div class="pswp__scroll-wrap">
+  
+          <!-- Container that holds slides. 
+              PhotoSwipe keeps only 3 of them in the DOM to save memory.
+              Don't modify these 3 pswp__item elements, data is added later on. -->
+          <div class="pswp__container">
+              <div class="pswp__item"></div>
+              <div class="pswp__item"></div>
+              <div class="pswp__item"></div>
+          </div>
+  
+          <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+          <div class="pswp__ui pswp__ui--hidden">
+  
+              <div class="pswp__top-bar">
+  
+                  <!--  Controls are self-explanatory. Order can be changed. -->
+  
+                  <div class="pswp__counter"></div>
+  
+                  <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+  
+                  <!-- <button class="pswp__button pswp__button--share" title="Share"></button> -->
+  
+                  <!-- <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button> -->
+  
+                  <!-- <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button> -->
+  
+                  <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                  <!-- element will get class pswp__preloader--active when preloader is running -->
+                  <div class="pswp__preloader">
+                      <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                          <div class="pswp__preloader__donut"></div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+  
+              <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                  <div class="pswp__share-tooltip"></div> 
+              </div>
+  
+              <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+              </button>
+  
+              <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+              </button>
+  
+              <div class="pswp__caption">
+                  <div class="pswp__caption__center"></div>
+              </div>
+  
+          </div>
+  
+      </div>
+  
+  </div> 
+  
+
+    <!-- Footer -->
+    <footer class="bg-black small text-center text-white-50">
+      <div class="container">
+        Copyright &copy; Madelyn Reyes 2019
+      </div>
+      <div class="container">
+          Vector illustration credit: <a href="https://www.Vecteezy.com/">www.Vecteezy.com</a>
+      </div>
+
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/custom.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/grayscale.min.js"></script>
+     <script src="js/custom.js"></script>
+    
+
+  </body>
+
+</html>
