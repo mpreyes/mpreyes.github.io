@@ -4,6 +4,55 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-grayscale/blob/master/LICENSE)
  */
 
+
+
+ .resume-img {
+  position: relative;
+
+ }
+ .resume-btn {
+  position: absolute;
+  top: 33%;
+  left: 45%;
+ }
+ /* .resume-btn:hover{
+   background-color: blue;
+ } */
+
+ .about-cont {
+   position: relative;
+ }
+
+  .link {
+   position: absolute;
+   bottom:10px;
+   right: 10px;
+ }
+
+
+ .languages {
+  background-color: #212529;
+  border-radius: 15px 0px 15px 15px;
+  /* margin-right: 2px; */
+  margin-bottom: 10px; 
+
+  
+
+ }
+ .frameworks {
+  background-color: #212529;
+  border-radius: 15px 0px 15px 15px;
+  /* margin-left: 2px; */
+  margin-bottom: 10px; 
+
+ }
+ .coursework{ 
+  background-color: #212529;
+  border-radius: 15px 0 15px 15px;
+
+ }
+
+
  mark {
    background-color: white;
  }
