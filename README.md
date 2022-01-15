@@ -1,4 +1,4 @@
 mpreyes.github.io
 
 
-Personal portfolio site.
+personal artist site for madebit
