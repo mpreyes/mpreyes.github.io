@@ -237,9 +237,9 @@ mark {
     width: auto;
     padding: unset;
   }
-  /* .desk img {
-    display: none;
-  } */
+  .desk img {
+    /* width: 30%; */
+  }
 }
 .desk img:hover {
   -webkit-filter: brightness(70%);
@@ -278,6 +278,7 @@ mark {
 
 .about-section p {
   margin-bottom: 5rem;
+  margin-left: 3em;
 }
 
 .about-img {
@@ -287,7 +288,7 @@ mark {
   height: 400px;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 720px) {
   .about-img {
     max-width: 100%;
     margin-bottom: 2em;
@@ -295,9 +296,19 @@ mark {
   .about-container {
     flex-flow: column;
   }
+  .about-section p {
+    margin-left: auto;
+  }
 }
 
 /* MUSIC */
+
+.om-art {
+  max-width: 30%;
+}
+.music-section .imo:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
 
 .music-section h3 {
   padding-bottom: 1em;
