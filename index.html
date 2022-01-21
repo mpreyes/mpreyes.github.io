@@ -10,6 +10,7 @@
     <meta name="author" content="Madelyn Reyes">
 
     <title>Madebit</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.svg">
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -25,10 +26,7 @@
 
     <link rel="stylesheet" href="css/photoswipe.css"> 
 
-<!-- Skin CSS file (styling of UI - buttons, caption, etc.)
-     In the folder of skin CSS file there are also:
-     - .png and .svg icons sprite, 
-     - preloader.gif (for browsers that do not support CSS animations) -->
+
 <link rel="stylesheet" href="css/default-skin/default-skin.css"> 
 
 <!-- Core JS file -->
@@ -81,22 +79,23 @@
           <div class="container desk">
               <div class="row justify-content-between">
 
-                  <div class="col-lg-2 col-md-2 offset-md-1 col-sm-3 align-self-center">
+                  <div class="col-lg-4 col-md-2  col-sm-3 align-self-end">
              
-                          <img src="img/desk/coffee.png" onclick="openPhotoSwipe(0)" class="img-fluid" alt="coffee cup">
+                          <img src="img/desk/speaker.svg" onclick="openPhotoSwipe(0)" class="img-fluid" alt="coffee cup">
                 
               
                   </div>
 
-                  <div class="col-lg-2 col-md-2 offset-md-2 align-self-end offset-md-2 col-sm-3">
+                  <div class="col-lg-3 align-self-end col-md-4 col-sm-5 mb-5">
+                    <img src="img/desk/laptop.svg" onclick="openPhotoSwipe(2)" class="img-fluid hack" alt="computer">
 
-                          <img src="img/desk/headphones.png" onclick="openPhotoSwipe(1)" class="img-fluid" alt="headphones">
+                       
 
                   </div>
 
-                  <div class="col-lg-4 col-md-4 col-sm-5 ">
-                          <img src="img/desk/computer.png" onclick="openPhotoSwipe(2)" class="img-fluid" alt="computer">
-
+                  <div class="col-lg-4 col-md-2 align-self-end col-sm-3">
+                   
+                    <img src="img/desk/speaker.svg" onclick="openPhotoSwipe(5)"  class="img-fluid" alt="planner">
     
                   </div>
                 </div>
@@ -107,17 +106,20 @@
  
                   </div>
 
-                  <div class="col-lg-2 col-md-2 align-self-center offset-md-1 col-sm-3">
-                          <img src="img/desk/book.png" onclick="openPhotoSwipe(4)" class="img-fluid" alt="book">
+                  <div class="col-lg-4 col-md-3 align-self-center col-sm-3">
+                          <img src="img/desk/keyboard.svg" onclick="openPhotoSwipe(4)" class="img-fluid" alt="book">
 
                     </div>
                 
                   <div class="col-lg-2 col-md-2  offset-md-1 col-sm-3">
-                          <img src="img/desk/planner.png" onclick="openPhotoSwipe(5)"  class="img-fluid" alt="planner">
+                    <img src="img/desk/coffee.png" onclick="openPhotoSwipe(3)"  class="img-fluid" alt="papers and pens">
+                    <img src="img/desk/cookies.png" onclick="openPhotoSwipe(6)"  class="img-fluid" alt="cookies">
+                         
                   </div>
-                  <div class="col-lg-2 col-md-2  align-self-end col-sm-2">
+                  <div class="col-lg-2 col-md-2  align-self-center col-sm-2">
+                     <img src="img/desk/headphones.png" onclick="openPhotoSwipe(1)" class="img-fluid" alt="headphones">
   
-                          <img src="img/desk/cookies.png" onclick="openPhotoSwipe(6)"  class="img-fluid" alt="cookies">
+                    
                   </div>
                 </div>
                 </div>
@@ -125,21 +127,26 @@
 
   
                   <div class="social d-flex justify-content-center">
-                    <a href="https://open.kattis.com/users/madelyn-reyes" target="_blank" class="mx-2">
+                    <a href="https://www.instagram.com/madebit/" target="_blank" class="mx-2">
                       <i class="fab fa-instagram fa-lg"></i>
                     </a>
                   <a href="https://www.goodreads.com/mpreyes" target="_blank" class="mx-2">
                     <i class="fab fa-goodreads fa-lg"></i>
                     
                   </a>
-                  <a href="https://www.linkedin.com/in/madelyn-reyes/" target="_blank" class="mx-2">
+                  <a href="https://www.youtube.com/channel/UCIvz8TjpKD7LWEfOBxW4vFw" target="_blank" class="mx-2">
                     <i class="fab fa-youtube fa-lg"></i>
                   </a>
-                  <a href="https://github.com/mpreyes" target="_blank" class="mx-2">
-                    <i class="fab fa-github fa-lg"></i>
+                  <a href="https://twitter.com/madebitmusic" target="_blank" class="mx-2">
+                    <i class="fab fa-twitter fa-lg"></i>
+                  </a>
+          
+                  <a href="https://www.tiktok.com/@madebitmusic" target="_blank" class="mx-2">
+                    <i class="fas fa-socks fa-lg"></i>
                   </a>
                   <a href="https://www.linkedin.com/in/madelyn-reyes/" target="_blank" class="mx-2">
-                    <i class="far fa-star fa-lg"></i>
+                    <i class="fab fa-bandcamp fab-lg"></i>
+                    
                   </a>
                   
          
@@ -158,7 +165,11 @@
             <div class="container about-container">
               <img src="img/desk/papers.png" class="img-fluid about-img" alt="A cute picture of me">
 
-              <h6> Hey its me, i make thumpy music.</h6>
+              <h6> Hey its me, i make thumpy music. I enjoy long walks on the beach, as long as I'm gathering an army of hermit crabs. (Ok just kidding, I'm more of a mountain girl - I like big bears
+                and think that maybe moving to Alaska might be right for me) 
+              </h6>
+
+              
               
               
               </div>
@@ -167,20 +178,12 @@
     </section>
 
     <section id="music" class="music-section bg-light">
-      <h3 class="text-center">Music</h3>
-      <div class="container">
+      <h3 class="text-center ">Music</h3>
+      <div class="container text-center">
 
      
 
-<div class="card">
-  <p>
-   Linkey link
-  </p>
-  <h2>
-
-<a href="https://google.com" target="_blank">My music if i had any</a>
-  </h2>
-</div>
+        <a href="https://distrokid.com/hyperfollow/madebit/outdoor-meditations" target="_blank">Outdoor meditations</a>
 
 
 
@@ -192,17 +195,22 @@
       <h3 class="text-center"> Videos</h3>
       <div class="container videos-container">
       
-        
-      
-        <div id="videoCarousel" class="carousel slide" data-ride="carousel" data-interval="">
+        <div id="videoCarousel" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#videoCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#videoCarousel" data-slide-to="1"></li>
+            <li data-target="#videoCarousel" data-slide-to="2"></li>
+          </ol>
           <div class="carousel-inner">
             <div class="carousel-item active">
-              <iframe width="2058" height="1050" src="https://www.youtube.com/embed/cRpdIrq7Rbo?start=11&end=58" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe  src="https://www.youtube.com/embed/cRpdIrq7Rbo?start=11&end=58" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="carousel-item">
-              <img class="d-block w-100" src="img/background.jpg" alt="Second slide">
+              <iframe width="2889" height="992" src="https://www.youtube.com/embed/X0dCrw6pvnE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-     
+            <div class="carousel-item">
+              <iframe width="2889" height="1049" src="https://www.youtube.com/embed/3eRBFkxgG7g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
           </div>
           <a class="carousel-control-prev" href="#videoCarousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -213,20 +221,24 @@
             <span class="sr-only">Next</span>
           </a>
         </div>
+      
 
             </div>
 
     </section>
 
     <!-- Contact Section -->
-    <section class="contact-section bg-black">
+    <section id="contact" class="contact-section bg-black">
       <div class="container">
-        <h3 class="text-center"> Contact</h3>
+        <!-- <h3 class="text-center"> Contact</h3> -->
 
-        <p> Email me maybe?</p>
+
         <div class="social d-flex justify-content-center">
             <a href="https://open.kattis.com/users/madelyn-reyes" target="_blank" class="mx-2">
               <i class="fas fa-code"></i>
+            </a>
+            <a href="https://open.kattis.com/users/madelyn-reyes" target="_blank" class="mx-2">
+              <i class="fas fa-exclamation"></i>
             </a>
 
           <a href="https://www.goodreads.com/mpreyes" target="_blank" class="mx-2">
@@ -238,6 +250,7 @@
           <a href="https://github.com/mpreyes" target="_blank" class="mx-2">
             <i class="fab fa-github"></i>
           </a>
+          
         </div>
 
       </div>
