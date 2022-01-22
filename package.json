@@ -16,19 +16,19 @@
         "url": "https://github.com/mpreyes/mpreyes.github.io"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "5.15.4",
-        "bootstrap": "4.1.3",
-        "jquery": "3.3.1",
+        "@fortawesome/fontawesome-free": "^5.15.4",
+        "bootstrap": "^5.1.3",
+        "jquery": "^3.6.0",
         "jquery.easing": "^1.4.1"
     },
     "devDependencies": {
-        "browser-sync": "2.24.7",
-        "gulp": "^3.9.1",
-        "gulp-autoprefixer": "6.0.0",
-        "gulp-clean-css": "3.10.0",
-        "gulp-header": "2.0.5",
-        "gulp-rename": "1.4.0",
-        "gulp-sass": "4.0.1",
-        "gulp-uglify": "3.0.1"
+        "browser-sync": "^2.27.7",
+        "gulp": "^4.0.2",
+        "gulp-autoprefixer": "^8.0.0",
+        "gulp-clean-css": "^4.3.0",
+        "gulp-header": "^2.0.9",
+        "gulp-rename": "^2.0.0",
+        "gulp-sass": "^5.1.0",
+        "gulp-uglify": "^3.0.2"
     }
 }
