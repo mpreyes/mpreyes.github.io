@@ -220,20 +220,13 @@ mark {
 }
 
 .desk .rows {
-  padding: 5em 0;
+  padding: 8em 0;
 }
 
-/* @media (min-width: 375px) {
-  .hack {
-    margin-bottom: -6.5em;
-  }
-} */
-@media (max-width: 1200px) {
+@media (min-width: 768px) {
   .desk {
-    /* margin: 0 0 20px 0;
-    background: none;
-    background-color: #c2becc; */
-    /* width: 80%; */
+    width: auto;
+    padding: 0 5em;
   }
 }
 
@@ -243,17 +236,14 @@ mark {
     padding: unset;
   }
 }
-@media (max-width: 992px) {
-  .desk {
-    width: auto;
-    padding: 0 2em;
-  }
-  .desk img {
-    /* width: 30%; */
-  }
-}
+
 .desk img:hover {
   -webkit-filter: brightness(70%);
+}
+
+.mt-n {
+  margin-top: -3em;
+  margin-bottom: 2em;
 }
 
 /* ABOUT / ME  */
@@ -314,9 +304,14 @@ mark {
 
 /* MUSIC */
 
-.om-art {
-  max-width: 30%;
+@media (min-width: 425px) {
+  .om-art {
+    max-width: 50%;
+  }
 }
+/* .om-art {
+  max-width: 50%;
+} */
 .music-section .imo:hover {
   color: rgba(255, 255, 255, 0.5);
 }
