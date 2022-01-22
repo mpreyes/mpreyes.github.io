@@ -219,6 +219,10 @@ mark {
   background-size: cover;
 }
 
+.desk .rows {
+  padding: 5em 0;
+}
+
 /* @media (min-width: 375px) {
   .hack {
     margin-bottom: -6.5em;
@@ -235,7 +239,7 @@ mark {
 @media (max-width: 992px) {
   .desk {
     width: auto;
-    padding: unset;
+    padding: 0 2em;
   }
   .desk img {
     /* width: 30%; */
@@ -383,7 +387,12 @@ mark {
   color: #fff;
 }
 
+.contact-section .social {
+  flex-flow: wrap;
+}
+
 .contact-section .social a {
+  margin-bottom: 0.5em;
   text-align: center;
   height: 3rem;
   width: 3rem;
