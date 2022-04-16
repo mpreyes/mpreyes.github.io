@@ -1,3 +1,33 @@
 .music-container {
   display: flex;
 }
+
+.email-section {
+  background-color: #fafafa !important;
+}
+
+#mc_embed_signup {
+  width: 75%;
+}
+
+#mc_embed_signup form {
+  background-color: #fafafa !important;
+}
+
+.email-signup {
+  display: flex;
+  justify-content: center;
+  padding: 4em 0em;
+}
+
+#mc_embed_signup .button {
+  background-color: black !important;
+}
+
+.brandingLogo {
+  display: none;
+}
+
+.om {
+  padding-right: 0.5em;
+}
