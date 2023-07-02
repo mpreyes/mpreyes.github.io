@@ -313,7 +313,7 @@ mark {
   max-width: 50%;
 } */
 .music-section .imo:hover {
-  color: rgba(255, 255, 255, 0.5);
+  color:  rgba(22, 22, 22, 0.9) 75%;
 }
 
 .music-section h3 {
