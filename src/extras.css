@@ -82,3 +82,42 @@
 .fit-outer .tv { aspect-ratio: 5 / 3; }
 .fit-outer .screen { left: 3%; width: 85.5%; top: 5%; height: 88%; }
 .fit-outer .tv-controls { right: 2.6%; }
+
+/* the "?" on a mystery planet sits on top of its ring */
+.planet .mystery { position: relative; z-index: 2; text-shadow: 2px 2px 0 var(--ink); }
+
+/* ---------- phones: "into the screen" ---------- */
+/* The TV fills the phone, the cartridges are a tab bar on the desk underneath, and tapping one plays it. */
+@media (max-width: 960px) {
+  .room { min-height: 100dvh; }
+  .top { padding: 12px 14px 8px; }
+  .logo { font-size: 16px; }
+  .layout { display: flex; flex-direction: column; align-items: stretch; padding: 0; gap: 0; flex: none; }
+  .tv {
+    order: 1; aspect-ratio: auto; width: auto; margin: 0 10px; height: calc(100dvh - 46px - 120px); min-height: 380px;
+    border-radius: 18px; box-shadow: 0 8px 0 #BFB59A;
+  }
+  .screen { left: 8px; top: 8px; width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 12px; }
+  .tv-controls, .deck { display: none; }
+
+  .shelf {
+    order: 2; width: auto; align-self: stretch; position: sticky; bottom: 0; z-index: 30; margin-top: 14px;
+    background: var(--floor); border-top: 6px solid #2A1B16; padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  }
+  .shelf-hint { display: none; }
+  .carts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; overflow: visible; padding: 0; }
+  .carts li { flex: none; }
+  .cart {
+    height: 38px; padding: 0 6px; justify-content: center; border-radius: 4px 4px 0 0; box-shadow: 0 4px 0 #000;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .cart:hover { transform: none; }
+  .cart:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+  .cart.is-in { opacity: 1; transform: translateY(-4px); box-shadow: 0 8px 0 #000, 0 0 0 3px var(--cream); }
+  .cart-label-sticker, .cart-sub { display: none; }
+  .cart-text { align-items: center; }
+  .cart-name { font-size: 8px; letter-spacing: 0; white-space: nowrap; }
+
+  .floor { border-top: 0; }
+  .socials { padding-top: 6px; }
+}
