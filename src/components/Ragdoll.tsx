@@ -71,11 +71,11 @@ const Ragdoll = forwardRef<RagdollHandle, Props>(function Ragdoll({ onRelease, f
     },
     beat: (strength) => {
       const st = s.current;
-      if (st.held || st.airborne || performance.now() < st.wiredUntil) return;
+      if (st.held || st.y < REST_Y - 4 || performance.now() < st.wiredUntil) return;
       st.airborne = true;
-      st.vy = -(3 + strength * 4);
+      st.vy = -(3.5 + strength * 3.5);
       st.sway = -st.sway;
-      st.v1 += st.sway * (6 + strength * 8);
+      st.v1 += st.sway * (8 + strength * 8);
     },
   }));
 
@@ -124,7 +124,7 @@ const Ragdoll = forwardRef<RagdollHandle, Props>(function Ragdoll({ onRelease, f
           st.vy = -hit * 0.3;
           st.vx *= 0.6;
           st.v1 += st.vx * 2;
-          if (hit > 4) sfx.thud(Math.min(1, hit / 20));
+          if (hit > 8) sfx.thud(Math.min(1, hit / 20));
           if (Math.abs(st.vy) < 2) {
             st.vy = 0;
             st.airborne = false;
