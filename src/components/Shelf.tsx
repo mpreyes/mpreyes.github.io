@@ -1,4 +1,5 @@
 import { CARTS, type CartId } from '../data';
+import { sfx } from '../sound';
 
 interface Props {
   on: CartId | null;
@@ -20,7 +21,9 @@ export default function Shelf({ on, onPick, onDragChange }: Props) {
               className={`cart ${on === c.id ? 'is-in' : ''}`}
               style={{ background: c.color }}
               draggable
+              onPointerDown={() => sfx.grab()}
               onDragStart={(e) => {
+                sfx.slide();
                 e.dataTransfer.setData('application/x-madebit-cart', c.id);
                 e.dataTransfer.effectAllowed = 'move';
                 onDragChange(true);
