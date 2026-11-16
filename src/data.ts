@@ -102,7 +102,7 @@ export const RELEASES: Release[] = [
       'I Wanna Get Away',
       'Where The Sidewalk Never Ends',
     ],
-    links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: BANDCAMP },
+    links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
     bonus: true,
   },
   {
@@ -116,7 +116,7 @@ export const RELEASES: Release[] = [
     orbit: 2,
     angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
-    links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: BANDCAMP },
+    links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     bonus: true,
   },
   {
@@ -130,7 +130,7 @@ export const RELEASES: Release[] = [
     orbit: 1,
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
-    links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: BANDCAMP },
+    links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
     bonus: true,
   },
   {
@@ -144,7 +144,7 @@ export const RELEASES: Release[] = [
     orbit: 1,
     angle: 200,
     tracks: ['Outdoor Meditations'],
-    links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: BANDCAMP },
+    links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
     bonus: true,
   },
   {
@@ -158,7 +158,7 @@ export const RELEASES: Release[] = [
     orbit: 3,
     angle: 230,
     tracks: ['demons in me closet (eek)'],
-    links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: BANDCAMP },
+    links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
     bonus: true,
   },
   {
@@ -172,7 +172,7 @@ export const RELEASES: Release[] = [
     orbit: 3,
     angle: 345,
     tracks: ['blue_screen.mp3'],
-    links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: BANDCAMP },
+    links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
     bonus: true,
   },
   {
@@ -262,18 +262,26 @@ export const VIDEOS: Video[] = [
 
 export interface MerchItem {
   name: string;
+  /** small line under the name, e.g. "digital album" */
+  kind: string;
   price: string;
+  /** shell color of the little cartridge */
   color: string;
-  shape: 'tee' | 'stickers' | 'tape' | 'pack';
+  /** cover art shown as the cartridge label */
+  art?: string;
   url: string;
 }
 
-// TODO: real items + prices once they're up on Bandcamp
+const bc = (path: string) => `${BANDCAMP}${path}`;
+
+// Each item links straight to its Bandcamp page. Add new merch here as it goes up on Bandcamp.
 export const MERCH: MerchItem[] = [
-  { name: '[TEE]', price: '[PRICE]', color: '#F77FA1', shape: 'tee', url: BANDCAMP },
-  { name: '[STICKERS]', price: '[PRICE]', color: '#F2B84B', shape: 'stickers', url: BANDCAMP },
-  { name: '[CASSETTE]', price: '[PRICE]', color: '#187489', shape: 'tape', url: BANDCAMP },
-  { name: 'Instrumental + a cappella pack', price: '[PRICE]', color: '#9DBE3D', shape: 'pack', url: BANDCAMP },
+  { name: 'blue_screen.mp3', kind: 'digital single', price: '$1.50+', color: '#187489', art: cover('ab67616d0000b273b7cc1266220fb4b87d2df250'), url: bc('track/blue-screen') },
+  { name: 'demons in me closet (eek)', kind: 'digital single', price: '$1.50+', color: '#C8332D', art: cover('ab67616d0000b273215ba75ddda9a91bb076ffbd'), url: bc('track/demons-in-me-closet-eek') },
+  { name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1", kind: 'digital EP', price: '$7+', color: '#F2B84B', art: cover('ab67616d0000b2730b386e4668bd4c694d5221cc'), url: bc('album/a-mechanics-guide-to-throwing-a-dance-party-vol-1') },
+  { name: 'An Alien Among Us', kind: 'digital album', price: '$7+', color: '#9DBE3D', art: 'art/alien.jpg', url: bc('album/an-alien-among-us') },
+  { name: 'CMYK', kind: 'digital EP', price: '$4+', color: '#F77FA1', art: cover('ab67616d0000b2739c76d13c16e2f0759a58e78d'), url: bc('album/cmyk') },
+  { name: 'Outdoor Meditations', kind: 'digital single', price: '$1.50+', color: '#93C78E', art: 'art/outdoor-meditations.jpg', url: bc('track/outdoor-meditations') },
 ];
 
 export interface Social {
