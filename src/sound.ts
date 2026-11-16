@@ -98,6 +98,10 @@ export const sfx = {
     tune.forEach((f, i) => blip(f, 0.14, 'square', 0.05, i * 0.18));
     [0, 0.36, 0.72, 1.08].forEach((w) => blip(98, 0.1, 'triangle', 0.1, w));
   },
+  // little me: ricochet, slurp, letter unfolding
+  boing: () => { blip(300 + Math.random() * 300, 0.08, 'square', 0.04); },
+  slurp: () => { [0, 0.08, 0.16, 0.26].forEach((w, i) => crunchBurst(w, 0.09, 500 + i * 150, 0.1)); blip(220, 0.25, 'sine', 0.05, 0.3); },
+  paper: () => { crunchBurst(0, 0.12, 4000, 0.06); crunchBurst(0.1, 0.1, 3000, 0.05); },
   dunk: () => { blip(600, 0.08, 'sine', 0.08); blip(300, 0.2, 'sine', 0.07, 0.08); },
   sip: () => blip(180, 0.15, 'sine', 0.06),
 };

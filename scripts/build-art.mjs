@@ -28,6 +28,9 @@ await copyFile('CNAME', 'public/CNAME');
 // (GitHub's uploader names re-uploads "madebit-epk (1).pdf"). If there are several, the last by name wins.
 const epk = (await readdir('.')).filter((f) => /^madebit-epk.*\.pdf$/i.test(f)).sort().pop();
 if (epk) await copyFile(epk, 'public/madebit-epk.pdf');
+// Song for the desk speaker: the first .mp3 in the repo root, served as speaker.mp3.
+const song = (await readdir('.')).filter((f) => /\.mp3$/i.test(f)).sort()[0];
+if (song) await copyFile(song, 'public/speaker.mp3');
 
 // Personal photos for THE DESK slideshow (same photos as the old site's desk)
 await mkdir('public/gallery', { recursive: true });
