@@ -184,6 +184,37 @@ function ReleaseVideos({ videos, teasers }: { videos: NonNullable<Release['video
   );
 }
 
+// A Pinterest board, embedded with Pinterest's own widget (their script fills in the grid).
+function PinterestBoard({ url }: { url: string }) {
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    type Pin = { PinUtils?: { build: (el?: HTMLElement) => void } };
+    const w = window as unknown as Pin;
+    const build = () => w.PinUtils?.build(box.current ?? undefined);
+    if (w.PinUtils) { build(); return; }
+    let s = document.querySelector<HTMLScriptElement>('script[data-pinit]');
+    if (!s) {
+      s = document.createElement('script');
+      s.src = 'https://assets.pinterest.com/js/pinit.js';
+      s.async = true;
+      s.dataset.pinit = '';
+      document.body.appendChild(s);
+    }
+    s.addEventListener('load', build);
+    return () => s?.removeEventListener('load', build);
+  }, [url]);
+  const width = Math.min(560, (box.current?.clientWidth ?? 560));
+  return (
+    <div className="pin-board" ref={box}>
+      <a data-pin-do="embedBoard" data-pin-board-width={width} data-pin-scale-height="320" data-pin-scale-width="90" href={url}>
+        open the moodboard on pinterest &gt;
+      </a>
+    </div>
+  );
+}
+
+const SONG_BANK_KEY = '⭐ i like this song · 💙 making the album · 🟧 vocals recorded · 🟩 done';
+
 // A release's page reads like liner notes: the cover and links, a line in my words, a little about it,
 // the tracklist (each song links to its Bandcamp page), then any videos.
 function ReleaseView({ r, back }: { r: Release; back: () => void }) {
@@ -244,11 +275,23 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
         </section>
       )}
       {r.tracks.length === 0 && <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>}
+      {r.songBank && (
+        <section>
+          <h3 className="liner-label">SONG BANK (WORK IN PROGRESS)</h3>
+          <p className="screen-note">{SONG_BANK_KEY}</p>
+          <ol className="song-bank">
+            {r.songBank.map(([emoji, title, marks]) => (
+              <li key={title}><span className="sb-emoji" aria-hidden="true">{emoji}</span><span className="sb-title">{title}{marks && <span className="sb-marks"> {marks}</span>}</span></li>
+            ))}
+          </ol>
+        </section>
+      )}
       {r.moodboard && (
-        <a className="moodboard" href={r.moodboard} target="_blank" rel="noreferrer">
-          <span className="liner-label">MOODBOARD</span>
-          <span className="screen-copy">the world i'm building for this one &gt;</span>
-        </a>
+        <section>
+          <h3 className="liner-label">MOODBOARD</h3>
+          <p className="screen-note">the world i'm building for this one</p>
+          <PinterestBoard url={r.moodboard} />
+        </section>
       )}
       {r.videos && r.videos.length > 0 && (
         <section>
