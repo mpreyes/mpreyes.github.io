@@ -14,17 +14,28 @@ const LINK_LABELS: [keyof Release['links'], string][] = [
 // If a cover can't load, fall back to the planet's color instead of a broken-image icon.
 const hideBroken = (e: SyntheticEvent<HTMLImageElement>) => { e.currentTarget.style.display = 'none'; };
 
+// The solar system is drawn in a 700x470 scene with the sun at its center.
+const CENTER = { x: 350, y: 245 };
+// Ring radii (x, y), innermost first. Inner rings hold the oldest releases.
+const RINGS: [number, number][] = [[90, 90], [150, 120], [230, 165], [315, 205]];
+
+function position(r: Release) {
+  const [rx, ry] = RINGS[r.orbit - 1];
+  const a = (r.angle * Math.PI) / 180;
+  return { left: CENTER.x + rx * Math.cos(a) - r.size / 2, top: CENTER.y + ry * Math.sin(a) - r.size / 2 };
+}
+
 function Planet({ r, onPick }: { r: Release; onPick: () => void }) {
   return (
     <button
       className="planet"
-      style={{ left: r.x, top: r.y, width: r.size, height: r.size, background: r.color }}
+      style={{ ...position(r), width: r.size, height: r.size, background: r.color }}
       onClick={onPick}
       aria-label={`${r.name}, ${r.kind.toLowerCase()}`}
     >
       {r.art ? <img src={r.art} alt="" draggable={false} onError={hideBroken} /> : <span className="mystery">?</span>}
       {r.ring && <span className="ring" />}
-      <span className="planet-tag">{r.name} · {r.kind}</span>
+      <span className="planet-tag">{r.name} · {r.year === 'soon' ? 'COMING SOON' : `${r.kind} · ${r.year}`}</span>
     </button>
   );
 }
@@ -35,13 +46,14 @@ function System({ pick }: { pick: (id: string) => void }) {
       <div className="system">
         <span className="screen-heading" style={{ position: 'absolute', left: 24, top: 22 }}>THE MADEBIT SYSTEM</span>
         <span className="screen-note" style={{ position: 'absolute', right: 24, top: 22 }}>pick a planet</span>
-        {[[60, 340], [620, 90], [600, 420], [110, 60], [300, 430], [660, 250]].map(([x, y], i) => (
+        {[[40, 300], [620, 70], [660, 420], [130, 40], [520, 450], [680, 150]].map(([x, y], i) => (
           <span key={i} className={`star ${i % 2 ? 'twinkle' : ''}`} style={{ left: x, top: y }} />
         ))}
-        <span className="orbit" style={{ width: 200, height: 200 }} />
-        <span className="orbit" style={{ width: 380, height: 340 }} />
-        <span className="orbit" style={{ width: 600, height: 440 }} />
-        <span className="sun">MB</span>
+        {RINGS.map(([rx, ry], i) => (
+          <span key={i} className="orbit" style={{ width: rx * 2, height: ry * 2, borderStyle: i === RINGS.length - 1 ? 'dotted' : 'dashed' }} />
+        ))}
+        <span className="sun" style={{ left: 302, top: 197, width: 96, height: 96, fontSize: 8, letterSpacing: 0 }}>MADEBIT</span>
+        <span className="screen-note" style={{ position: 'absolute', left: 24, bottom: 18 }}>inner rings: oldest · outer rings: newest</span>
         {RELEASES.map((r) => <Planet key={r.id} r={r} onPick={() => { sfx.select(); pick(r.id); }} />)}
       </div>
     </Stage>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type ButtonHTMLAttributes } from 'react';
-import type { CartId } from '../../data';
+import { WALL_POSTS, type CartId, type WallPost } from '../../data';
 import { sfx } from '../../sound';
 import Sprite from '../Sprite';
 import Stage from '../Stage';
@@ -11,6 +11,20 @@ const LIGHTS = Array.from({ length: 14 }, (_, i) => ({
   c: ['#F2B84B', '#F77FA1', '#9DBE3D', '#93C78E'][i % 4],
   twinkle: i % 3 === 0,
 }));
+
+// A pinned Instagram post: links out to the post. Falls back to a plain colored photo.
+function Pinned({ post, className, fallback }: { post?: WallPost; className: string; fallback: string }) {
+  const photo = post
+    ? <img src={post.image} alt={post.alt} style={{ width: '100%', height: 40, objectFit: 'cover', display: 'block' }} />
+    : <span style={{ background: fallback }} />;
+  if (!post) return <span className={`polaroid ${className}`}>{photo}</span>;
+  return (
+    <a className={`desk-obj polaroid ${className}`} href={post.url} target="_blank" rel="noreferrer" aria-label={`instagram post: ${post.alt}`}>
+      {photo}
+      <span className="desk-tag">instagram</span>
+    </a>
+  );
+}
 
 function Obj({ label, onClick, className = '', style, children, ...rest }: {
   label: string;
@@ -90,18 +104,24 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         ))}
 
         <div className="postcard">
-          <span className="pc-pic"><span /><i /></span>
+          {WALL_POSTS[2] ? (
+            <a className="pc-pic" href={WALL_POSTS[2].url} target="_blank" rel="noreferrer" aria-label={`instagram post: ${WALL_POSTS[2].alt}`}>
+              <img src={WALL_POSTS[2].image} alt={WALL_POSTS[2].alt} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            </a>
+          ) : (
+            <span className="pc-pic"><span /><i /></span>
+          )}
           <span className="pc-stamp" />
           <span className="pc-text">GREETINGS<br />FROM SPACE</span>
           <span className="tape-strip" />
         </div>
 
         <div className="cork">
-          <span className="polaroid p1"><span /></span>
+          <Pinned post={WALL_POSTS[0]} className="p1" fallback="#187489" />
           <Obj label="about me: polaroid" className="polaroid p2" onClick={() => go('about')}>
             <span className="polaroid-pic"><Sprite size={28} /></span>
           </Obj>
-          <span className="polaroid p3"><span /></span>
+          <Pinned post={WALL_POSTS[1]} className="p3" fallback="#F2B84B" />
           <Obj label="mailbox: pinned letter" className="pinned-letter" onClick={() => go('mailbox')} />
           <span className="note-card">tour dates: [TBD]</span>
           <span className="pin" style={{ left: 112, top: 2, background: '#C8332D' }} />
