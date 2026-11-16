@@ -1,0 +1,41 @@
+/* ---------- desk: little me extras ---------- */
+.ragdoll.wired svg { filter: saturate(1.6) brightness(1.1); }
+.rd-heart {
+  position: absolute; left: 50%; top: -8px; color: var(--pink); font-size: 18px; pointer-events: none;
+  animation: heart-up .9s ease-out forwards;
+}
+@keyframes heart-up { from { transform: translate(-50%, 0) scale(.6); opacity: 1; } to { transform: translate(-50%, -34px) scale(1.2); opacity: 0; } }
+
+/* speaker pulses while the song plays */
+.speaker.playing .cone { animation: thump .45s ease-in-out infinite; }
+.speaker.playing .cone.big { animation-delay: .1s; }
+@keyframes thump { 50% { transform: scale(1.12); } }
+
+/* ---------- penpal letter window ---------- */
+.letter-backdrop { position: absolute; inset: 0; z-index: 40; background: rgba(11,20,14,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.letter-win {
+  width: min(460px, 100%); max-height: 100%; display: flex; flex-direction: column; background: var(--cream);
+  box-shadow: 6px 6px 0 #000; animation: letter-in .25s ease-out;
+}
+@keyframes letter-in { from { transform: translateY(16px) scale(.96); opacity: 0; } }
+.letter-bar { display: flex; justify-content: space-between; align-items: center; background: var(--mint); padding: 6px 6px 6px 12px; font-family: var(--pixel); font-size: 9px; color: var(--ink); }
+.letter-bar button { background: var(--cream); border: 2px solid var(--ink); font-family: var(--pixel); font-size: 9px; width: 28px; height: 24px; cursor: pointer; color: var(--ink); }
+.letter-body { padding: 16px 18px 6px; overflow: auto; color: var(--ink); font-family: var(--mono); font-size: 14px; line-height: 1.6;
+  background-image: repeating-linear-gradient(transparent 0 21px, rgba(24,116,137,.18) 21px 22px); }
+.letter-body p { margin: 0 0 10px; }
+.letter-sign { font-weight: 700; }
+.letter-foot { padding: 10px 18px 16px; }
+
+/* mailbox envelope opens */
+.envelope-btn { align-self: flex-start; background: none; border: 0; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--muted); }
+.envelope-btn .envelope { transition: transform .15s; }
+.envelope-btn:hover .envelope { transform: rotate(-4deg) translateY(-3px); }
+.envelope-btn .envelope::before { transform-origin: top; transition: transform .25s; }
+.envelope-btn.open .envelope::before { transform: scaleY(-1); }
+.envelope-hint { font-family: var(--pixel); font-size: 8px; color: var(--blush); animation: blink 1.4s steps(2) infinite; }
+
+/* ---------- fit the whole room on one screen (desktop) ---------- */
+.fit-outer { position: relative; height: 100vh; height: 100dvh; overflow: hidden; }
+.fit-outer > .room { position: absolute; top: 0; min-height: 0; transform-origin: top left; }
+.fit-outer .top { padding-top: 18px; padding-bottom: 10px; }
+.fit-outer .deck { margin-top: 64px; }
