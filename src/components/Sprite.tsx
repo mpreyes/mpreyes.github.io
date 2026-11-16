@@ -38,10 +38,13 @@ const RECTS = ROWS.flatMap((row, y) => {
   return out;
 });
 
-export default function Sprite({ size = 64, className }: { size?: number; className?: string }) {
+/** rows: draw only rows [from, to) of the 20-row sprite, e.g. just the head */
+export default function Sprite({ size = 64, className, rows = [0, 20] }: { size?: number; className?: string; rows?: [number, number] }) {
+  const [from, to] = rows;
+  const n = to - from;
   return (
-    <svg className={className} width={size} height={(size * 20) / 16} viewBox="0 0 16 20" shapeRendering="crispEdges" aria-hidden="true">
-      {RECTS.map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height={1} fill={r.c} />)}
+    <svg className={className} width={size} height={(size * n) / 16} viewBox={`0 ${from} 16 ${n}`} shapeRendering="crispEdges" aria-hidden="true">
+      {RECTS.filter((r) => r.y >= from && r.y < to).map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height={1} fill={r.c} />)}
     </svg>
   );
 }

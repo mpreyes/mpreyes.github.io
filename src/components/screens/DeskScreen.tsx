@@ -3,6 +3,7 @@ import { GALLERY, type CartId } from '../../data';
 import Lightbox from '../Lightbox';
 import { sfx } from '../../sound';
 import Sprite from '../Sprite';
+import Ragdoll from '../Ragdoll';
 import Stage from '../Stage';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
@@ -80,7 +81,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const tapCookie = (i: number) => {
     const st = cookies[i];
     if (st === 'soggy' || held === i) {
-      sfx.crunch();
+      sfx.munch();
       setHeld(null);
       setCookies((c) => c.map((s, n) => (n === i ? 'eaten' : s)));
       say(st === 'soggy' ? 'mmm. soggy perfection' : 'crunch. try dunking one next time');
@@ -92,12 +93,11 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   };
 
   const allGone = cookies.every((c) => c === 'eaten');
-  const coffeeH = Math.max(4, 14 - Math.min(sips, 3) * 3);
+  const coffeeH = Math.max(6, 32 - Math.min(sips, 3) * 8);
 
   return (
     <Stage w={700} h={470}>
       <div className="desk">
-        <span className="screen-heading desk-title">MY DESK · click around</span>
         <span className="wire" />
         {LIGHTS.map((l, i) => (
           <span key={i} className={`bulb ${l.twinkle ? 'twinkle' : ''}`} style={{ left: l.x, top: l.y, background: l.c }} />
@@ -149,8 +149,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           <Obj label="sip: coffee" className={`mug ${held !== null ? 'is-target' : ''}`} onClick={sip}>
             <span className="mug-body" />
             <span className="mug-handle" />
-            <span className="mug-coffee" style={{ height: coffeeH, top: 14 + (14 - coffeeH) }} />
-            <span className="mug-mark">MB</span>
+            <span className="mug-coffee" style={{ height: coffeeH, top: 40 - coffeeH }} />
           </Obj>
           {dunking && <span className="dunking-cookie" />}
         </div>
@@ -160,7 +159,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           <span className="base" />
         </Obj>
 
-        <Sprite size={48} className="desk-sprite" />
+        <Ragdoll onLand={(hard) => { if (hard) say('oof'); }} />
 
         <Obj label="item shop: headphones" className="headphones" onClick={() => go('shop')}>
           <span className="band" /><span className="cup l" /><span className="cup r" />
@@ -191,7 +190,6 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           {Array.from({ length: 10 }, (_, i) => <i key={i} />)}
         </Obj>
 
-        <span className="tip">tip: dunk a cookie</span>
         {toast && <div className="toast" role="status">{toast}</div>}
       </div>
       {photo !== null && <Lightbox photos={GALLERY} index={photo} onIndex={setPhoto} onClose={() => setPhoto(null)} />}

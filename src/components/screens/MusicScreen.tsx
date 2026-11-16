@@ -60,6 +60,25 @@ function System({ pick }: { pick: (id: string) => void }) {
   );
 }
 
+function ReleaseVideos({ videos }: { videos: NonNullable<Release['videos']> }) {
+  const [i, setI] = useState(0);
+  const v = videos[i];
+  const flip = (d: number) => { sfx.select(); setI((i + d + videos.length) % videos.length); };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <span className="screen-note">sneak peeks · {i + 1}/{videos.length}</span>
+      <div className="video-frame" style={{ minHeight: 0, aspectRatio: '16 / 9', flex: 'none' }}>
+        <iframe key={v.embed} src={v.embed} title={v.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+      </div>
+      <div className="video-controls">
+        <button className="btn-solid" onClick={() => flip(-1)} aria-label="Previous video">&lt;</button>
+        <span className="screen-copy" style={{ flex: 1, fontSize: 13 }}>{v.title}</span>
+        <button className="btn-solid" onClick={() => flip(1)} aria-label="Next video">&gt;</button>
+      </div>
+    </div>
+  );
+}
+
 function ReleaseView({ r, back }: { r: Release; back: () => void }) {
   const links = LINK_LABELS.filter(([k]) => r.links[k]);
   return (
@@ -99,6 +118,7 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
       ) : (
         <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>
       )}
+      {r.videos && r.videos.length > 0 && <ReleaseVideos videos={r.videos} />}
       {r.bonus && <p className="screen-note">instrumentals + a cappellas are name-your-price on bandcamp</p>}
     </div>
   );

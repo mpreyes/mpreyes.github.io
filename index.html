@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <title>madebit</title>
-    <meta name="description" content="madebit makes thumpy music. Pop a cartridge in and look around." />
-    <meta property="og:title" content="madebit" />
-    <meta property="og:description" content="Thumpy music. Pop a cartridge in and look around." />
+    <!-- title, description, share card + structured data are added at build time from src/seo.ts (see vite.config.ts) -->
     <meta name="theme-color" content="#111111" />
+    <style>
+      /* plain-text copy of the site for search engines + screen readers; the app replaces it on load */
+      .seo-copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

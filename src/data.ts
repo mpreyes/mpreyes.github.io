@@ -1,5 +1,8 @@
 // Everything content-related lives here, so updating the site means editing this file.
 // Lines marked TODO are placeholders to swap for the real thing.
+import { VOL2_COVER } from './covers';
+
+const yt = (id: string) => `https://www.youtube-nocookie.com/embed/${id}`;
 
 export const BANDCAMP = 'https://madebit.bandcamp.com/';
 export const EMAIL = 'madebitmusic@gmail.com';
@@ -8,13 +11,26 @@ export const MAILCHIMP_ACTION =
 // Mailchimp's hidden bot-trap field name for this list
 export const MAILCHIMP_HONEYPOT = 'b_d920d41bcce61aef97158baf6_c3491fafe2';
 
-// From the old site's "Me" section
-export const BIO_SHORT = 'Madebit is the experimental pop/dance project of singer, songwriter, & producer Madelyn Reyes.';
-export const BIO_LETTER =
-  "Hey its me, i make thumpy music :) Thanks for listening to my music! I really appreciate you and hope that you're doing well. " +
-  "If you sign up for my mailing list and send me an email, there's a 99% chance that I'll respond to you because I really like writing letters and learning about other people's stories through writing. " +
-  'Do you know of this old site back in the day called penpal world? You bet I was a member, hahaha. ' +
-  'I loved writing to my penpals from all around the world and i hope i can write to you too.';
+// Bio + artist statement, from the 2027 EPK.
+export const BIO_SHORT = 'Madebit is the experimental pop & dance project of songwriter & producer Madelyn Reyes.';
+export const BIO = [
+  'Madebit is the experimental pop & dance project of songwriter & producer Madelyn Reyes. Based out of Nashville, TN, ' +
+    'she enjoys layering synthesizer sounds with world influences paired with catchy pop hooks & lyrics that read like poetry.',
+  "She released her debut album AN ALIEN AMONG US in 2023, and continues the party with A MECHANIC'S GUIDE TO THROWING A DANCE PARTY " +
+    'VOL 1 & 2, released Nov 2024 and coming Dec 2026.',
+];
+export const STATEMENT = [
+  "I'm really inspired by those crazy but fearless artists who stand at the helm of their recordings: those who take on the challenge of " +
+    'writing, producing, and performing an album for the sheer joy of artistic expression. Those that have a burning passion to carry out ' +
+    'a specific vision and a desire to prove that they can do it themselves.',
+  'Much in the way that a captivating fiction writer can take you on a fantastic journey & transport you into other worlds, I want people ' +
+    'to see this body of work as an exploration of new sounds, compelling stories, and sincere emotions that invite people to escape the ' +
+    'mundane and immerse themselves in a world of sonic experimentation.',
+  'An Alien Among Us deals with this chief question: How do you take the feelings of being an outsider and turn them into ways you can ' +
+    'connect with other people?',
+];
+// Press kit PDF. Lives at img/press/madebit-epk.pdf; the build copies it to the site root.
+export const EPK_URL = 'madebit-epk.pdf';
 
 export type CartId = 'music' | 'videos' | 'shop' | 'mailbox' | 'about' | 'desk';
 
@@ -51,6 +67,8 @@ export interface Release {
   color: string;
   /** release year; shown on hover */
   year: string;
+  /** full release date (YYYY-MM-DD), used for search engines */
+  date?: string;
   /** planet size in px */
   size: number;
   /** which ring it orbits: 1 = closest to the sun (oldest) ... 4 = outermost (newest / coming soon) */
@@ -62,12 +80,14 @@ export interface Release {
   links: StreamLinks;
   /** offer instrumental + a cappella downloads for each track */
   bonus?: boolean;
+  /** videos shown on the release's screen (e.g. teasers for a coming-soon release) */
+  videos?: { title: string; embed: string }[];
 }
 
 export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZLsEVbF';
 const album = (id: string) => `https://open.spotify.com/album/${id}`;
-// Spotify cover art. To self-host instead, drop the file in img/music-artwork and point art at it.
-const cover = (id: string) => `https://i.scdn.co/image/${id}`;
+// Bandcamp cover art (700px). Bandcamp is where people buy, so its art is the source of truth.
+const bcArt = (id: string) => `https://f4.bcbits.com/img/${id}_16.jpg`;
 
 // Singles already on an album or EP are listed under that release, not as their own planet.
 // Planets are chronological: inner rings are the oldest releases, outer rings the newest.
@@ -79,7 +99,7 @@ export const RELEASES: Release[] = [
     art: 'art/alien.jpg',
     color: '#9DBE3D',
     year: '2023',
-    size: 78,
+    size: 86,
     orbit: 2,
     angle: 300,
     ring: true,
@@ -97,35 +117,37 @@ export const RELEASES: Release[] = [
       'I Wanna Get Away',
       'Where The Sidewalk Never Ends',
     ],
-    links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: BANDCAMP },
+    links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
     bonus: true,
   },
   {
     id: 'mechanics-guide-1',
     name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1",
     kind: 'EP',
-    art: cover('ab67616d0000b2730b386e4668bd4c694d5221cc'),
+    art: bcArt('a0498343934'),
     color: '#F2B84B',
     year: '2024',
-    size: 56,
+    date: '2024-11-01',
+    size: 62,
     orbit: 2,
     angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
-    links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: BANDCAMP },
+    links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     bonus: true,
   },
   {
     id: 'cmyk',
     name: 'CMYK',
     kind: 'EP',
-    art: cover('ab67616d0000b2739c76d13c16e2f0759a58e78d'),
+    art: bcArt('a1577032062'),
     color: '#F77FA1',
     year: '2022',
-    size: 52,
+    date: '2022-09-26',
+    size: 58,
     orbit: 1,
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
-    links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: BANDCAMP },
+    links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
     bonus: true,
   },
   {
@@ -135,66 +157,76 @@ export const RELEASES: Release[] = [
     art: 'art/outdoor-meditations.jpg',
     color: '#93C78E',
     year: '2022',
-    size: 40,
+    date: '2022-02-09',
+    size: 46,
     orbit: 1,
     angle: 200,
     tracks: ['Outdoor Meditations'],
-    links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: BANDCAMP },
+    links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
     bonus: true,
   },
   {
     id: 'demons',
     name: 'demons in me closet (eek)',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273215ba75ddda9a91bb076ffbd'),
+    art: bcArt('a2720416291'),
     color: '#C8332D',
     year: '2025',
-    size: 36,
+    date: '2025-08-09',
+    size: 41,
     orbit: 3,
     angle: 230,
     tracks: ['demons in me closet (eek)'],
-    links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: BANDCAMP },
+    links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
     bonus: true,
   },
   {
     id: 'blue-screen',
     name: 'blue_screen.mp3',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273b7cc1266220fb4b87d2df250'),
+    art: bcArt('a4206067042'),
     color: '#187489',
     year: '2025',
-    size: 36,
+    date: '2025-10-01',
+    size: 41,
     orbit: 3,
     angle: 345,
     tracks: ['blue_screen.mp3'],
-    links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: BANDCAMP },
+    links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
     bonus: true,
   },
   {
     id: 'frustrated',
     name: 'frustrated!!',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273eaba6ee5150bdb1a09abb472'),
+    art: bcArt('a3187858009'),
     color: '#F4A9A8',
     year: '2026',
-    size: 36,
+    date: '2026-02-25',
+    size: 41,
     orbit: 3,
     angle: 75,
     tracks: ['frustrated!!'],
-    links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: BANDCAMP },
+    links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
     bonus: true,
   },
   {
     id: 'mechanics-guide-2',
     name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 2",
     kind: 'COMING SOON',
-    color: '#5E4B1C',
+    art: VOL2_COVER,
+    color: '#C8332D',
     year: 'soon',
-    size: 48,
+    size: 54,
     orbit: 4,
     angle: 20,
     tracks: [],
     links: {},
+    videos: [
+      { title: 'this song feels like watching your empire crumble in slow motion', embed: yt('X6Nzc_Phf-o') },
+      { title: 'this song feels like dissolving into storm lightning at 3am', embed: yt('qs2VUvBR4Zk') },
+      { title: 'this song feels like flying downhill on wheels through the city at night', embed: yt('W0ts9-97jlM') },
+    ],
   },
   {
     id: 'duality-of-man',
@@ -202,7 +234,7 @@ export const RELEASES: Release[] = [
     kind: 'COMING SOON',
     color: '#2E4A36',
     year: 'soon',
-    size: 70,
+    size: 76,
     orbit: 4,
     angle: 205,
     ring: true,
@@ -236,32 +268,34 @@ export interface Video {
 }
 
 export const VIDEOS: Video[] = [
-  {
-    title: 'Latest uploads',
-    kind: 'my channel',
-    embed: 'https://www.youtube-nocookie.com/embed/videoseries?list=UUIvz8TjpKD7LWEfOBxW4vFw',
-    color: '#F77FA1',
-  },
-  // TODO: swap these for your own videos. They're the "videos I like" from the old site.
-  { title: 'Videos I like #1', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/cRpdIrq7Rbo?start=11&end=58', color: '#93C78E' },
-  { title: 'Videos I like #2', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/X0dCrw6pvnE', color: '#F2B84B' },
-  { title: 'Videos I like #3', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/3eRBFkxgG7g', color: '#F4A9A8' },
+  { title: "You didn't find this video. The SAUCE chose YOU", kind: 'madebit', embed: yt('9Fl2xFhMAUg'), color: '#9DBE3D' },
+  { title: 'You On Kazoo!', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/cRpdIrq7Rbo?start=11&end=58', color: '#93C78E' },
+  { title: 'kid dancing at the club, 1997', kind: 'favorites', embed: yt('3eRBFkxgG7g'), color: '#F4A9A8' },
 ];
 
 export interface MerchItem {
   name: string;
+  /** small line under the name, e.g. "digital album" */
+  kind: string;
   price: string;
+  /** shell color of the little cartridge */
   color: string;
-  shape: 'tee' | 'stickers' | 'tape' | 'pack';
+  /** cover art shown as the cartridge label */
+  art?: string;
   url: string;
 }
 
-// TODO: real items + prices once they're up on Bandcamp
+const bc = (path: string) => `${BANDCAMP}${path}`;
+
+// Each item links straight to its Bandcamp page. Add new merch here as it goes up on Bandcamp.
 export const MERCH: MerchItem[] = [
-  { name: '[TEE]', price: '[PRICE]', color: '#F77FA1', shape: 'tee', url: BANDCAMP },
-  { name: '[STICKERS]', price: '[PRICE]', color: '#F2B84B', shape: 'stickers', url: BANDCAMP },
-  { name: '[CASSETTE]', price: '[PRICE]', color: '#187489', shape: 'tape', url: BANDCAMP },
-  { name: 'Instrumental + a cappella pack', price: '[PRICE]', color: '#9DBE3D', shape: 'pack', url: BANDCAMP },
+  { name: 'frustrated!!', kind: 'digital single', price: '$1.50+', color: '#F4A9A8', art: bcArt('a3187858009'), url: bc('track/frustrated') },
+  { name: 'blue_screen.mp3', kind: 'digital single', price: '$1.50+', color: '#187489', art: bcArt('a4206067042'), url: bc('track/blue-screen') },
+  { name: 'demons in me closet (eek)', kind: 'digital single', price: '$1.50+', color: '#C8332D', art: bcArt('a2720416291'), url: bc('track/demons-in-me-closet-eek') },
+  { name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1", kind: 'digital EP', price: '$7+', color: '#F2B84B', art: bcArt('a0498343934'), url: bc('album/a-mechanics-guide-to-throwing-a-dance-party-vol-1') },
+  { name: 'An Alien Among Us', kind: 'digital album', price: '$7+', color: '#9DBE3D', art: 'art/alien.jpg', url: bc('album/an-alien-among-us') },
+  { name: 'CMYK', kind: 'digital EP', price: '$4+', color: '#F77FA1', art: bcArt('a1577032062'), url: bc('album/cmyk') },
+  { name: 'Outdoor Meditations', kind: 'digital single', price: '$1.50+', color: '#93C78E', art: 'art/outdoor-meditations.jpg', url: bc('track/outdoor-meditations') },
 ];
 
 export interface Social {
