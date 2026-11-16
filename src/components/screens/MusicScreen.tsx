@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { RELEASES, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
@@ -11,6 +11,9 @@ const LINK_LABELS: [keyof Release['links'], string][] = [
   ['youtube', 'YOUTUBE'],
 ];
 
+// If a cover can't load, fall back to the planet's color instead of a broken-image icon.
+const hideBroken = (e: SyntheticEvent<HTMLImageElement>) => { e.currentTarget.style.display = 'none'; };
+
 function Planet({ r, onPick }: { r: Release; onPick: () => void }) {
   return (
     <button
@@ -19,7 +22,7 @@ function Planet({ r, onPick }: { r: Release; onPick: () => void }) {
       onClick={onPick}
       aria-label={`${r.name}, ${r.kind.toLowerCase()}`}
     >
-      {r.art ? <img src={r.art} alt="" draggable={false} /> : <span className="mystery">?</span>}
+      {r.art ? <img src={r.art} alt="" draggable={false} onError={hideBroken} /> : <span className="mystery">?</span>}
       {r.ring && <span className="ring" />}
       <span className="planet-tag">{r.name} · {r.kind}</span>
     </button>
@@ -52,7 +55,7 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
       <button className="btn-outline" onClick={back}>&lt; BACK TO SYSTEM</button>
       <div className="release-head">
         <div className="release-art" style={{ background: r.color }}>
-          {r.art ? <img src={r.art} alt={`${r.name} cover art`} /> : <span className="mystery">?</span>}
+          {r.art ? <img src={r.art} alt={`${r.name} cover art`} onError={hideBroken} /> : <span className="mystery">?</span>}
         </div>
         <div className="release-meta">
           <span className="eyebrow">{r.kind}</span>
