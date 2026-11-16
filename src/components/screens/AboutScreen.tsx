@@ -13,7 +13,7 @@ export default function AboutScreen() {
           <dt>STATS</dt><dd>curious 99 · silly 99</dd>
         </dl>
       </div>
-      <p className="screen-copy">{BIO_LETTER}</p>
+      <p className="screen-copy" style={{ maxWidth: 'none' }}>{BIO_LETTER}</p>
       <p className="screen-note">{BIO_SHORT}</p>
       <a className="screen-link" href={`mailto:${EMAIL}`}>{EMAIL}</a>
     </div>

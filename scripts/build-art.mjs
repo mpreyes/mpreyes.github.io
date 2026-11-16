@@ -2,7 +2,7 @@
 // Output goes to public/ (git-ignored) so the originals stay the source of truth.
 // Also copies the favicon and CNAME (custom domain) into public/ so they ship with the build.
 import sharp from 'sharp';
-import { mkdir, access, copyFile, readdir, cp } from 'node:fs/promises';
+import { mkdir, access, copyFile } from 'node:fs/promises';
 
 const SRC = 'img/music-artwork';
 const OUT = 'public/art';
@@ -25,8 +25,10 @@ for (const [file, name] of Object.entries(covers)) {
 await copyFile('img/favicon.svg', 'public/favicon.svg');
 await copyFile('CNAME', 'public/CNAME');
 
-// Instagram images for the desk corkboard (optional folder)
-try {
-  await readdir('img/instagram');
-  await cp('img/instagram', 'public/instagram', { recursive: true });
-} catch {}
+// Personal photos for THE DESK slideshow (same photos as the old site's desk)
+await mkdir('public/gallery', { recursive: true });
+for (const f of ['coffee_real', 'concert2', 'automata', 'reading', 'goals', 'icecream', 'me']) {
+  const out = `public/gallery/${f}.jpg`;
+  try { await access(out); continue; } catch {}
+  await sharp(`img/carousel/${f}.jpg`).resize(1000, 1000, { fit: 'inside' }).jpeg({ quality: 80 }).toFile(out);
+}
