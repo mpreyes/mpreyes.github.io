@@ -3,6 +3,7 @@ import { GALLERY, type CartId } from '../../data';
 import Lightbox from '../Lightbox';
 import { sfx } from '../../sound';
 import Sprite from '../Sprite';
+import Ragdoll from '../Ragdoll';
 import Stage from '../Stage';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
@@ -97,7 +98,6 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   return (
     <Stage w={700} h={470}>
       <div className="desk">
-        <span className="screen-heading desk-title">MY DESK · click around</span>
         <span className="wire" />
         {LIGHTS.map((l, i) => (
           <span key={i} className={`bulb ${l.twinkle ? 'twinkle' : ''}`} style={{ left: l.x, top: l.y, background: l.c }} />
@@ -159,7 +159,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           <span className="base" />
         </Obj>
 
-        <Sprite size={48} className="desk-sprite" />
+        <Ragdoll onLand={(hard) => { if (hard) say('oof'); }} />
 
         <Obj label="item shop: headphones" className="headphones" onClick={() => go('shop')}>
           <span className="band" /><span className="cup l" /><span className="cup r" />
@@ -190,7 +190,6 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           {Array.from({ length: 10 }, (_, i) => <i key={i} />)}
         </Obj>
 
-        <span className="tip">tip: dunk a cookie</span>
         {toast && <div className="toast" role="status">{toast}</div>}
       </div>
       {photo !== null && <Lightbox photos={GALLERY} index={photo} onIndex={setPhoto} onClose={() => setPhoto(null)} />}
