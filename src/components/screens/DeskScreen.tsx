@@ -113,7 +113,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
 
   // dropped the little me: if she lands in the mug, she drinks the coffee and gets the zoomies
   const dropped = (cx: number, cy: number) => {
-    const inMug = cx > 140 && cx < 236 && cy > 220 && cy < 340;
+    const inMug = cx > 54 && cx < 150 && cy > 220 && cy < 340;
     if (!inMug) return;
     if (sips >= 3) { say("the cup's empty! sip it to refill"); return; }
     sfx.slurp();
