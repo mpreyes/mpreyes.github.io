@@ -54,3 +54,8 @@
 .headphones.hung { left: 513px; top: 366px; transform: rotate(-4deg); transform-origin: 50% 0; }
 .headphones.hung:hover { animation: swing .8s ease-in-out; }
 @keyframes swing { 25% { transform: rotate(6deg); } 60% { transform: rotate(-8deg); } 100% { transform: rotate(-4deg); } }
+
+/* "press EJECT to swap games" sits to the right of the deck on desktop */
+@media (min-width: 961px) {
+  .deck-hint { left: calc(100% + 18px); right: auto; top: 28px; text-align: left; white-space: nowrap; }
+}
