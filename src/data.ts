@@ -182,6 +182,7 @@ export const RELEASES: Release[] = [
     tracks: ['Outdoor Meditations'],
     links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
     spotifyTracks: ['2rOCE7SdGMy69cy4tJkX0W'],
+    about: 'World bass!! My first real song :)',
   },
   {
     id: 'demons',
@@ -197,6 +198,7 @@ export const RELEASES: Release[] = [
     tracks: ['demons in me closet (eek)'],
     links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
     spotifyTracks: ['7EEcXDFcRvTf3RdaTT90Lz'],
+    about: "Unfortunately, I didn't have a better photo for the cover than a mirror selfie in front of my closet.",
   },
   {
     id: 'blue-screen',
@@ -212,6 +214,7 @@ export const RELEASES: Release[] = [
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
     spotifyTracks: ['4UbU7eYWOPv20E7Tb9FyL0'],
+    about: 'Sometimes there are so many miscommunications that you forget what the argument was even about. There is something almost beautiful in that.',
     videos: [{ title: "it's a weary road", embed: yt('86G_2TdoWT4'), vertical: true }],
   },
   {
@@ -228,6 +231,7 @@ export const RELEASES: Release[] = [
     tracks: ['frustrated!!'],
     links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
     spotifyTracks: ['23Lh9QyC67SA0s0UiPIUUF'],
+    about: 'A song about being stuck. I know you know about this.',
   },
   {
     id: 'mechanics-guide-2',
