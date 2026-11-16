@@ -20,6 +20,8 @@ export interface RagdollHandle {
   hop: () => void;
   /** caffeinated: bounce off the walls for a few seconds */
   zoomies: () => void;
+  /** a beat in the song: a little dance hop, swaying side to side */
+  beat: (strength: number) => void;
 }
 
 interface Props {
@@ -42,7 +44,7 @@ const Ragdoll = forwardRef<RagdollHandle, Props>(function Ragdoll({ onRelease, f
     x: START_X, y: REST_Y, vx: 0, vy: 0,
     held: false, grabDx: 0, grabDy: 0, px: 0, py: 0, airborne: false,
     a1: 0, v1: 0, a2: 0, v2: 0, // body + legs angles (deg) and their spin
-    wiredUntil: 0, wiredLevel: 0, lastBoing: 0,
+    wiredUntil: 0, wiredLevel: 0, lastBoing: 0, sway: 1,
   });
   const cb = useRef({ onLand, onCrash });
   cb.current = { onLand, onCrash };
@@ -66,6 +68,14 @@ const Ragdoll = forwardRef<RagdollHandle, Props>(function Ragdoll({ onRelease, f
       st.vx = Math.cos(a) * sp;
       st.vy = -Math.abs(Math.sin(a) * sp) - 4;
       root.current?.classList.add('wired');
+    },
+    beat: (strength) => {
+      const st = s.current;
+      if (st.held || st.airborne || performance.now() < st.wiredUntil) return;
+      st.airborne = true;
+      st.vy = -(3 + strength * 4);
+      st.sway = -st.sway;
+      st.v1 += st.sway * (6 + strength * 8);
     },
   }));
 

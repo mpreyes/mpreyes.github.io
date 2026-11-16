@@ -6,6 +6,7 @@ import Sprite from '../Sprite';
 import Ragdoll, { type RagdollHandle } from '../Ragdoll';
 import LetterWindow from '../LetterWindow';
 import Stage from '../Stage';
+import { trackBeats, type BeatTracker } from '../../beat';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
 const TRACK_URL = 'speaker.mp3';
@@ -56,8 +57,9 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const timers = useRef<number[]>([]);
   const me = useRef<RagdollHandle>(null);
   const track = useRef<HTMLAudioElement | null>(null);
+  const beats = useRef<BeatTracker | null>(null);
 
-  useEffect(() => () => { timers.current.forEach(clearTimeout); track.current?.pause(); }, []);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); track.current?.pause(); beats.current?.stop(); }, []);
   const later = (fn: () => void, ms: number) => { timers.current.push(window.setTimeout(fn, ms)); };
   const say = (t: string) => setToast(t);
 
@@ -127,10 +129,12 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
     if (!__HAS_TRACK__) { go('music'); return; }
     if (!track.current) {
       track.current = new Audio(TRACK_URL);
-      track.current.addEventListener('ended', () => setPlaying(false));
+      track.current.addEventListener('ended', () => { setPlaying(false); beats.current?.stop(); });
+      // the little me dances to the song's beat
+      beats.current = trackBeats(track.current, (strength) => me.current?.beat(strength));
     }
-    if (playing) { track.current.pause(); setPlaying(false); say('paused'); }
-    else { void track.current.play(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
+    if (playing) { track.current.pause(); beats.current?.stop(); setPlaying(false); say('paused'); }
+    else { void track.current.play(); beats.current?.start(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
   };
 
   const allGone = cookies.every((c) => c === 'eaten');
