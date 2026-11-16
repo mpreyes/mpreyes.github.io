@@ -1,4 +1,4 @@
-import { useState, type SyntheticEvent } from 'react';
+import { useEffect, useState, type SyntheticEvent } from 'react';
 import { RELEASES, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
@@ -19,17 +19,36 @@ const CENTER = { x: 350, y: 245 };
 // Ring radii (x, y), innermost first. Inner rings hold the oldest releases.
 const RINGS: [number, number][] = [[90, 90], [150, 120], [230, 165], [315, 205]];
 
-function position(r: Release) {
-  const [rx, ry] = RINGS[r.orbit - 1];
-  const a = (r.angle * Math.PI) / 180;
-  return { left: CENTER.x + rx * Math.cos(a) - r.size / 2, top: CENTER.y + ry * Math.sin(a) - r.size / 2 };
+// On a phone held upright the whole system is turned on its side (x and y swapped), so the orbits run tall.
+const PORTRAIT = '(max-width: 960px) and (orientation: portrait)';
+function usePortrait() {
+  const [on, setOn] = useState(() => window.matchMedia(PORTRAIT).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(PORTRAIT);
+    const f = () => setOn(mq.matches);
+    mq.addEventListener('change', f);
+    return () => mq.removeEventListener('change', f);
+  }, []);
+  return on;
 }
 
-function Planet({ r, onPick }: { r: Release; onPick: () => void }) {
+// Center of the scene and a point's offset from it, flipped when the phone is upright.
+const center = (tall: boolean) => (tall ? { x: CENTER.y - 10, y: 375 } : CENTER);
+const flip = (dx: number, dy: number, tall: boolean) => (tall ? [dy, dx] : [dx, dy]);
+
+function position(r: Release, tall: boolean) {
+  const [rx, ry] = RINGS[r.orbit - 1];
+  const a = (r.angle * Math.PI) / 180;
+  const c = center(tall);
+  const [dx, dy] = flip(rx * Math.cos(a), ry * Math.sin(a), tall);
+  return { left: c.x + dx - r.size / 2, top: c.y + dy - r.size / 2 };
+}
+
+function Planet({ r, tall, onPick }: { r: Release; tall: boolean; onPick: () => void }) {
   return (
     <button
       className="planet"
-      style={{ ...position(r), width: r.size, height: r.size, background: r.color }}
+      style={{ ...position(r, tall), width: r.size, height: r.size, background: r.color }}
       onClick={onPick}
       aria-label={`${r.name}, ${r.kind.toLowerCase()}`}
     >
@@ -41,20 +60,29 @@ function Planet({ r, onPick }: { r: Release; onPick: () => void }) {
 }
 
 function System({ pick }: { pick: (id: string) => void }) {
+  const tall = usePortrait();
+  const c = center(tall);
+  const W = tall ? 470 : 700;
+  const H = tall ? 740 : 470;
+  const STARS = [[40, 300], [620, 70], [660, 420], [130, 40], [520, 450], [680, 150]];
   return (
-    <Stage w={700} h={470}>
+    <Stage w={W} h={H}>
       <div className="system">
         <span className="screen-heading" style={{ position: 'absolute', left: 24, top: 22 }}>THE MADEBIT SYSTEM</span>
-        <span className="screen-note" style={{ position: 'absolute', right: 24, top: 22 }}>pick a planet</span>
-        {[[40, 300], [620, 70], [660, 420], [130, 40], [520, 450], [680, 150]].map(([x, y], i) => (
-          <span key={i} className={`star ${i % 2 ? 'twinkle' : ''}`} style={{ left: x, top: y }} />
+        <span className="screen-note" style={{ position: 'absolute', right: 24, top: tall ? 44 : 22 }}>pick a planet</span>
+        {STARS.map(([x, y], i) => (
+          <span key={i} className={`star ${i % 2 ? 'twinkle' : ''}`} style={tall ? { left: y, top: x } : { left: x, top: y }} />
         ))}
         {RINGS.map(([rx, ry], i) => (
-          <span key={i} className="orbit" style={{ width: rx * 2, height: ry * 2, borderStyle: i === RINGS.length - 1 ? 'dotted' : 'dashed' }} />
+          <span
+            key={i}
+            className="orbit"
+            style={{ left: c.x, top: c.y, width: (tall ? ry : rx) * 2, height: (tall ? rx : ry) * 2, borderStyle: i === RINGS.length - 1 ? 'dotted' : 'dashed' }}
+          />
         ))}
-        <span className="sun" style={{ left: 302, top: 197, width: 96, height: 96, fontSize: 8, letterSpacing: 0 }}>MADEBIT</span>
+        <span className="sun" style={{ left: c.x - 48, top: c.y - 48, width: 96, height: 96, fontSize: 8, letterSpacing: 0 }}>MADEBIT</span>
         <span className="screen-note" style={{ position: 'absolute', left: 24, bottom: 18 }}>inner rings: oldest · outer rings: newest</span>
-        {RELEASES.map((r) => <Planet key={r.id} r={r} onPick={() => { sfx.select(); pick(r.id); }} />)}
+        {RELEASES.map((r) => <Planet key={r.id} r={r} tall={tall} onPick={() => { sfx.select(); pick(r.id); }} />)}
       </div>
     </Stage>
   );

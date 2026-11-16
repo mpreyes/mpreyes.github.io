@@ -98,7 +98,7 @@
     border-radius: 18px; box-shadow: 0 8px 0 #BFB59A;
   }
   .screen { left: 8px; top: 8px; width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 12px; }
-  .tv-controls, .deck { display: none; }
+  .deck { display: none; }
 
   .shelf {
     order: 2; width: auto; align-self: stretch; position: sticky; bottom: 0; z-index: 30; margin-top: 14px;
@@ -121,3 +121,21 @@
   .floor { border-top: 0; }
   .socials { padding-top: 6px; }
 }
+
+/* ---------- phones: make the screen read as a TV (rabbit ears + a knob bar under the screen) ---------- */
+.antenna { display: none; }
+@media (max-width: 960px) {
+  .tv { margin-top: 22px; height: calc(100dvh - 46px - 22px - 120px); }
+  .antenna { display: block; position: absolute; left: 50%; top: -8px; width: 44px; height: 12px; margin-left: -22px; background: #8A8170; border-radius: 6px 6px 0 0; }
+  .antenna i { position: absolute; bottom: 8px; width: 3px; height: 40px; background: #8A8170; transform-origin: bottom center; }
+  .antenna i::after { content: ''; position: absolute; top: -4px; left: -3px; width: 9px; height: 9px; border-radius: 50%; background: #8A8170; }
+  .antenna i:first-child { left: 12px; transform: rotate(-32deg); }
+  .antenna i:last-child { right: 12px; transform: rotate(28deg); height: 46px; }
+  .screen { height: calc(100% - 50px); }
+  .tv-controls { display: flex; flex-direction: row; top: auto; bottom: 10px; left: 16px; right: 16px; height: 24px; gap: 10px; }
+  .tv-controls .knob { width: 22px; height: 22px; margin: 0; box-shadow: inset -3px -3px 0 #6E6656; }
+  .tv-controls .grille { width: 4px; height: 18px; }
+  .tv-controls .grille:nth-child(3) { margin-left: auto; }
+}
+.stage-box.panning { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
+.stage-box.panning::-webkit-scrollbar { display: none; }
