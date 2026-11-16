@@ -88,6 +88,10 @@ export interface Release {
   credits?: string;
   /** tracks that only live on the album page on Bandcamp (no page of their own) */
   albumOnlyTracks?: string[];
+  /** a work-in-progress song bank: [emoji, working title, status marks] */
+  songBank?: [string, string, string][];
+  /** a moodboard for the world of the release (e.g. a Pinterest board) */
+  moodboard?: string;
   /** videos shown on the release's page; `vertical` for YouTube Shorts */
   videos?: { title: string; embed: string; vertical?: boolean }[];
 }
@@ -269,8 +273,48 @@ export const RELEASES: Release[] = [
     tracks: [],
     links: {},
     about: "We're full of contradictions, and so wonderfully multi-faceted. We think one way and act another. We dream about doing things we may never get to.",
+    moodboard: 'https://www.pinterest.com/reyesmadelynmr/dualityofman/',
+    // straight from my Notion. ⭐ i like this song · 💙 making the album · 🟧 vocals recorded · 🟩 done
+    songBank: [
+      ['🎮', 'a time apart (a sticky situation)', '⭐'],
+      ['🪔', 'a cozy bar in mars', '⭐'],
+      ['🕐', 'a beate (FRUSTRATED!.mp3)', '🟩'],
+      ['💾', 'and the world turns another page (on fear)', '🟧'],
+      ['🌞', 'sun', '🟧'],
+      ['💄', "kiss me (i'll go down with you)", '🟧'],
+      ['📄', "i don't know people", '💙 (MUST FINISH)'],
+      ['🕯️', 'match girl', '💙'],
+      ['🪬', 'dont gotta be bad (no air)', '💙'],
+      ['🌘', '6 pain (let it all float away)', '💙'],
+      ['🛬', 'fools gold (eons together)', '🟧'],
+      ['🥉', 'talk about it', '💙'],
+      ['🌖', 'change for other people (HYPE HYPE HYPE)', '🟧'],
+      ['🗺️', 'dont say ur lonely - i know', '💙'],
+      ['🏃‍♀️', 'running', '💙'],
+      ['📄', 'raincoat', '⭐'],
+      ['📄', 'i always come back to', ''],
+      ['🫧', 'something new', ''],
+      ['📄', 'bleeds another one', ''],
+      ['📄', 'dry my tears', ''],
+      ['📄', 'bright lights', ''],
+      ['📄', 'derivative', ''],
+      ['📄', 'eeoeeeeoeoeeoeoee', ''],
+      ['📄', 'i love the sunshine and i love the rain', ''],
+      ['📄', 'girl takes her dog to the gym', ''],
+      ['📄', 'a new pancake', ''],
+    ],
   },
 ];
+
+// Hidden things on THE DESK. TODO: swap these placeholders for the real thing.
+export const DESK_SECRETS = {
+  /** the back of the "finish the album!!" sticky note */
+  stickyBack: ['finish the album!!', '(your to-do list or lyric scraps go here)'],
+  /** crumpled drafts in the trash can: one pops out per click */
+  trash: ['(a lyric that got cut)', '(another line that didn\'t make it)', '(a verse you rewrote 4 times)'],
+  /** voice memos and demos in the drawer. Put the audio in public/memos/ and list it here. */
+  drawer: [] as { title: string; src: string }[],
+};
 
 // Photos pinned on THE DESK. Click one to open the slideshow.
 // The first three show on the wall (two polaroids and the postcard). Captions are from the old site.
