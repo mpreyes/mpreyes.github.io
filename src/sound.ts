@@ -134,4 +134,10 @@ export const sfx = {
   paper: () => { crunchBurst(0, 0.12, 4000, 0.06); crunchBurst(0.1, 0.1, 3000, 0.05); },
   dunk: () => { blip(600, 0.08, 'sine', 0.08); blip(300, 0.2, 'sine', 0.07, 0.08); },
   sip: () => blip(180, 0.15, 'sine', 0.06),
+  // one note of my melody on the desk keyboard: a soft triangle with a quiet square an octave up
+  melody: (hz: number, eighths = 1) => {
+    const dur = 0.28 * eighths + 0.12;
+    blip(hz, dur, 'triangle', 0.14);
+    blip(hz * 2, dur * 0.6, 'square', 0.02);
+  },
 };

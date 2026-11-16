@@ -7,6 +7,7 @@ import Ragdoll, { type RagdollHandle } from '../Ragdoll';
 import LetterWindow from '../LetterWindow';
 import Stage from '../Stage';
 import { findBeats, followBeats, type BeatFollower } from '../../beat';
+import { MELODY, keyFor, noteHz } from '../../melody';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
 const TRACK_URL = 'speaker.mp3';
@@ -54,6 +55,8 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [photo, setPhoto] = useState<number | null>(null);
   const [letter, setLetter] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [step, setStep] = useState(0); // next note of the melody
+  const [lit, setLit] = useState<number | null>(null); // keyboard key that's lit up
   const timers = useRef<number[]>([]);
   const me = useRef<RagdollHandle>(null);
   const track = useRef<HTMLAudioElement | null>(null);
@@ -141,6 +144,20 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
     }
     if (playing) { track.current.pause(); beats.current?.stop(); setPlaying(false); say('paused'); }
     else { void track.current.play(); beats.current?.start(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
+  };
+
+  // each click on the keyboard plays the next note of my melody, and lights its key
+  const KEYS = 10;
+  const playNote = () => {
+    const [note, len] = MELODY[step];
+    sfx.melody(noteHz(note), len);
+    const k = keyFor(note, KEYS);
+    setLit(k);
+    later(() => setLit((cur) => (cur === k ? null : cur)), 220);
+    const next = (step + 1) % MELODY.length;
+    setStep(next);
+    if (step === 0) say('that\'s my melody! keep clicking');
+    else if (next === 0) say('that\'s the whole thing. again!');
   };
 
   const allGone = cookies.every((c) => c === 'eaten');
@@ -249,8 +266,8 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           <Obj label="bake more: cookies" className="more" onClick={() => { setCookies(['fresh', 'fresh', 'fresh']); say('fresh batch!'); }}>more?</Obj>
         )}
 
-        <Obj label="play me: keyboard" className="keys" onClick={() => { sfx.note(); say('you played a note. thumpy.'); }}>
-          {Array.from({ length: 10 }, (_, i) => <i key={i} />)}
+        <Obj label="play me: keyboard" className="keys" onClick={playNote}>
+          {Array.from({ length: KEYS }, (_, i) => <i key={i} className={lit === i ? 'lit' : undefined} />)}
         </Obj>
 
         {toast && <div className="toast" role="status">{toast}</div>}

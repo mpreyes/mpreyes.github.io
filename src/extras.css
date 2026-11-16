@@ -169,3 +169,6 @@
 }
 .track-dot.on { box-shadow: 0 0 0 2px var(--cream); transform: scale(1.15); }
 .reveal-btn { margin-top: 12px; }
+/* desk keyboard: the key for the note you just played lights up */
+.keys i { transition: background .12s, transform .12s; }
+.keys i.lit { background: var(--pink); transform: translateY(2px); }
