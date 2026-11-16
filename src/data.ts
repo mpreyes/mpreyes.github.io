@@ -49,10 +49,14 @@ export interface Release {
   kind: 'ALBUM' | 'EP' | 'SINGLE' | 'COMING SOON';
   art?: string;
   color: string;
-  /** planet size and position inside the 700x470 solar-system scene */
+  /** release year; shown on hover */
+  year: string;
+  /** planet size in px */
   size: number;
-  x: number;
-  y: number;
+  /** which ring it orbits: 1 = closest to the sun (oldest) ... 4 = outermost (newest / coming soon) */
+  orbit: 1 | 2 | 3 | 4;
+  /** where on that ring, in degrees (0 = right, 90 = bottom) */
+  angle: number;
   ring?: boolean;
   tracks: string[];
   links: StreamLinks;
@@ -66,6 +70,7 @@ const album = (id: string) => `https://open.spotify.com/album/${id}`;
 const cover = (id: string) => `https://i.scdn.co/image/${id}`;
 
 // Singles already on an album or EP are listed under that release, not as their own planet.
+// Planets are chronological: inner rings are the oldest releases, outer rings the newest.
 export const RELEASES: Release[] = [
   {
     id: 'alien',
@@ -73,9 +78,10 @@ export const RELEASES: Release[] = [
     kind: 'ALBUM',
     art: 'art/alien.jpg',
     color: '#9DBE3D',
-    size: 86,
-    x: 500,
-    y: 66,
+    year: '2023',
+    size: 78,
+    orbit: 2,
+    angle: 300,
     ring: true,
     tracks: [
       'Space',
@@ -96,13 +102,14 @@ export const RELEASES: Release[] = [
   },
   {
     id: 'mechanics-guide-1',
-    name: "A Mechanic's Guide to Throwing a Dance Party",
+    name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1",
     kind: 'EP',
     art: cover('ab67616d0000b2730b386e4668bd4c694d5221cc'),
     color: '#F2B84B',
-    size: 64,
-    x: 420,
-    y: 352,
+    year: '2024',
+    size: 56,
+    orbit: 2,
+    angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: BANDCAMP },
     bonus: true,
@@ -113,9 +120,10 @@ export const RELEASES: Release[] = [
     kind: 'EP',
     art: cover('ab67616d0000b2739c76d13c16e2f0759a58e78d'),
     color: '#F77FA1',
-    size: 62,
-    x: 120,
-    y: 300,
+    year: '2022',
+    size: 52,
+    orbit: 1,
+    angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: BANDCAMP },
     bonus: true,
@@ -126,9 +134,10 @@ export const RELEASES: Release[] = [
     kind: 'SINGLE',
     art: 'art/outdoor-meditations.jpg',
     color: '#93C78E',
-    size: 44,
-    x: 250,
-    y: 92,
+    year: '2022',
+    size: 40,
+    orbit: 1,
+    angle: 200,
     tracks: ['Outdoor Meditations'],
     links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: BANDCAMP },
     bonus: true,
@@ -139,9 +148,10 @@ export const RELEASES: Release[] = [
     kind: 'SINGLE',
     art: cover('ab67616d0000b273215ba75ddda9a91bb076ffbd'),
     color: '#C8332D',
-    size: 40,
-    x: 40,
-    y: 196,
+    year: '2025',
+    size: 36,
+    orbit: 3,
+    angle: 230,
     tracks: ['demons in me closet (eek)'],
     links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: BANDCAMP },
     bonus: true,
@@ -152,9 +162,10 @@ export const RELEASES: Release[] = [
     kind: 'SINGLE',
     art: cover('ab67616d0000b273b7cc1266220fb4b87d2df250'),
     color: '#187489',
-    size: 40,
-    x: 630,
-    y: 196,
+    year: '2025',
+    size: 36,
+    orbit: 3,
+    angle: 345,
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: BANDCAMP },
     bonus: true,
@@ -165,9 +176,10 @@ export const RELEASES: Release[] = [
     kind: 'SINGLE',
     art: cover('ab67616d0000b273eaba6ee5150bdb1a09abb472'),
     color: '#F4A9A8',
-    size: 40,
-    x: 262,
-    y: 392,
+    year: '2026',
+    size: 36,
+    orbit: 3,
+    angle: 75,
     tracks: ['frustrated!!'],
     links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: BANDCAMP },
     bonus: true,
@@ -177,9 +189,10 @@ export const RELEASES: Release[] = [
     name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 2",
     kind: 'COMING SOON',
     color: '#5E4B1C',
-    size: 54,
-    x: 590,
-    y: 330,
+    year: 'soon',
+    size: 48,
+    orbit: 4,
+    angle: 20,
     tracks: [],
     links: {},
   },
@@ -188,13 +201,26 @@ export const RELEASES: Release[] = [
     name: 'The Duality of Man',
     kind: 'COMING SOON',
     color: '#2E4A36',
-    size: 80,
-    x: 80,
-    y: 66,
+    year: 'soon',
+    size: 70,
+    orbit: 4,
+    angle: 205,
     ring: true,
     tracks: [],
     links: {},
   },
+];
+
+// Instagram posts pinned on THE DESK's corkboard. Save the images in img/instagram/
+// (the build copies them to instagram/), then list them here with the post link.
+// Up to 3 are used: two polaroids and the postcard.
+export interface WallPost {
+  image: string;
+  url: string;
+  alt: string;
+}
+export const WALL_POSTS: WallPost[] = [
+  // { image: 'instagram/post1.jpg', url: 'https://www.instagram.com/p/XXXX/', alt: 'describe the photo' },
 ];
 
 export interface Video {
