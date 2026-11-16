@@ -88,6 +88,8 @@ export interface Release {
   credits?: string;
   /** tracks that only live on the album page on Bandcamp (no page of their own) */
   albumOnlyTracks?: string[];
+  /** a moodboard for the world of the release (e.g. a Pinterest board) */
+  moodboard?: string;
   /** videos shown on the release's page; `vertical` for YouTube Shorts */
   videos?: { title: string; embed: string; vertical?: boolean }[];
 }
@@ -269,8 +271,19 @@ export const RELEASES: Release[] = [
     tracks: [],
     links: {},
     about: "We're full of contradictions, and so wonderfully multi-faceted. We think one way and act another. We dream about doing things we may never get to.",
+    moodboard: 'https://www.pinterest.com/reyesmadelynmr/dualityofman/',
   },
 ];
+
+// Hidden things on THE DESK. TODO: swap these placeholders for the real thing.
+export const DESK_SECRETS = {
+  /** the back of the "finish the album!!" sticky note */
+  stickyBack: ['finish the album!!', '(your to-do list or lyric scraps go here)'],
+  /** crumpled drafts in the trash can: one pops out per click */
+  trash: ['(a lyric that got cut)', '(another line that didn\'t make it)', '(a verse you rewrote 4 times)'],
+  /** voice memos and demos in the drawer. Put the audio in public/memos/ and list it here. */
+  drawer: [] as { title: string; src: string }[],
+};
 
 // Photos pinned on THE DESK. Click one to open the slideshow.
 // The first three show on the wall (two polaroids and the postcard). Captions are from the old site.
