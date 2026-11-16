@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { RELEASES, spotifyTrackUrl, trackUrl, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
+import { BEAT, PHRASE, SPACE_MELODY, noteHz } from '../../melody';
+import { useSecretSong } from '../../secret';
 
 const LINK_LABELS: [keyof Release['links'], string][] = [
   ['spotify', 'SPOTIFY'],
@@ -62,25 +64,6 @@ function Planet({ r, tall, lap, onPick }: { r: Release; tall: boolean; lap: numb
   );
 }
 
-// The hidden song: drop secret-song.mp3 (or .wav) into public/ and it's waiting behind the supernova.
-const SECRET_FILES = ['secret-song.mp3', 'secret-song.wav'];
-function useSecretSong() {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    let on = true;
-    (async () => {
-      for (const f of SECRET_FILES) {
-        try {
-          const res = await fetch(f, { method: 'HEAD' });
-          if (res.ok && !(res.headers.get('content-type') ?? '').includes('text/html')) { if (on) setUrl(f); return; }
-        } catch { /* not there */ }
-      }
-    })();
-    return () => { on = false; };
-  }, []);
-  return url;
-}
-
 // Tap the sun: it spins and every planet takes a lap. Tap it 5 times fast and it goes supernova.
 function useSun() {
   const [lap, setLap] = useState(0);
@@ -88,6 +71,7 @@ function useSun() {
   const [nova, setNova] = useState<'off' | 'boom' | 'secret'>('off');
   const taps = useRef<number[]>([]);
   const raf = useRef(0);
+  const phrase = useRef(0); // which phrase of the space melody plays next
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
   const tap = () => {
     if (nova !== 'off') return;
@@ -101,11 +85,19 @@ function useSun() {
       return;
     }
     sfx.whoosh();
+    // the next phrase of my space melody, in rhythm, while the planets go around
+    const start = phrase.current * PHRASE;
+    let at = 0.15;
+    for (const [note, beats] of SPACE_MELODY.slice(start, start + PHRASE)) {
+      sfx.melody(noteHz(note), beats * BEAT * 0.9, at);
+      at += beats * BEAT;
+    }
+    phrase.current = start + PHRASE >= SPACE_MELODY.length ? 0 : phrase.current + 1;
     setSpins((n) => n + 1);
     // one lap around the orbits, easing in and out
     cancelAnimationFrame(raf.current);
     const t0 = now;
-    const DUR = 1600;
+    const DUR = 2200;
     const step = (t: number) => {
       const p = Math.min(1, (t - t0) / DUR);
       setLap(360 * (p < 0.5 ? 2 * p * p : 1 - (-2 * p + 2) ** 2 / 2));
@@ -252,6 +244,12 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
         </section>
       )}
       {r.tracks.length === 0 && <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>}
+      {r.moodboard && (
+        <a className="moodboard" href={r.moodboard} target="_blank" rel="noreferrer">
+          <span className="liner-label">MOODBOARD</span>
+          <span className="screen-copy">the world i'm building for this one &gt;</span>
+        </a>
+      )}
       {r.videos && r.videos.length > 0 && (
         <section>
           <h3 className="liner-label">VIDEOS</h3>
