@@ -1,7 +1,11 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
-import { BIO_LETTER, BIO_SHORT, EMAIL, RELEASES, SOCIALS, SPOTIFY_ARTIST, BANDCAMP } from './src/data';
-import { GENRES, KEYWORDS, OG_IMAGE, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from './src/seo';
+import { existsSync } from 'node:fs';
+import { BIO, BIO_SHORT, STATEMENT, EPK_URL, EMAIL, RELEASES, SOCIALS, SPOTIFY_ARTIST, BANDCAMP } from './src/data';
+import { EXTRA_PROFILES, GENRES, KEYWORDS, OG_IMAGE, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from './src/seo';
+
+// The press kit only shows up once the PDF is in the repo.
+const HAS_EPK = existsSync('img/press/madebit-epk.pdf');
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -13,7 +17,7 @@ function seo(): Plugin {
     name: 'madebit-seo',
     transformIndexHtml(html) {
       const out = RELEASES.filter((r) => r.kind !== 'COMING SOON');
-      const sameAs = SOCIALS.filter((s) => s.url.startsWith('http')).map((s) => s.url);
+      const sameAs = [...SOCIALS.filter((s) => s.url.startsWith('http')).map((s) => s.url), ...EXTRA_PROFILES];
       const ld = {
         '@context': 'https://schema.org',
         '@type': 'MusicGroup',
@@ -70,8 +74,11 @@ function seo(): Plugin {
       };
       const body = `<div class="seo-copy">
         <h1>madebit</h1>
-        <p>${esc(BIO_SHORT)} Experimental, sample-based pop and dance music from Nashville, Tennessee.</p>
-        <p>${esc(BIO_LETTER)}</p>
+        ${BIO.map((p) => `<p>${esc(p)}</p>`).join('')}
+        <p>Experimental, sample-based pop and dance music from Nashville, Tennessee.</p>
+        <h2>In her words</h2>
+        ${STATEMENT.map((p) => `<p>${esc(p)}</p>`).join('')}
+        ${HAS_EPK ? `<p><a href="${EPK_URL}">Download the madebit press kit (EPK)</a></p>` : ''}
         <h2>Music</h2>
         <ul>${RELEASES.map(li).join('')}</ul>
         <h2>Listen and buy</h2>
@@ -94,5 +101,6 @@ function seo(): Plugin {
 
 export default defineConfig({
   plugins: [react(), seo()],
+  define: { __HAS_EPK__: JSON.stringify(HAS_EPK) },
   base: './',
 });
