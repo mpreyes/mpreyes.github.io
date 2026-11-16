@@ -10,6 +10,8 @@ import DeskScreen from './screens/DeskScreen';
 export default function Tv({ on, go }: { on: CartId | null; go: (id: CartId) => void }) {
   return (
     <div className="tv">
+      {/* rabbit ears, only drawn on phones */}
+      <span className="antenna" aria-hidden="true"><i /><i /></span>
       <div className="screen" key={on ?? 'title'}>
         <div className="screen-inner">
           {on === null && <TitleScreen />}

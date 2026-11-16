@@ -147,7 +147,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const coffeeH = Math.max(6, 32 - Math.min(sips, 3) * 8);
 
   return (
-    <Stage w={700} h={470}>
+    <Stage w={700} h={470} pan>
       <div className="desk">
         <span className="wire" />
         {LIGHTS.map((l, i) => (
