@@ -80,6 +80,10 @@ export interface Release {
   quote?: string;
   /** 1-2 sentences about the release */
   about?: string;
+  /** Spotify track ids, in tracklist order */
+  spotifyTracks?: string[];
+  /** credits, shown under the tracklist */
+  credits?: string;
   /** tracks that only live on the album page on Bandcamp (no page of their own) */
   albumOnlyTracks?: string[];
   /** videos shown on the release's page; `vertical` for YouTube Shorts */
@@ -121,8 +125,10 @@ export const RELEASES: Release[] = [
       'Where The Sidewalk Never Ends',
     ],
     links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
+    spotifyTracks: ['77Wr7WmavTIl9Uuf2dmG9z', '05Nwoyz47GcVphTfIkeTbu', '7xeFWp89dST5b2A4vRoVjP', '5w9xy0k8SPBngYrbWL6FPO', '4TZ5htwwwDwYsckZzHvJSj', '0dfy7w78BuTsZkjVZnC9K0',
+      '3PJj3cB8ARLEKbN0zNuaaU', '1lExcixYRMv6BrMY7P53aO', '6MQcYujKDnPLqtSFULdhzE', '6L1VipbVTCxuyXRWBbzTod', '3Ms22MsmqOYYB7vU34MwtD', '6jz84GysSFdcky5YFXrWKR'],
     quote: 'How do you take the feelings of being an outsider and turn them into ways you can connect with other people?',
-    about: 'My debut album, written and produced by me. Mixed by Graham Bechler, Rob Rox and Mark Yardley, and mastered by Stuart Hawkes at Metropolis Studios.',
+    credits: 'My debut album, written and produced by me. Mixed by Graham Bechler, Rob Rox and Mark Yardley, and mastered by Stuart Hawkes at Metropolis Studios.',
     videos: [{ title: 'A Sound is Born (Evolution of Self), official audio', embed: yt('AZYzyCN0Qxs') }],
   },
   {
@@ -138,6 +144,7 @@ export const RELEASES: Release[] = [
     angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
+    spotifyTracks: ['09UDno3HC3yIfYchVoyiCx', '3D865L2fhGUS1tt1AulAyR', '1xtfUG12RkcN1J9cpqIlsI', '1mjEQ1cn4r3SiSmINGSw6V'],
     about: 'My foray into dance music and a sincere attempt to convey what I think.',
     albumOnlyTracks: ['Quest for Self', 'Be my only love'],
     videos: [
@@ -158,6 +165,7 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
+    spotifyTracks: ['1HDXrAdUoY2FVbAlS1JZlY', '0RDmeaU0AZAi3WTKGUelwL', '7gGCdmj4OmzTqEUJKe7mk5', '50puonQ21y24vQwpKarvCd'],
     videos: [{ title: 'Something, a sneak peek', embed: yt('oXdbSLHQndw'), vertical: true }],
   },
   {
@@ -173,6 +181,7 @@ export const RELEASES: Release[] = [
     angle: 200,
     tracks: ['Outdoor Meditations'],
     links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
+    spotifyTracks: ['2rOCE7SdGMy69cy4tJkX0W'],
   },
   {
     id: 'demons',
@@ -187,6 +196,7 @@ export const RELEASES: Release[] = [
     angle: 230,
     tracks: ['demons in me closet (eek)'],
     links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
+    spotifyTracks: ['7EEcXDFcRvTf3RdaTT90Lz'],
   },
   {
     id: 'blue-screen',
@@ -201,6 +211,7 @@ export const RELEASES: Release[] = [
     angle: 345,
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
+    spotifyTracks: ['4UbU7eYWOPv20E7Tb9FyL0'],
     videos: [{ title: "it's a weary road", embed: yt('86G_2TdoWT4'), vertical: true }],
   },
   {
@@ -216,6 +227,7 @@ export const RELEASES: Release[] = [
     angle: 75,
     tracks: ['frustrated!!'],
     links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
+    spotifyTracks: ['23Lh9QyC67SA0s0UiPIUUF'],
   },
   {
     id: 'mechanics-guide-2',
@@ -322,6 +334,12 @@ export const SOCIALS: Social[] = [
   { name: 'X', url: 'https://twitter.com/madebitmusic', icon: 'x' },
   { name: 'Email', url: `mailto:${EMAIL}`, icon: 'email' },
 ];
+
+// A track's own Spotify page, if we have it.
+export function spotifyTrackUrl(r: Release, i: number): string | undefined {
+  const id = r.spotifyTracks?.[i];
+  return id ? `https://open.spotify.com/track/${id}` : undefined;
+}
 
 // A track's own Bandcamp page (falls back to the release's page when it doesn't have one).
 export function trackUrl(r: Release, title: string): string | undefined {

@@ -1,5 +1,5 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
-import { RELEASES, trackUrl, type Release } from '../../data';
+import { RELEASES, spotifyTrackUrl, trackUrl, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
 
@@ -141,23 +141,26 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
       </div>
       {r.quote && <blockquote className="liner-quote">{r.quote}</blockquote>}
       {r.about && <p className="screen-copy liner-about">{r.about}</p>}
-      {r.tracks.length > 0 && !single && (
+      {r.tracks.length > 0 && (
         <section>
-          <h3 className="liner-label">TRACKLIST</h3>
+          <h3 className="liner-label">{single ? 'TRACK' : 'TRACKLIST'}</h3>
           <ol className="tracks">
             {r.tracks.map((t, i) => {
-              const url = trackUrl(r, t);
+              const sp = spotifyTrackUrl(r, i);
+              const bc = trackUrl(r, t);
               return (
-                <li key={i}>
-                  <a className="track" href={url} target="_blank" rel="noreferrer" aria-label={`${t} on Bandcamp`}>
-                    <span className="track-n">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="track-title">{t}</span>
-                    <span className="track-go" aria-hidden="true">LISTEN &gt;</span>
-                  </a>
+                <li key={i} className="track">
+                  <span className="track-n">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="track-title">{t}</span>
+                  <span className="track-links">
+                    {sp && <a className="track-go spotify" href={sp} target="_blank" rel="noreferrer" aria-label={`${t} on Spotify`}>SPOTIFY</a>}
+                    {bc && <a className="track-go" href={bc} target="_blank" rel="noreferrer" aria-label={`${t} on Bandcamp`}>BANDCAMP</a>}
+                  </span>
                 </li>
               );
             })}
           </ol>
+          {r.credits && <p className="screen-note liner-credits">{r.credits}</p>}
         </section>
       )}
       {r.tracks.length === 0 && <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>}

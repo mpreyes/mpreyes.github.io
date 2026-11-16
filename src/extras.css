@@ -156,3 +156,8 @@
   .liner-quote { font-size: 13px; }
   .track-go { font-size: 7px; }
 }
+.track-links { display: flex; gap: 12px; flex: none; }
+.track-links .track-go { text-decoration: none; opacity: .7; }
+.track-links .track-go.spotify { color: var(--lime); }
+.track-links .track-go:hover, .track-links .track-go:focus-visible { opacity: 1; text-decoration: underline; }
+.liner-credits { margin: 10px 0 0; line-height: 1.6; max-width: 620px; }
