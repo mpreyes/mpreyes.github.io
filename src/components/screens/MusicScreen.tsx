@@ -1,4 +1,4 @@
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { RELEASES, spotifyTrackUrl, trackUrl, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
@@ -39,19 +39,19 @@ function usePortrait() {
 const center = (tall: boolean) => (tall ? { x: CENTER.y - 10, y: 375 } : CENTER);
 const flip = (dx: number, dy: number, tall: boolean) => (tall ? [dy, dx] : [dx, dy]);
 
-function position(r: Release, tall: boolean) {
+function position(r: Release, tall: boolean, lap = 0) {
   const [rx, ry] = ring(r.orbit - 1, tall);
-  const a = (r.angle * Math.PI) / 180;
+  const a = ((r.angle + lap) * Math.PI) / 180;
   const c = center(tall);
   const [dx, dy] = flip(rx * Math.cos(a), ry * Math.sin(a), tall);
   return { left: c.x + dx - r.size / 2, top: c.y + dy - r.size / 2 };
 }
 
-function Planet({ r, tall, onPick }: { r: Release; tall: boolean; onPick: () => void }) {
+function Planet({ r, tall, lap, onPick }: { r: Release; tall: boolean; lap: number; onPick: () => void }) {
   return (
     <button
       className="planet"
-      style={{ ...position(r, tall), width: r.size, height: r.size, background: r.color }}
+      style={{ ...position(r, tall, lap), width: r.size, height: r.size, background: r.color }}
       onClick={onPick}
       aria-label={`${r.name}, ${r.kind.toLowerCase()}`}
     >
@@ -62,8 +62,65 @@ function Planet({ r, tall, onPick }: { r: Release; tall: boolean; onPick: () => 
   );
 }
 
+// The hidden song: drop secret-song.mp3 (or .wav) into public/ and it's waiting behind the supernova.
+const SECRET_FILES = ['secret-song.mp3', 'secret-song.wav'];
+function useSecretSong() {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let on = true;
+    (async () => {
+      for (const f of SECRET_FILES) {
+        try {
+          const res = await fetch(f, { method: 'HEAD' });
+          if (res.ok && !(res.headers.get('content-type') ?? '').includes('text/html')) { if (on) setUrl(f); return; }
+        } catch { /* not there */ }
+      }
+    })();
+    return () => { on = false; };
+  }, []);
+  return url;
+}
+
+// Tap the sun: it spins and every planet takes a lap. Tap it 5 times fast and it goes supernova.
+function useSun() {
+  const [lap, setLap] = useState(0);
+  const [spins, setSpins] = useState(0);
+  const [nova, setNova] = useState<'off' | 'boom' | 'secret'>('off');
+  const taps = useRef<number[]>([]);
+  const raf = useRef(0);
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+  const tap = () => {
+    if (nova !== 'off') return;
+    const now = performance.now();
+    taps.current = [...taps.current.filter((t) => now - t < 2500), now];
+    if (taps.current.length >= 5) {
+      taps.current = [];
+      sfx.supernova();
+      setNova('boom');
+      window.setTimeout(() => setNova('secret'), 1400);
+      return;
+    }
+    sfx.whoosh();
+    setSpins((n) => n + 1);
+    // one lap around the orbits, easing in and out
+    cancelAnimationFrame(raf.current);
+    const t0 = now;
+    const DUR = 1600;
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / DUR);
+      setLap(360 * (p < 0.5 ? 2 * p * p : 1 - (-2 * p + 2) ** 2 / 2));
+      if (p < 1) raf.current = requestAnimationFrame(step);
+      else setLap(0);
+    };
+    raf.current = requestAnimationFrame(step);
+  };
+  return { lap, spins, nova, tap, close: () => setNova('off') };
+}
+
 function System({ pick }: { pick: (id: string) => void }) {
   const tall = usePortrait();
+  const sun = useSun();
+  const secret = useSecretSong();
   const c = center(tall);
   const W = tall ? 470 : 700;
   const H = tall ? 740 : 470;
@@ -83,9 +140,29 @@ function System({ pick }: { pick: (id: string) => void }) {
             style={{ left: c.x, top: c.y, width: (tall ? ry : rx) * 2, height: (tall ? rx : ry) * 2, borderStyle: i === RINGS.length - 1 ? 'dotted' : 'dashed' }}
           />
         ))}
-        <span className="sun" style={{ left: c.x - 48, top: c.y - 48, width: 96, height: 96, fontSize: 8, letterSpacing: 0 }}>MADEBIT</span>
+        <button
+          className={`sun ${sun.nova === 'boom' ? 'nova' : ''}`}
+          style={{ left: c.x - 48, top: c.y - 48, width: 96, height: 96, fontSize: 8, letterSpacing: 0, transform: `rotate(${sun.spins * 360}deg)` }}
+          onClick={sun.tap}
+          aria-label="the sun"
+        >MADEBIT</button>
         <span className="screen-note" style={{ position: 'absolute', left: 24, bottom: 18 }}>inner rings: oldest · outer rings: newest</span>
-        {RELEASES.map((r) => <Planet key={r.id} r={r} tall={tall} onPick={() => { sfx.select(); pick(r.id); }} />)}
+        {RELEASES.map((r) => <Planet key={r.id} r={r} tall={tall} lap={sun.lap} onPick={() => { sfx.select(); pick(r.id); }} />)}
+        {sun.nova === 'boom' && <span className="nova-flash" aria-hidden="true" />}
+        {sun.nova === 'secret' && (
+          <div className="secret-box" role="dialog" aria-label="you found a secret">
+            <span className="screen-heading">YOU FOUND A SECRET</span>
+            {secret ? (
+              <>
+                <p className="screen-copy">a song that isn't anywhere else. it's yours.</p>
+                <a className="btn-solid" href={secret} download>DOWNLOAD IT</a>
+              </>
+            ) : (
+              <p className="screen-copy">a hidden song lives here... it's not ready yet. come back soon.</p>
+            )}
+            <button className="btn-outline" onClick={sun.close}>BACK TO SPACE</button>
+          </div>
+        )}
       </div>
     </Stage>
   );

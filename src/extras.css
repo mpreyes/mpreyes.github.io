@@ -172,3 +172,19 @@
 /* desk keyboard: the key for the note you just played lights up */
 .keys i { transition: background .12s, transform .12s; }
 .keys i.lit { background: var(--pink); transform: translateY(2px); }
+
+/* ---------- the sun: tap to spin (and take the planets for a lap); 5 taps = supernova ---------- */
+button.sun { border: 0; padding: 0; cursor: pointer; z-index: 3; transition: transform .8s cubic-bezier(.3,.7,.4,1.2), box-shadow .3s; }
+button.sun:hover { box-shadow: 0 0 0 12px rgba(242,184,75,.3), inset -10px -8px 0 #C8942F; }
+button.sun.nova { animation: nova 1.4s ease-in forwards; }
+@keyframes nova { 60% { filter: brightness(1.6); } 100% { transform: scale(6); filter: brightness(3); opacity: 0; } }
+.nova-flash { position: absolute; inset: 0; background: #FFF7E0; z-index: 20; pointer-events: none; animation: flash 1.4s ease-in forwards; }
+@keyframes flash { 0%, 55% { opacity: 0; } 85% { opacity: 1; } 100% { opacity: 1; } }
+.secret-box {
+  position: absolute; inset: 0; z-index: 21; background: #FFF7E0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 18px; text-align: center; padding: 40px; animation: letter-in .4s ease-out;
+}
+.secret-box .screen-heading { color: var(--ink); font-size: 16px; }
+.secret-box .screen-copy { color: var(--ink); max-width: 360px; font-size: 16px; }
+.secret-box .btn-outline { color: var(--ink); border-color: var(--ink); }
+.secret-box .btn-outline, .secret-box .btn-solid { align-self: center; text-decoration: none; }

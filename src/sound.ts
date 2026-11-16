@@ -134,6 +134,14 @@ export const sfx = {
   paper: () => { crunchBurst(0, 0.12, 4000, 0.06); crunchBurst(0.1, 0.1, 3000, 0.05); },
   dunk: () => { blip(600, 0.08, 'sine', 0.08); blip(300, 0.2, 'sine', 0.07, 0.08); },
   sip: () => blip(180, 0.15, 'sine', 0.06),
+  // the sun spinning
+  whoosh: () => { crunchBurst(0, 0.35, 700, 0.07); blip(300, 0.3, 'sine', 0.05); blip(600, 0.25, 'sine', 0.03, 0.08); },
+  // 5 taps on the sun: a rising rumble, then a bright burst
+  supernova: () => {
+    [0, 0.1, 0.2, 0.3, 0.4, 0.5].forEach((w, i) => blip(110 * 2 ** (i / 2), 0.14, 'square', 0.05, w));
+    crunchBurst(0.65, 0.9, 400, 0.22);
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => blip(f, 0.6, 'triangle', 0.08, 0.7 + i * 0.07));
+  },
   // one note of my melody on the desk keyboard: a soft triangle with a quiet square an octave up
   melody: (hz: number, eighths = 1) => {
     const dur = 0.28 * eighths + 0.12;
