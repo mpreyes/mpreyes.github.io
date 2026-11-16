@@ -97,7 +97,6 @@ const bcArt = (id: string) => `https://f4.bcbits.com/img/${id}_16.jpg`;
 
 // Singles already on an album or EP are listed under that release, not as their own planet.
 // Planets are chronological: inner rings are the oldest releases, outer rings the newest.
-// TODO: add an `about` (1-2 sentences) to the releases that don't have one yet.
 export const RELEASES: Release[] = [
   {
     id: 'alien',
@@ -166,6 +165,7 @@ export const RELEASES: Release[] = [
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
     spotifyTracks: ['1HDXrAdUoY2FVbAlS1JZlY', '0RDmeaU0AZAi3WTKGUelwL', '7gGCdmj4OmzTqEUJKe7mk5', '50puonQ21y24vQwpKarvCd'],
+    about: 'Not quite synesthesia, but each song has its own color. Can you guess which is which?',
     videos: [{ title: 'Something, a sneak peek', embed: yt('oXdbSLHQndw'), vertical: true }],
   },
   {
@@ -245,6 +245,7 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: [],
     links: {},
+    about: "I can't ride a skateboard, but this EP makes me want to learn.",
     videos: [
       { title: 'this song feels like watching your empire crumble in slow motion', embed: yt('X6Nzc_Phf-o') },
       { title: 'this song feels like dissolving into storm lightning at 3am', embed: yt('qs2VUvBR4Zk') },
@@ -263,6 +264,7 @@ export const RELEASES: Release[] = [
     ring: true,
     tracks: [],
     links: {},
+    about: "We're full of contradictions, and so wonderfully multi-faceted. We think one way and act another. We dream about doing things we may never get to.",
   },
 ];
 
