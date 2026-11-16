@@ -120,6 +120,7 @@ function ReleaseVideos({ videos, teasers }: { videos: NonNullable<Release['video
 function ReleaseView({ r, back }: { r: Release; back: () => void }) {
   const links = LINK_LABELS.filter(([k]) => r.links[k]);
   const single = r.tracks.length === 1;
+  const [revealed, setRevealed] = useState(false);
   return (
     <div className="screen-pad release">
       <button className="btn-outline" onClick={back}>&lt; BACK TO SYSTEM</button>
@@ -151,6 +152,13 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
               return (
                 <li key={i} className="track">
                   <span className="track-n">{String(i + 1).padStart(2, '0')}</span>
+                  {r.trackColors && (
+                    <span
+                      className={`track-dot ${revealed ? 'on' : ''}`}
+                      style={revealed ? { background: r.trackColors[i], transitionDelay: `${i * 0.25}s` } : undefined}
+                      aria-label={revealed ? `color ${r.trackColors[i]}` : 'color hidden'}
+                    >{revealed ? '' : '?'}</span>
+                  )}
                   <span className="track-title">{t}</span>
                   <span className="track-links">
                     {sp && <a className="track-go spotify" href={sp} target="_blank" rel="noreferrer" aria-label={`${t} on Spotify`}>SPOTIFY</a>}
@@ -160,6 +168,9 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
               );
             })}
           </ol>
+          {r.trackColors && !revealed && (
+            <button className="btn-outline reveal-btn" onClick={() => { sfx.insert(); setRevealed(true); }}>REVEAL THE COLORS</button>
+          )}
           {r.credits && <p className="screen-note liner-credits">{r.credits}</p>}
         </section>
       )}
@@ -177,5 +188,5 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
 export default function MusicScreen() {
   const [sel, setSel] = useState<string | null>(null);
   const r = RELEASES.find((x) => x.id === sel);
-  return r ? <ReleaseView r={r} back={() => setSel(null)} /> : <System pick={setSel} />;
+  return r ? <ReleaseView key={r.id} r={r} back={() => setSel(null)} /> : <System pick={setSel} />;
 }

@@ -82,6 +82,8 @@ export interface Release {
   about?: string;
   /** Spotify track ids, in tracklist order */
   spotifyTracks?: string[];
+  /** a color per track (tracklist order), hidden until you press REVEAL */
+  trackColors?: string[];
   /** credits, shown under the tracklist */
   credits?: string;
   /** tracks that only live on the album page on Bandcamp (no page of their own) */
@@ -166,6 +168,8 @@ export const RELEASES: Release[] = [
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
     spotifyTracks: ['1HDXrAdUoY2FVbAlS1JZlY', '0RDmeaU0AZAi3WTKGUelwL', '7gGCdmj4OmzTqEUJKe7mk5', '50puonQ21y24vQwpKarvCd'],
     about: 'Not quite synesthesia, but each song has its own color. Can you guess which is which?',
+    // Virtual Reality = K (black), The Mellow = cyan, Something = yellow, Island Vibes = magenta
+    trackColors: ['#111111', '#00AEEF', '#FFE600', '#EC008C'],
     videos: [{ title: 'Something, a sneak peek', embed: yt('oXdbSLHQndw'), vertical: true }],
   },
   {
