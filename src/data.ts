@@ -1,5 +1,8 @@
 // Everything content-related lives here, so updating the site means editing this file.
 // Lines marked TODO are placeholders to swap for the real thing.
+import { VOL2_COVER } from './covers';
+
+const yt = (id: string) => `https://www.youtube-nocookie.com/embed/${id}`;
 
 export const BANDCAMP = 'https://madebit.bandcamp.com/';
 export const EMAIL = 'madebitmusic@gmail.com';
@@ -62,6 +65,8 @@ export interface Release {
   links: StreamLinks;
   /** offer instrumental + a cappella downloads for each track */
   bonus?: boolean;
+  /** videos shown on the release's screen (e.g. teasers for a coming-soon release) */
+  videos?: { title: string; embed: string }[];
 }
 
 export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZLsEVbF';
@@ -188,13 +193,19 @@ export const RELEASES: Release[] = [
     id: 'mechanics-guide-2',
     name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 2",
     kind: 'COMING SOON',
-    color: '#5E4B1C',
+    art: VOL2_COVER,
+    color: '#C8332D',
     year: 'soon',
     size: 48,
     orbit: 4,
     angle: 20,
     tracks: [],
     links: {},
+    videos: [
+      { title: 'this song feels like watching your empire crumble in slow motion', embed: yt('X6Nzc_Phf-o') },
+      { title: 'this song feels like dissolving into storm lightning at 3am', embed: yt('qs2VUvBR4Zk') },
+      { title: 'this song feels like flying downhill on wheels through the city at night', embed: yt('W0ts9-97jlM') },
+    ],
   },
   {
     id: 'duality-of-man',
@@ -242,6 +253,7 @@ export const VIDEOS: Video[] = [
     embed: 'https://www.youtube-nocookie.com/embed/videoseries?list=UUIvz8TjpKD7LWEfOBxW4vFw',
     color: '#F77FA1',
   },
+  { title: "You didn't find this video. The SAUCE chose YOU", kind: 'madebit', embed: yt('9Fl2xFhMAUg'), color: '#9DBE3D' },
   // TODO: swap these for your own videos. They're the "videos I like" from the old site.
   { title: 'Videos I like #1', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/cRpdIrq7Rbo?start=11&end=58', color: '#93C78E' },
   { title: 'Videos I like #2', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/X0dCrw6pvnE', color: '#F2B84B' },
