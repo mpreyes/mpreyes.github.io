@@ -13,10 +13,9 @@ import { useSecretSong } from '../../secret';
 type Cookie = 'fresh' | 'soggy' | 'eaten';
 const TRACK_URL = 'speaker.mp3';
 const TRACK_TITLE = 'phoney phonky business';
-// The string lights are notes (a G scale, low to high). Play the start of the keyboard melody on them
-// and they go rainbow, and the hidden song shows up in the drawer.
-const BULB_NOTES = [55, 57, 60, 62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86];
-const LIGHTS_TUNE = DESK_MELODY.slice(0, 5).map(([n]) => n);
+// The keyboard and the string lights both only ever play my melody, one note per click, picking up
+// where the other left off. Play it all the way through and the lights go rainbow, and the hidden
+// song shows up in the drawer.
 const LIGHTS = Array.from({ length: 14 }, (_, i) => ({
   x: 20 + i * 48,
   y: 20 + (i % 2) * 4,
@@ -63,8 +62,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [step, setStep] = useState(0); // next note of the melody
   const [lit, setLit] = useState<number | null>(null); // keyboard key that's lit up
   const [glow, setGlow] = useState<number | null>(null); // string light that's glowing
-  const [rainbow, setRainbow] = useState(false); // played the tune on the lights
-  const played = useRef<number[]>([]);
+  const [rainbow, setRainbow] = useState(false); // played the whole melody
   const [day, setDay] = useState(false);
   const [star, setStar] = useState(0); // bumps to send a shooting star across the window
   const [paper, setPaper] = useState<{ title: string; lines: string[] } | null>(null);
@@ -160,31 +158,25 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
     else { void track.current.play(); beats.current?.start(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
   };
 
-  // each click on the keyboard plays the next note of my melody, and lights its key
+  // each click on the keyboard (or a string light) plays the next note of my melody
   const KEYS = 10;
-  const playNote = () => {
+  const playNote = (bulb?: number) => {
     const [note, beats] = DESK_MELODY[step];
     keyNote(noteHz(note), beats * BEAT);
     const k = keyFor(DESK_MELODY, note, KEYS);
     setLit(k);
     later(() => setLit((cur) => (cur === k ? null : cur)), 220);
+    if (bulb !== undefined) {
+      setGlow(bulb);
+      later(() => setGlow((g) => (g === bulb ? null : g)), 250);
+    }
     const next = (step + 1) % DESK_MELODY.length;
     setStep(next);
-    if (step === 0) say('that\'s my melody! keep clicking');
-    else if (next === 0) say('that\'s the whole thing. again!');
-  };
-
-  // string lights: each bulb is a note
-  const playBulb = (i: number) => {
-    const n = BULB_NOTES[i];
-    sfx.melody(noteHz(n), 0.35);
-    setGlow(i);
-    later(() => setGlow((g) => (g === i ? null : g)), 250);
-    played.current = [...played.current, n].slice(-LIGHTS_TUNE.length);
-    if (!rainbow && played.current.join() === LIGHTS_TUNE.join()) {
+    if (next === 0 && !rainbow) {
       setRainbow(true);
-      later(() => { sfx.sparkle(); say('the lights know that tune... check the drawer'); }, 400);
-    }
+      later(() => { sfx.sparkle(); say('you played the whole thing! check the drawer'); }, 400);
+    } else if (step === 0) say('that\'s my melody! keep going');
+    else if (next === 0) say('that\'s the whole thing. again!');
   };
 
   // the moon: flip night and day. At night a shooting star goes by now and then.
@@ -214,7 +206,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
             key={i}
             className={`bulb ${l.twinkle ? 'twinkle' : ''} ${glow === i ? 'glow' : ''} ${rainbow ? 'rainbow' : ''}`}
             style={{ left: l.x, top: l.y, background: rainbow ? undefined : l.c, animationDelay: rainbow ? `${i * -0.12}s` : undefined }}
-            onClick={() => playBulb(i)}
+            onClick={() => playNote(i)}
             aria-label={`string light ${i + 1}`}
           />
         ))}
@@ -296,7 +288,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           onCrash={() => say('...and the caffeine crash')}
         />
 
-        {/* a drawer under the desk: voice memos, demos (and the hidden song, once the lights' tune is played) */}
+        {/* a drawer under the desk: voice memos, demos (and the hidden song, once the whole melody is played) */}
         <Obj label="open me: drawer" className={`drawer ${drawer ? 'open' : ''}`} onClick={() => { sfx.drawer(); setDrawer((o) => !o); }}>
           <span className="drawer-knob" />
         </Obj>
@@ -343,7 +335,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           <Obj label="bake more: cookies" className="more" onClick={() => { setCookies(['fresh', 'fresh', 'fresh']); say('fresh batch!'); }}>more?</Obj>
         )}
 
-        <Obj label="play me: keyboard" className="keys" onClick={playNote}>
+        <Obj label="play me: keyboard" className="keys" onClick={() => playNote()}>
           {Array.from({ length: KEYS }, (_, i) => <i key={i} className={lit === i ? 'lit' : undefined} />)}
         </Obj>
 
