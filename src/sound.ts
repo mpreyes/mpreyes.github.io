@@ -142,10 +142,16 @@ export const sfx = {
     crunchBurst(0.65, 0.9, 400, 0.22);
     [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => blip(f, 0.6, 'triangle', 0.08, 0.7 + i * 0.07));
   },
-  // one note of my melody on the desk keyboard: a soft triangle with a quiet square an octave up
-  melody: (hz: number, eighths = 1) => {
-    const dur = 0.28 * eighths + 0.12;
-    blip(hz, dur, 'triangle', 0.14);
-    blip(hz * 2, dur * 0.6, 'square', 0.02);
+  // little twinkle for secrets found (a shooting star caught, the lights' tune played)
+  sparkle: () => { [1318.5, 1568, 2093, 2637].forEach((f, i) => blip(f, 0.18, 'triangle', 0.05, i * 0.06)); },
+  // crumpled paper
+  crumple: () => { [0, 0.05, 0.11, 0.18].forEach((w) => crunchBurst(w, 0.05, 2500 + Math.random() * 2000, 0.09)); },
+  // a drawer sliding
+  drawer: () => { crunchBurst(0, 0.25, 300, 0.12); blip(90, 0.12, 'triangle', 0.06, 0.2); },
+  // one note of a melody: a soft triangle with a quiet square an octave up (`beats` long, `when` seconds from now)
+  melody: (hz: number, seconds = 0.4, when = 0) => {
+    const dur = Math.min(1.6, Math.max(0.22, seconds));
+    blip(hz, dur, 'triangle', 0.14, when);
+    blip(hz * 2, dur * 0.5, 'square', 0.02, when);
   },
 };
