@@ -8,9 +8,9 @@ import Socials from './components/Socials';
 
 // On desktop the whole room is drawn at a fixed width and scaled to fit the window,
 // like a game screen, so nothing ever scrolls. Phones keep the normal scrolling layout.
-// The brown desk is the bottom ~30% of the room, so the TV looks like it's sitting on it.
+// The brown desk is the bottom ~20% of the room, so the TV looks like it's sitting on it.
 const DESIGN_W = 1440;
-const DESK_AT = 0.7; // desk edge, as a share of the room's height from the top
+const DESK_AT = 0.8; // desk edge, as a share of the room's height from the top
 const MAX_SCALE = 1.2;
 const desktopQuery = '(min-width: 961px)';
 
