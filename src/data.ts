@@ -268,17 +268,9 @@ export interface Video {
 }
 
 export const VIDEOS: Video[] = [
-  {
-    title: 'Latest uploads',
-    kind: 'my channel',
-    embed: 'https://www.youtube-nocookie.com/embed/videoseries?list=UUIvz8TjpKD7LWEfOBxW4vFw',
-    color: '#F77FA1',
-  },
   { title: "You didn't find this video. The SAUCE chose YOU", kind: 'madebit', embed: yt('9Fl2xFhMAUg'), color: '#9DBE3D' },
-  // TODO: swap these for your own videos. They're the "videos I like" from the old site.
-  { title: 'Videos I like #1', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/cRpdIrq7Rbo?start=11&end=58', color: '#93C78E' },
-  { title: 'Videos I like #2', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/X0dCrw6pvnE', color: '#F2B84B' },
-  { title: 'Videos I like #3', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/3eRBFkxgG7g', color: '#F4A9A8' },
+  { title: 'You On Kazoo!', kind: 'favorites', embed: 'https://www.youtube-nocookie.com/embed/cRpdIrq7Rbo?start=11&end=58', color: '#93C78E' },
+  { title: 'kid dancing at the club, 1997', kind: 'favorites', embed: yt('3eRBFkxgG7g'), color: '#F4A9A8' },
 ];
 
 export interface MerchItem {
