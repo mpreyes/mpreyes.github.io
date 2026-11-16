@@ -6,6 +6,8 @@ import { EXTRA_PROFILES, FANS_OF, GENRES, KEYWORDS, OG_IMAGE, SEO_DESCRIPTION, S
 
 // The press kit only shows up once a madebit-epk*.pdf is in the repo root (see scripts/build-art.mjs).
 const HAS_EPK = readdirSync('.').some((f) => /^madebit-epk.*\.pdf$/i.test(f));
+// The desk speaker plays the first .mp3 in the repo root (see scripts/build-art.mjs).
+const HAS_TRACK = readdirSync('.').some((f) => /\.mp3$/i.test(f));
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -101,6 +103,6 @@ function seo(): Plugin {
 
 export default defineConfig({
   plugins: [react(), seo()],
-  define: { __HAS_EPK__: JSON.stringify(HAS_EPK) },
+  define: { __HAS_EPK__: JSON.stringify(HAS_EPK), __HAS_TRACK__: JSON.stringify(HAS_TRACK) },
   base: './',
 });
