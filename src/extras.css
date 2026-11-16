@@ -59,3 +59,21 @@
 @media (min-width: 961px) {
   .deck-hint { left: calc(100% + 18px); right: auto; top: 28px; text-align: left; white-space: nowrap; }
 }
+
+/* ---------- desktop room: TV on the desk, socials beside it, bigger screen ---------- */
+.socials-side { display: none; }
+.fit-outer .floor { display: none; }
+.fit-outer .top { max-width: none; padding: 16px 28px 8px 120px; }
+.fit-outer .layout {
+  max-width: none; padding: 0 28px 18px; gap: 36px;
+  grid-template-columns: 56px minmax(0, 1fr) 300px;
+}
+.fit-outer .socials-side {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  max-width: none; margin: 0; padding: 0 0 6px; align-self: end;
+}
+.fit-outer .socials-side .copy { display: none; }
+.fit-outer .tv { aspect-ratio: 5 / 3; }
+.fit-outer .screen { left: 3%; width: 85.5%; top: 5%; height: 88%; }
+.fit-outer .tv-controls { right: 2.6%; }
+.fit-outer .shelf { padding-top: 6px; }
