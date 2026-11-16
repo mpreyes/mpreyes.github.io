@@ -12,8 +12,8 @@ export const EXTRA_PROFILES = ['https://linktr.ee/madebit'];
 
 export const GENRES = ['Experimental pop', 'Dance pop', 'Indie electronic', 'Alt pop', 'Indie pop', 'Electronic'];
 
-// "For fans of": shown in PLAYER 1 and read by search engines.
-export const FANS_OF = ['Grimes', 'Flume', 'Yaeji', 'Caroline Polachek', 'Magdalena Bay', 'Charli XCX', 'PinkPantheress', 'Kero Kero Bonito'];
+// "For fans of": for search engines only (keywords + the hidden text copy), not shown on the site.
+export const FANS_OF = ['Grimes', 'Flume', 'Yaeji', 'Caroline Polachek', 'Magdalena Bay', 'Charli XCX', 'PinkPantheress', 'Kero Kero Bonito', 'Kyary Pamyu Pamyu'];
 
 export const KEYWORDS = [
   // who
@@ -29,7 +29,7 @@ export const KEYWORDS = [
   'singer-songwriter', 'self-produced', 'bedroom producer', 'new music', 'underground pop',
   // sounds like
   ...FANS_OF.map((a) => `for fans of ${a}`), 'artists like Flume', 'artists like Yaeji', 'artists like Magdalena Bay',
-  'experimental pop artists', 'experimental alt pop', 'alt pop artists', 'K-pop influenced',
+  'experimental pop artists', 'experimental alt pop', 'alt pop artists',
   // releases
   'An Alien Among Us', 'CMYK EP', "A Mechanic's Guide to Throwing a Dance Party", 'The Duality of Man',
   'blue_screen.mp3', 'demons in me closet', 'frustrated!!', 'Outdoor Meditations',

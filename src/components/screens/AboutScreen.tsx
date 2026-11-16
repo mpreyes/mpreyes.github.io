@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Sprite from '../Sprite';
 import { sfx } from '../../sound';
 import { BIO, EMAIL, EPK_URL, STATEMENT } from '../../data';
-import { FANS_OF } from '../../seo';
 
 const quote: CSSProperties = { margin: 0, padding: '12px 0 12px 16px', borderLeft: '4px solid var(--pink)', display: 'flex', flexDirection: 'column', gap: 8 };
 const quoteLine: CSSProperties = { margin: 0, fontSize: 13, lineHeight: 1.6, fontStyle: 'italic', color: '#D8D2C4' };
@@ -28,7 +27,6 @@ export default function AboutScreen() {
           <dt>CLASS</dt><dd>songwriter / producer</dd>
           <dt>HOME BASE</dt><dd>Nashville, TN</dd>
           <dt>SPECIAL MOVE</dt><dd>thumpy music</dd>
-          <dt>FOR FANS OF</dt><dd>{FANS_OF.join(' · ')}</dd>
           <dt>STATS</dt><dd>curious 99 · silly 99</dd>
         </dl>
       </div>
