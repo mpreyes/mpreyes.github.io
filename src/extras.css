@@ -59,3 +59,26 @@
 @media (min-width: 961px) {
   .deck-hint { left: calc(100% + 18px); right: auto; top: 28px; text-align: left; white-space: nowrap; }
 }
+
+/* ---------- desktop room: TV on the desk, bigger screen, socials bottom-right ---------- */
+.socials-side { display: none; }
+.fit-outer .floor { display: none; }
+.fit-outer .top { max-width: none; padding: 16px 28px 8px 36px; }
+.fit-outer .layout {
+  max-width: none; padding: 0 28px 18px 36px; gap: 0 40px;
+  grid-template-columns: minmax(0, 1fr) 320px; grid-template-rows: auto 1fr;
+}
+.fit-outer .console-col { grid-column: 1; grid-row: 1 / span 2; }
+.fit-outer .shelf { grid-column: 2; grid-row: 1; padding-top: 6px; }
+.fit-outer .socials-side {
+  grid-column: 2; grid-row: 2; align-self: end;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  max-width: none; margin: 0; padding: 0 0 8px;
+}
+.fit-outer .socials-side { gap: 0; }
+.fit-outer .socials-side .social { width: 40px; height: 40px; }
+.fit-outer .socials-side .social svg { width: 23px; height: 23px; }
+.fit-outer .socials-side .copy { width: 100%; margin: 6px 0 0 10px; }
+.fit-outer .tv { aspect-ratio: 5 / 3; }
+.fit-outer .screen { left: 3%; width: 85.5%; top: 5%; height: 88%; }
+.fit-outer .tv-controls { right: 2.6%; }

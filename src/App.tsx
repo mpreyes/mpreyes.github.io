@@ -8,7 +8,9 @@ import Socials from './components/Socials';
 
 // On desktop the whole room is drawn at a fixed width and scaled to fit the window,
 // like a game screen, so nothing ever scrolls. Phones keep the normal scrolling layout.
-const DESIGN_W = 1280;
+// The brown desk is the bottom ~20% of the room, so the TV looks like it's sitting on it.
+const DESIGN_W = 1440;
+const DESK_AT = 0.8; // desk edge, as a share of the room's height from the top
 const MAX_SCALE = 1.2;
 const desktopQuery = '(min-width: 961px)';
 
@@ -16,7 +18,7 @@ function FitRoom({ children }: { children: (ref: React.RefObject<HTMLDivElement>
   const room = useRef<HTMLDivElement>(null);
   const floor = useRef<HTMLElement>(null);
   const [desktop, setDesktop] = useState(() => window.matchMedia(desktopQuery).matches);
-  const [fit, setFit] = useState({ s: 1, left: 0, top: 0, floorPx: 0 });
+  const [fit, setFit] = useState({ s: 1, left: 0, top: 0, deskPx: 0 });
 
   useEffect(() => {
     const mq = window.matchMedia(desktopQuery);
@@ -34,7 +36,9 @@ function FitRoom({ children }: { children: (ref: React.RefObject<HTMLDivElement>
       const vh = window.innerHeight;
       const h = el.offsetHeight;
       const s = Math.min(vw / DESIGN_W, vh / h, MAX_SCALE);
-      setFit({ s, left: (vw - DESIGN_W * s) / 2, top: Math.max(0, vh - h * s), floorPx: (floor.current?.offsetHeight ?? 0) * s });
+      const top = Math.max(0, vh - h * s);
+      const deskPx = top + h * s * DESK_AT;
+      setFit({ s, left: (vw - DESIGN_W * s) / 2, top, deskPx });
     };
     const ro = new ResizeObserver(update);
     ro.observe(el);
@@ -45,7 +49,10 @@ function FitRoom({ children }: { children: (ref: React.RefObject<HTMLDivElement>
 
   if (!desktop) return <>{children(room, floor)}</>;
   return (
-    <div className="fit-outer" style={{ background: `linear-gradient(to top, var(--floor) ${fit.floorPx}px, var(--ink) ${fit.floorPx}px)` }}>
+    <div
+      className="fit-outer"
+      style={{ background: `linear-gradient(to bottom, var(--ink) ${fit.deskPx}px, #2A1B16 ${fit.deskPx}px, #2A1B16 ${fit.deskPx + 8 * fit.s}px, var(--floor) ${fit.deskPx + 8 * fit.s}px)` }}
+    >
       {children(room, floor, { width: DESIGN_W, left: fit.left, top: fit.top, transform: `scale(${fit.s})` })}
     </div>
   );
@@ -79,6 +86,8 @@ export default function App() {
         <h1 className="logo">MADEBIT</h1>
       </header>
       <main className="layout">
+        {/* on desktop the socials sit on the desk, to the right of the TV */}
+        <Socials className="socials-side" />
         <section className="console-col" aria-label="The console">
           <Tv on={on} go={insert} />
           <Deck cart={cart} dragging={dragging} onDropCart={(id) => { setDragging(false); insert(id); }} onEject={() => insert(null)} />

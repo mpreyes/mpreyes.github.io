@@ -28,9 +28,9 @@ function Icon({ icon }: { icon: Social['icon'] }) {
   );
 }
 
-export default function Socials() {
+export default function Socials({ className = '' }: { className?: string }) {
   return (
-    <nav className="socials" aria-label="Socials and links">
+    <nav className={`socials ${className}`} aria-label="Socials and links">
       {SOCIALS.map((s) => (
         <a key={s.name} href={s.url} target="_blank" rel="noreferrer" aria-label={s.name} title={s.name} className="social">
           <Icon icon={s.icon} />
