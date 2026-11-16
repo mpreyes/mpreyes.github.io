@@ -91,20 +91,25 @@ function System({ pick }: { pick: (id: string) => void }) {
   );
 }
 
-function ReleaseVideos({ videos }: { videos: NonNullable<Release['videos']> }) {
+function ReleaseVideos({ videos, teasers }: { videos: NonNullable<Release['videos']>; teasers: boolean }) {
   const [i, setI] = useState(0);
   const v = videos[i];
   const flip = (d: number) => { sfx.select(); setI((i + d + videos.length) % videos.length); };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <span className="screen-note">sneak peeks · {i + 1}/{videos.length}</span>
-      <div className="video-frame" style={{ minHeight: 0, aspectRatio: '16 / 9', flex: 'none' }}>
+      {(teasers || videos.length > 1) && <span className="screen-note">{teasers ? 'sneak peeks · ' : ''}{i + 1}/{videos.length}</span>}
+      <div
+        className="video-frame"
+        style={v.vertical
+          ? { minHeight: 0, flex: 'none', aspectRatio: '9 / 16', width: 'min(100%, 240px)', alignSelf: 'center' }
+          : { minHeight: 0, flex: 'none', aspectRatio: '16 / 9' }}
+      >
         <iframe key={v.embed} src={v.embed} title={v.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
       </div>
       <div className="video-controls">
-        <button className="btn-solid" onClick={() => flip(-1)} aria-label="Previous video">&lt;</button>
-        <span className="screen-copy" style={{ flex: 1, fontSize: 13 }}>{v.title}</span>
-        <button className="btn-solid" onClick={() => flip(1)} aria-label="Next video">&gt;</button>
+        {videos.length > 1 && <button className="btn-solid" onClick={() => flip(-1)} aria-label="Previous video">&lt;</button>}
+        <span className="screen-copy" style={{ flex: 1, fontSize: 13, textAlign: videos.length > 1 ? undefined : 'center' }}>{v.title}</span>
+        {videos.length > 1 && <button className="btn-solid" onClick={() => flip(1)} aria-label="Next video">&gt;</button>}
       </div>
     </div>
   );
@@ -159,7 +164,7 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
       {r.videos && r.videos.length > 0 && (
         <section>
           <h3 className="liner-label">VIDEOS</h3>
-          <ReleaseVideos videos={r.videos} />
+          <ReleaseVideos videos={r.videos} teasers={r.kind === 'COMING SOON'} />
         </section>
       )}
     </div>

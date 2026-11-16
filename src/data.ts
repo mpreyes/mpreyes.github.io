@@ -82,8 +82,8 @@ export interface Release {
   about?: string;
   /** tracks that only live on the album page on Bandcamp (no page of their own) */
   albumOnlyTracks?: string[];
-  /** videos shown on the release's screen (e.g. teasers for a coming-soon release) */
-  videos?: { title: string; embed: string }[];
+  /** videos shown on the release's page; `vertical` for YouTube Shorts */
+  videos?: { title: string; embed: string; vertical?: boolean }[];
 }
 
 export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZLsEVbF';
@@ -123,6 +123,7 @@ export const RELEASES: Release[] = [
     links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
     quote: 'How do you take the feelings of being an outsider and turn them into ways you can connect with other people?',
     about: 'My debut album, written and produced by me. Mixed by Graham Bechler, Rob Rox and Mark Yardley, and mastered by Stuart Hawkes at Metropolis Studios.',
+    videos: [{ title: 'A Sound is Born (Evolution of Self), official audio', embed: yt('AZYzyCN0Qxs') }],
   },
   {
     id: 'mechanics-guide-1',
@@ -139,6 +140,10 @@ export const RELEASES: Release[] = [
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     about: 'My foray into dance music and a sincere attempt to convey what I think.',
     albumOnlyTracks: ['Quest for Self', 'Be my only love'],
+    videos: [
+      { title: 'Deep Down, lyric video', embed: yt('kaOrPX5qenc') },
+      { title: 'Time Goes On (Silence is Golden), lyric video', embed: yt('LAgotYv-3wE') },
+    ],
   },
   {
     id: 'cmyk',
@@ -153,6 +158,7 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
+    videos: [{ title: 'Something, a sneak peek', embed: yt('oXdbSLHQndw'), vertical: true }],
   },
   {
     id: 'outdoor-meditations',
@@ -195,6 +201,7 @@ export const RELEASES: Release[] = [
     angle: 345,
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
+    videos: [{ title: "it's a weary road", embed: yt('86G_2TdoWT4'), vertical: true }],
   },
   {
     id: 'frustrated',
