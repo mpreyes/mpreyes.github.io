@@ -2,10 +2,10 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { existsSync } from 'node:fs';
 import { BIO, BIO_SHORT, STATEMENT, EPK_URL, EMAIL, RELEASES, SOCIALS, SPOTIFY_ARTIST, BANDCAMP } from './src/data';
-import { EXTRA_PROFILES, GENRES, KEYWORDS, OG_IMAGE, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from './src/seo';
+import { EXTRA_PROFILES, FANS_OF, GENRES, KEYWORDS, OG_IMAGE, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from './src/seo';
 
-// The press kit only shows up once the PDF is in the repo.
-const HAS_EPK = existsSync('img/press/madebit-epk.pdf');
+// The press kit only shows up once madebit-epk.pdf is in the repo root.
+const HAS_EPK = existsSync('madebit-epk.pdf');
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -75,7 +75,7 @@ function seo(): Plugin {
       const body = `<div class="seo-copy">
         <h1>madebit</h1>
         ${BIO.map((p) => `<p>${esc(p)}</p>`).join('')}
-        <p>Experimental, sample-based pop and dance music from Nashville, Tennessee.</p>
+        <p>Experimental, sample-based alt pop and dance music from Nashville, Tennessee. For fans of ${FANS_OF.map(esc).join(', ')}.</p>
         <h2>In her words</h2>
         ${STATEMENT.map((p) => `<p>${esc(p)}</p>`).join('')}
         ${HAS_EPK ? `<p><a href="${EPK_URL}">Download the madebit press kit (EPK)</a></p>` : ''}

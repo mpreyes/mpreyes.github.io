@@ -24,8 +24,8 @@ for (const [file, name] of Object.entries(covers)) {
 
 await copyFile('img/favicon.svg', 'public/favicon.svg');
 await copyFile('CNAME', 'public/CNAME');
-// Press kit (EPK). Optional: only copied when the PDF is in the repo.
-try { await copyFile('img/press/madebit-epk.pdf', 'public/madebit-epk.pdf'); } catch {}
+// Press kit (EPK). Optional: only copied when madebit-epk.pdf is in the repo root.
+try { await copyFile('madebit-epk.pdf', 'public/madebit-epk.pdf'); } catch {}
 
 // Personal photos for THE DESK slideshow (same photos as the old site's desk)
 await mkdir('public/gallery', { recursive: true });

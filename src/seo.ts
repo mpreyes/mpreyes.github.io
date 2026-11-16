@@ -12,6 +12,9 @@ export const EXTRA_PROFILES = ['https://linktr.ee/madebit'];
 
 export const GENRES = ['Experimental pop', 'Dance pop', 'Indie electronic', 'Alt pop', 'Indie pop', 'Electronic'];
 
+// "For fans of": shown in PLAYER 1 and read by search engines.
+export const FANS_OF = ['Grimes', 'Flume', 'Yaeji', 'Caroline Polachek', 'Magdalena Bay', 'Charli XCX', 'PinkPantheress', 'Kero Kero Bonito'];
+
 export const KEYWORDS = [
   // who
   'madebit', 'madebit music', 'Madelyn Reyes', 'Madelyn Reyes music', 'madebit Nashville',
@@ -25,7 +28,8 @@ export const KEYWORDS = [
   'independent artist', 'indie artist', 'independent musician', 'female producer', 'woman producer',
   'singer-songwriter', 'self-produced', 'bedroom producer', 'new music', 'underground pop',
   // sounds like
-  'for fans of Grimes', 'for fans of Flume', 'artists like Flume', 'experimental pop artists',
+  ...FANS_OF.map((a) => `for fans of ${a}`), 'artists like Flume', 'artists like Yaeji', 'artists like Magdalena Bay',
+  'experimental pop artists', 'experimental alt pop', 'alt pop artists', 'K-pop influenced',
   // releases
   'An Alien Among Us', 'CMYK EP', "A Mechanic's Guide to Throwing a Dance Party", 'The Duality of Man',
   'blue_screen.mp3', 'demons in me closet', 'frustrated!!', 'Outdoor Meditations',
