@@ -211,16 +211,20 @@ export const RELEASES: Release[] = [
   },
 ];
 
-// Instagram posts pinned on THE DESK's corkboard. Save the images in img/instagram/
-// (the build copies them to instagram/), then list them here with the post link.
-// Up to 3 are used: two polaroids and the postcard.
-export interface WallPost {
-  image: string;
-  url: string;
-  alt: string;
+// Photos pinned on THE DESK. Click one to open the slideshow.
+// The first three show on the wall (two polaroids and the postcard). Captions are from the old site.
+export interface Photo {
+  src: string;
+  caption: string;
 }
-export const WALL_POSTS: WallPost[] = [
-  // { image: 'instagram/post1.jpg', url: 'https://www.instagram.com/p/XXXX/', alt: 'describe the photo' },
+export const GALLERY: Photo[] = [
+  { src: 'gallery/coffee_real.jpg', caption: 'I like coffee. This is a cuban.' },
+  { src: 'gallery/concert2.jpg', caption: 'The Foo Fighters concert I went to.' },
+  { src: 'gallery/me.jpg', caption: 'Bonus pic.' },
+  { src: 'gallery/automata.jpg', caption: 'My work is very important to me. I always draw on the board, though.' },
+  { src: 'gallery/reading.jpg', caption: 'I only read great literature.' },
+  { src: 'gallery/goals.jpg', caption: "I've got everything planned out..." },
+  { src: 'gallery/icecream.jpg', caption: 'My parents enable my sweet tooth.' },
 ];
 
 export interface Video {
