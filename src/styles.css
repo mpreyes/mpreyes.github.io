@@ -217,7 +217,6 @@ h1, h2 { margin: 0; font-weight: 400; }
 
 /* ---------- desk scene (700x470) ---------- */
 .desk { position: absolute; inset: 0; background: #3F5F47; overflow: hidden; }
-.desk-title { position: absolute; left: 24px; top: 34px; font-size: 11px; color: var(--lime); }
 .wire { position: absolute; left: 0; right: 0; top: 18px; height: 2px; background: #2A3F2F; }
 .bulb { position: absolute; width: 8px; height: 10px; border-radius: 50% 50% 40% 40%; }
 .desk-obj { position: absolute; border: 0; padding: 0; background: none; cursor: pointer; }
@@ -238,9 +237,9 @@ h1, h2 { margin: 0; font-weight: 400; }
 
 .cork { position: absolute; left: 190px; top: 56px; width: 250px; height: 150px; background: #A66A4F; border: 8px solid #7A4A36; }
 .polaroid { position: absolute; width: 54px; height: 64px; background: var(--cream); padding: 5px; }
-.polaroid > span { display: block; width: 100%; height: 40px; }
-.polaroid.p1 { left: 12px; top: 14px; transform: rotate(-7deg); } .polaroid.p1 > span { background: var(--teal); }
-.polaroid.p3 { left: 168px; top: 16px; transform: rotate(6deg); } .polaroid.p3 > span { background: var(--gold); }
+.polaroid > span:not(.desk-tag) { display: block; width: 100%; height: 40px; }
+.polaroid.p1 { left: 12px; top: 14px; transform: rotate(-7deg); } .polaroid.p1 > span:not(.desk-tag) { background: var(--teal); }
+.polaroid.p3 { left: 168px; top: 16px; transform: rotate(6deg); } .polaroid.p3 > span:not(.desk-tag) { background: var(--gold); }
 .polaroid.p2 { left: 88px; top: 8px; width: 60px; height: 72px; transform: rotate(3deg); background: var(--cream); padding: 5px; }
 .polaroid-pic { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 46px; background: var(--blush); overflow: hidden; }
 .pinned-letter { left: 34px; top: 88px; width: 80px; height: 40px; background: var(--cream) !important; transform: rotate(-3deg); }
@@ -286,7 +285,23 @@ h1, h2 { margin: 0; font-weight: 400; }
 .laptop .bars i:nth-child(5) { height: 22px; background: var(--lime); }
 .laptop .base { position: absolute; left: 0; top: 96px; width: 190px; height: 12px; background: #B8B0A0; }
 
-.desk-sprite { position: absolute; left: 520px; top: 270px; }
+.ragdoll { position: absolute; left: 0; top: 0; width: 48px; cursor: grab; touch-action: none; user-select: none; z-index: 6; }
+.ragdoll.held { cursor: grabbing; }
+.ragdoll svg { display: block; }
+.ragdoll .rd-body { transform-origin: 50% 0; }
+.ragdoll .rd-legs { transform-origin: 50% 0; }
+.ragdoll .desk-tag { top: -30px; }
+.ragdoll:hover .desk-tag { opacity: 1; }
+.ragdoll.held .desk-tag { opacity: 0; }
+
+/* about: tap the sprite to dance */
+.dance-btn { background: none; border: 0; padding: 0; cursor: pointer; }
+.dance-btn.dancing svg { animation: dance .36s steps(2) infinite; transform-origin: 50% 100%; }
+@keyframes dance {
+  0% { transform: translateY(0) rotate(-10deg) scaleY(1); }
+  50% { transform: translateY(-10px) rotate(10deg) scaleY(1.06); }
+  100% { transform: translateY(0) rotate(-10deg) scaleY(.94); }
+}
 
 .headphones { left: 440px; top: 264px; width: 76px; height: 66px; }
 .headphones .band { position: absolute; left: 8px; top: 0; width: 60px; height: 52px; border: 9px solid var(--teal); border-bottom: 0; border-radius: 34px 34px 0 0; }
@@ -304,7 +319,6 @@ h1, h2 { margin: 0; font-weight: 400; }
 .keys i { flex: 1; background: var(--cream); display: block; }
 .keys:active i { background: #E5E0D2; }
 
-.tip { position: absolute; right: 20px; bottom: 16px; font-size: 11px; color: #D8D2C4; }
 .toast {
   position: absolute; left: 50%; top: 52px; transform: translateX(-50%); white-space: nowrap; z-index: 10;
   background: var(--cream); color: var(--ink); font-family: var(--pixel); font-size: 10px; padding: 12px 16px; box-shadow: 4px 4px 0 var(--ink);
