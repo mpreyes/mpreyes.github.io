@@ -54,6 +54,8 @@ export interface Release {
   color: string;
   /** release year; shown on hover */
   year: string;
+  /** full release date (YYYY-MM-DD), used for search engines */
+  date?: string;
   /** planet size in px */
   size: number;
   /** which ring it orbits: 1 = closest to the sun (oldest) ... 4 = outermost (newest / coming soon) */
@@ -73,6 +75,8 @@ export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZL
 const album = (id: string) => `https://open.spotify.com/album/${id}`;
 // Spotify cover art. To self-host instead, drop the file in img/music-artwork and point art at it.
 const cover = (id: string) => `https://i.scdn.co/image/${id}`;
+// Bandcamp cover art (700px). Bandcamp is where people buy, so its art is the source of truth.
+const bcArt = (id: string) => `https://f4.bcbits.com/img/${id}_16.jpg`;
 
 // Singles already on an album or EP are listed under that release, not as their own planet.
 // Planets are chronological: inner rings are the oldest releases, outer rings the newest.
@@ -109,9 +113,10 @@ export const RELEASES: Release[] = [
     id: 'mechanics-guide-1',
     name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1",
     kind: 'EP',
-    art: cover('ab67616d0000b2730b386e4668bd4c694d5221cc'),
+    art: bcArt('a0498343934'),
     color: '#F2B84B',
     year: '2024',
+    date: '2024-11-01',
     size: 62,
     orbit: 2,
     angle: 140,
@@ -123,9 +128,10 @@ export const RELEASES: Release[] = [
     id: 'cmyk',
     name: 'CMYK',
     kind: 'EP',
-    art: cover('ab67616d0000b2739c76d13c16e2f0759a58e78d'),
+    art: bcArt('a1577032062'),
     color: '#F77FA1',
     year: '2022',
+    date: '2022-09-26',
     size: 58,
     orbit: 1,
     angle: 20,
@@ -140,6 +146,7 @@ export const RELEASES: Release[] = [
     art: 'art/outdoor-meditations.jpg',
     color: '#93C78E',
     year: '2022',
+    date: '2022-02-09',
     size: 46,
     orbit: 1,
     angle: 200,
@@ -151,9 +158,10 @@ export const RELEASES: Release[] = [
     id: 'demons',
     name: 'demons in me closet (eek)',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273215ba75ddda9a91bb076ffbd'),
+    art: bcArt('a2720416291'),
     color: '#C8332D',
     year: '2025',
+    date: '2025-08-09',
     size: 41,
     orbit: 3,
     angle: 230,
@@ -165,9 +173,10 @@ export const RELEASES: Release[] = [
     id: 'blue-screen',
     name: 'blue_screen.mp3',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273b7cc1266220fb4b87d2df250'),
+    art: bcArt('a4206067042'),
     color: '#187489',
     year: '2025',
+    date: '2025-10-01',
     size: 41,
     orbit: 3,
     angle: 345,
@@ -276,11 +285,11 @@ const bc = (path: string) => `${BANDCAMP}${path}`;
 
 // Each item links straight to its Bandcamp page. Add new merch here as it goes up on Bandcamp.
 export const MERCH: MerchItem[] = [
-  { name: 'blue_screen.mp3', kind: 'digital single', price: '$1.50+', color: '#187489', art: cover('ab67616d0000b273b7cc1266220fb4b87d2df250'), url: bc('track/blue-screen') },
-  { name: 'demons in me closet (eek)', kind: 'digital single', price: '$1.50+', color: '#C8332D', art: cover('ab67616d0000b273215ba75ddda9a91bb076ffbd'), url: bc('track/demons-in-me-closet-eek') },
-  { name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1", kind: 'digital EP', price: '$7+', color: '#F2B84B', art: cover('ab67616d0000b2730b386e4668bd4c694d5221cc'), url: bc('album/a-mechanics-guide-to-throwing-a-dance-party-vol-1') },
+  { name: 'blue_screen.mp3', kind: 'digital single', price: '$1.50+', color: '#187489', art: bcArt('a4206067042'), url: bc('track/blue-screen') },
+  { name: 'demons in me closet (eek)', kind: 'digital single', price: '$1.50+', color: '#C8332D', art: bcArt('a2720416291'), url: bc('track/demons-in-me-closet-eek') },
+  { name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1", kind: 'digital EP', price: '$7+', color: '#F2B84B', art: bcArt('a0498343934'), url: bc('album/a-mechanics-guide-to-throwing-a-dance-party-vol-1') },
   { name: 'An Alien Among Us', kind: 'digital album', price: '$7+', color: '#9DBE3D', art: 'art/alien.jpg', url: bc('album/an-alien-among-us') },
-  { name: 'CMYK', kind: 'digital EP', price: '$4+', color: '#F77FA1', art: cover('ab67616d0000b2739c76d13c16e2f0759a58e78d'), url: bc('album/cmyk') },
+  { name: 'CMYK', kind: 'digital EP', price: '$4+', color: '#F77FA1', art: bcArt('a1577032062'), url: bc('album/cmyk') },
   { name: 'Outdoor Meditations', kind: 'digital single', price: '$1.50+', color: '#93C78E', art: 'art/outdoor-meditations.jpg', url: bc('track/outdoor-meditations') },
 ];
 
