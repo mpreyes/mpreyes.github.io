@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type ButtonHTMLAttributes } from 'react';
-import { WALL_POSTS, type CartId, type WallPost } from '../../data';
+import { GALLERY, type CartId } from '../../data';
+import Lightbox from '../Lightbox';
 import { sfx } from '../../sound';
 import Sprite from '../Sprite';
 import Stage from '../Stage';
@@ -12,17 +13,15 @@ const LIGHTS = Array.from({ length: 14 }, (_, i) => ({
   twinkle: i % 3 === 0,
 }));
 
-// A pinned Instagram post: links out to the post. Falls back to a plain colored photo.
-function Pinned({ post, className, fallback }: { post?: WallPost; className: string; fallback: string }) {
-  const photo = post
-    ? <img src={post.image} alt={post.alt} style={{ width: '100%', height: 40, objectFit: 'cover', display: 'block' }} />
-    : <span style={{ background: fallback }} />;
-  if (!post) return <span className={`polaroid ${className}`}>{photo}</span>;
+// A pinned photo: shows a thumbnail and opens the slideshow at that photo.
+function Pinned({ i, className, open }: { i: number; className: string; open: (i: number) => void }) {
+  const p = GALLERY[i];
+  if (!p) return <span className={`polaroid ${className}`}><span /></span>;
   return (
-    <a className={`desk-obj polaroid ${className}`} href={post.url} target="_blank" rel="noreferrer" aria-label={`instagram post: ${post.alt}`}>
-      {photo}
-      <span className="desk-tag">instagram</span>
-    </a>
+    <button className={`desk-obj polaroid ${className}`} onClick={() => open(i)} aria-label={`photo: ${p.caption}`}>
+      <img src={p.src} alt="" style={{ width: '100%', height: 40, objectFit: 'cover', display: 'block' }} />
+      <span className="desk-tag">photos</span>
+    </button>
   );
 }
 
@@ -47,6 +46,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [dunking, setDunking] = useState(false);
   const [sips, setSips] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<number | null>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
@@ -104,10 +104,10 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         ))}
 
         <div className="postcard">
-          {WALL_POSTS[2] ? (
-            <a className="pc-pic" href={WALL_POSTS[2].url} target="_blank" rel="noreferrer" aria-label={`instagram post: ${WALL_POSTS[2].alt}`}>
-              <img src={WALL_POSTS[2].image} alt={WALL_POSTS[2].alt} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            </a>
+          {GALLERY[2] ? (
+            <button className="pc-pic desk-obj" onClick={() => setPhoto(2)} aria-label={`photo: ${GALLERY[2].caption}`} style={{ padding: 0, border: 0 }}>
+              <img src={GALLERY[2].src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            </button>
           ) : (
             <span className="pc-pic"><span /><i /></span>
           )}
@@ -117,11 +117,11 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         </div>
 
         <div className="cork">
-          <Pinned post={WALL_POSTS[0]} className="p1" fallback="#187489" />
+          <Pinned i={0} className="p1" open={setPhoto} />
           <Obj label="about me: polaroid" className="polaroid p2" onClick={() => go('about')}>
             <span className="polaroid-pic"><Sprite size={28} /></span>
           </Obj>
-          <Pinned post={WALL_POSTS[1]} className="p3" fallback="#F2B84B" />
+          <Pinned i={1} className="p3" open={setPhoto} />
           <Obj label="mailbox: pinned letter" className="pinned-letter" onClick={() => go('mailbox')} />
           <span className="note-card">tour dates: [TBD]</span>
           <span className="pin" style={{ left: 112, top: 2, background: '#C8332D' }} />
@@ -194,6 +194,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         <span className="tip">tip: dunk a cookie</span>
         {toast && <div className="toast" role="status">{toast}</div>}
       </div>
+      {photo !== null && <Lightbox photos={GALLERY} index={photo} onIndex={setPhoto} onClose={() => setPhoto(null)} />}
     </Stage>
   );
 }
