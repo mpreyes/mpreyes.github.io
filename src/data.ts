@@ -11,13 +11,26 @@ export const MAILCHIMP_ACTION =
 // Mailchimp's hidden bot-trap field name for this list
 export const MAILCHIMP_HONEYPOT = 'b_d920d41bcce61aef97158baf6_c3491fafe2';
 
-// From the old site's "Me" section
-export const BIO_SHORT = 'Madebit is the experimental pop/dance project of singer, songwriter, & producer Madelyn Reyes.';
-export const BIO_LETTER =
-  "Hey its me, i make thumpy music :) Thanks for listening to my music! I really appreciate you and hope that you're doing well. " +
-  "If you sign up for my mailing list and send me an email, there's a 99% chance that I'll respond to you because I really like writing letters and learning about other people's stories through writing. " +
-  'Do you know of this old site back in the day called penpal world? You bet I was a member, hahaha. ' +
-  'I loved writing to my penpals from all around the world and i hope i can write to you too.';
+// Bio + artist statement, from the 2027 EPK.
+export const BIO_SHORT = 'Madebit is the experimental pop & dance project of songwriter & producer Madelyn Reyes.';
+export const BIO = [
+  'Madebit is the experimental pop & dance project of songwriter & producer Madelyn Reyes. Based out of Nashville, TN, ' +
+    'she enjoys layering synthesizer sounds with world influences paired with catchy pop hooks & lyrics that read like poetry.',
+  "She released her debut album AN ALIEN AMONG US in 2023, and continues the party with A MECHANIC'S GUIDE TO THROWING A DANCE PARTY " +
+    'VOL 1 & 2, released Nov 2024 and coming Dec 2026.',
+];
+export const STATEMENT = [
+  "I'm really inspired by those crazy but fearless artists who stand at the helm of their recordings: those who take on the challenge of " +
+    'writing, producing, and performing an album for the sheer joy of artistic expression. Those that have a burning passion to carry out ' +
+    'a specific vision and a desire to prove that they can do it themselves.',
+  'Much in the way that a captivating fiction writer can take you on a fantastic journey & transport you into other worlds, I want people ' +
+    'to see this body of work as an exploration of new sounds, compelling stories, and sincere emotions that invite people to escape the ' +
+    'mundane and immerse themselves in a world of sonic experimentation.',
+  'An Alien Among Us deals with this chief question: How do you take the feelings of being an outsider and turn them into ways you can ' +
+    'connect with other people?',
+];
+// Press kit PDF. Lives at img/press/madebit-epk.pdf; the build copies it to the site root.
+export const EPK_URL = 'madebit-epk.pdf';
 
 export type CartId = 'music' | 'videos' | 'shop' | 'mailbox' | 'about' | 'desk';
 
@@ -73,8 +86,6 @@ export interface Release {
 
 export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZLsEVbF';
 const album = (id: string) => `https://open.spotify.com/album/${id}`;
-// Spotify cover art. To self-host instead, drop the file in img/music-artwork and point art at it.
-const cover = (id: string) => `https://i.scdn.co/image/${id}`;
 // Bandcamp cover art (700px). Bandcamp is where people buy, so its art is the source of truth.
 const bcArt = (id: string) => `https://f4.bcbits.com/img/${id}_16.jpg`;
 
@@ -188,14 +199,15 @@ export const RELEASES: Release[] = [
     id: 'frustrated',
     name: 'frustrated!!',
     kind: 'SINGLE',
-    art: cover('ab67616d0000b273eaba6ee5150bdb1a09abb472'),
+    art: bcArt('a3187858009'),
     color: '#F4A9A8',
     year: '2026',
+    date: '2026-02-25',
     size: 41,
     orbit: 3,
     angle: 75,
     tracks: ['frustrated!!'],
-    links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: BANDCAMP },
+    links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
     bonus: true,
   },
   {
@@ -285,6 +297,7 @@ const bc = (path: string) => `${BANDCAMP}${path}`;
 
 // Each item links straight to its Bandcamp page. Add new merch here as it goes up on Bandcamp.
 export const MERCH: MerchItem[] = [
+  { name: 'frustrated!!', kind: 'digital single', price: '$1.50+', color: '#F4A9A8', art: bcArt('a3187858009'), url: bc('track/frustrated') },
   { name: 'blue_screen.mp3', kind: 'digital single', price: '$1.50+', color: '#187489', art: bcArt('a4206067042'), url: bc('track/blue-screen') },
   { name: 'demons in me closet (eek)', kind: 'digital single', price: '$1.50+', color: '#C8332D', art: bcArt('a2720416291'), url: bc('track/demons-in-me-closet-eek') },
   { name: "A Mechanic's Guide to Throwing a Dance Party, Vol. 1", kind: 'digital EP', price: '$7+', color: '#F2B84B', art: bcArt('a0498343934'), url: bc('album/a-mechanics-guide-to-throwing-a-dance-party-vol-1') },
