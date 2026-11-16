@@ -8,9 +8,9 @@ import Socials from './components/Socials';
 
 // On desktop the whole room is drawn at a fixed width and scaled to fit the window,
 // like a game screen, so nothing ever scrolls. Phones keep the normal scrolling layout.
-// The brown desk starts halfway down the TV, so the TV looks like it's sitting on it.
+// The brown desk is the bottom ~30% of the room, so the TV looks like it's sitting on it.
 const DESIGN_W = 1440;
-const DESK_AT = 0.55; // how far down the TV the desk edge is
+const DESK_AT = 0.7; // desk edge, as a share of the room's height from the top
 const MAX_SCALE = 1.2;
 const desktopQuery = '(min-width: 961px)';
 
@@ -37,11 +37,7 @@ function FitRoom({ children }: { children: (ref: React.RefObject<HTMLDivElement>
       const h = el.offsetHeight;
       const s = Math.min(vw / DESIGN_W, vh / h, MAX_SCALE);
       const top = Math.max(0, vh - h * s);
-      // where the desk edge sits on screen: partway down the TV
-      const tv = el.querySelector<HTMLElement>('.tv');
-      let tvTop = 0;
-      for (let n: HTMLElement | null = tv; n && n !== el; n = n.offsetParent as HTMLElement | null) tvTop += n.offsetTop;
-      const deskPx = top + (tvTop + (tv?.offsetHeight ?? 0) * DESK_AT) * s;
+      const deskPx = top + h * s * DESK_AT;
       setFit({ s, left: (vw - DESIGN_W * s) / 2, top, deskPx });
     };
     const ro = new ResizeObserver(update);
@@ -90,7 +86,7 @@ export default function App() {
         <h1 className="logo">MADEBIT</h1>
       </header>
       <main className="layout">
-        {/* on desktop the socials stand on the desk, left of the TV */}
+        {/* on desktop the socials sit on the desk, to the right of the TV */}
         <Socials className="socials-side" />
         <section className="console-col" aria-label="The console">
           <Tv on={on} go={insert} />

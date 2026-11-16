@@ -34,7 +34,7 @@ export default function Deck({ cart, dragging, onDropCart, onEject }: Props) {
       <span className="led" style={{ background: cart ? cart.color : '#3a3a3a' }} />
       <button className="eject" onClick={onEject} disabled={!cart}>EJECT</button>
       <span className="deck-hint" aria-live="polite">
-        {dragging ? 'drop it in the slot!' : cart ? 'press EJECT to swap games' : ''}
+        {dragging ? 'drop it in the slot!' : ''}
       </span>
     </div>
   );
