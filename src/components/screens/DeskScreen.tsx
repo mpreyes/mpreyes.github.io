@@ -3,10 +3,13 @@ import { GALLERY, type CartId } from '../../data';
 import Lightbox from '../Lightbox';
 import { sfx } from '../../sound';
 import Sprite from '../Sprite';
-import Ragdoll from '../Ragdoll';
+import Ragdoll, { type RagdollHandle } from '../Ragdoll';
+import LetterWindow from '../LetterWindow';
 import Stage from '../Stage';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
+const TRACK_URL = 'speaker.mp3';
+const TRACK_TITLE = 'phoney phonky business';
 const LIGHTS = Array.from({ length: 14 }, (_, i) => ({
   x: 20 + i * 48,
   y: 20 + (i % 2) * 4,
@@ -48,9 +51,13 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [sips, setSips] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [photo, setPhoto] = useState<number | null>(null);
+  const [letter, setLetter] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const timers = useRef<number[]>([]);
+  const me = useRef<RagdollHandle>(null);
+  const track = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); track.current?.pause(); }, []);
   const later = (fn: () => void, ms: number) => { timers.current.push(window.setTimeout(fn, ms)); };
   const say = (t: string) => setToast(t);
 
@@ -89,7 +96,41 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
     }
     sfx.select();
     setHeld(i);
-    say('now drop it in the mug (or tap me again to eat)');
+    say('dunk it in the mug, or feed it to me!');
+  };
+
+  // feed the little me a cookie (dragged onto her, or picked up and then tap her)
+  const feed = (i?: number) => {
+    const n = i ?? held;
+    if (n === null || cookies[n] === 'eaten') return;
+    const soggy = cookies[n] === 'soggy';
+    sfx.munch();
+    setHeld(null);
+    setCookies((c) => c.map((st, k) => (k === n ? 'eaten' : st)));
+    me.current?.hop();
+    say(soggy ? 'nom nom. soggy is her favorite' : 'nom nom nom');
+  };
+
+  // dropped the little me: if she lands in the mug, she drinks the coffee and gets the zoomies
+  const dropped = (cx: number, cy: number) => {
+    const inMug = cx > 140 && cx < 236 && cy > 220 && cy < 340;
+    if (!inMug) return;
+    if (sips >= 3) { say("the cup's empty! sip it to refill"); return; }
+    sfx.slurp();
+    setSips((n) => n + 1);
+    me.current?.zoomies();
+    say('she drank the coffee. uh oh.');
+  };
+
+  // the speaker plays a song (once there's an MP3 in the repo), otherwise opens MUSIC
+  const speaker = () => {
+    if (!__HAS_TRACK__) { go('music'); return; }
+    if (!track.current) {
+      track.current = new Audio(TRACK_URL);
+      track.current.addEventListener('ended', () => setPlaying(false));
+    }
+    if (playing) { track.current.pause(); setPlaying(false); say('paused'); }
+    else { void track.current.play(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
   };
 
   const allGone = cookies.every((c) => c === 'eaten');
@@ -122,7 +163,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
             <span className="polaroid-pic"><Sprite size={28} /></span>
           </Obj>
           <Pinned i={1} className="p3" open={setPhoto} />
-          <Obj label="mailbox: pinned letter" className="pinned-letter" onClick={() => go('mailbox')} />
+          <Obj label="read me: pinned letter" className="pinned-letter" onClick={() => setLetter(true)} />
           <span className="note-card">tour dates: [TBD]</span>
           <span className="pin" style={{ left: 112, top: 2, background: '#C8332D' }} />
           <span className="pin" style={{ left: 30, top: 8, background: '#F2B84B' }} />
@@ -136,7 +177,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         <span className="desk-leg" style={{ left: 60 }} />
         <span className="desk-leg" style={{ right: 60 }} />
 
-        <Obj label="videos: speaker" className="speaker" onClick={() => go('videos')}>
+        <Obj label={__HAS_TRACK__ ? (playing ? 'pause: speaker' : 'play: speaker') : 'music: speaker'} className={`speaker ${playing ? 'playing' : ''}`} onClick={speaker}>
           <span className="cone small" /><span className="cone big" />
         </Obj>
 
@@ -154,12 +195,19 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           {dunking && <span className="dunking-cookie" />}
         </div>
 
-        <Obj label="music: laptop" className="laptop" onClick={() => go('music')}>
+        <Obj label="videos: laptop" className="laptop" onClick={() => go('videos')}>
           <span className="lid"><span className="bars"><i className="bob" /><i /><i className="bob" /><i /><i className="bob" /></span></span>
           <span className="base" />
         </Obj>
 
-        <Ragdoll onLand={(hard) => { if (hard) say('oof'); }} />
+        <Ragdoll
+          ref={me}
+          feedReady={held !== null}
+          onFeed={feed}
+          onRelease={dropped}
+          onLand={(hard) => { if (hard) say('oof'); }}
+          onCrash={() => say('...and the caffeine crash')}
+        />
 
         <Obj label="item shop: headphones" className="headphones" onClick={() => go('shop')}>
           <span className="band" /><span className="cup l" /><span className="cup r" />
@@ -191,6 +239,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         </Obj>
 
         {toast && <div className="toast" role="status">{toast}</div>}
+        {letter && <LetterWindow onClose={() => setLetter(false)} onSignUp={() => { setLetter(false); go('mailbox'); }} />}
       </div>
       {photo !== null && <Lightbox photos={GALLERY} index={photo} onIndex={setPhoto} onClose={() => setPhoto(null)} />}
     </Stage>
