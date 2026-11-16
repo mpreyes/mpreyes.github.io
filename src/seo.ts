@@ -29,7 +29,7 @@ export const KEYWORDS = [
   'singer-songwriter', 'self-produced', 'bedroom producer', 'new music', 'underground pop',
   // sounds like
   ...FANS_OF.map((a) => `for fans of ${a}`), 'artists like Flume', 'artists like Yaeji', 'artists like Magdalena Bay',
-  'experimental pop artists', 'experimental alt pop', 'alt pop artists',
+  'experimental pop artists', 'experimental alt pop', 'alt pop artists', 'K-pop influenced',
   // releases
   'An Alien Among Us', 'CMYK EP', "A Mechanic's Guide to Throwing a Dance Party", 'The Duality of Man',
   'blue_screen.mp3', 'demons in me closet', 'frustrated!!', 'Outdoor Meditations',
