@@ -26,8 +26,6 @@ export const STATEMENT = [
   'Much in the way that a captivating fiction writer can take you on a fantastic journey & transport you into other worlds, I want people ' +
     'to see this body of work as an exploration of new sounds, compelling stories, and sincere emotions that invite people to escape the ' +
     'mundane and immerse themselves in a world of sonic experimentation.',
-  'An Alien Among Us deals with this chief question: How do you take the feelings of being an outsider and turn them into ways you can ' +
-    'connect with other people?',
 ];
 // Press kit PDF. Lives at img/press/madebit-epk.pdf; the build copies it to the site root.
 export const EPK_URL = 'madebit-epk.pdf';
@@ -78,10 +76,24 @@ export interface Release {
   ring?: boolean;
   tracks: string[];
   links: StreamLinks;
-  /** offer instrumental + a cappella downloads for each track */
-  bonus?: boolean;
-  /** videos shown on the release's screen (e.g. teasers for a coming-soon release) */
-  videos?: { title: string; embed: string }[];
+  /** a line in my own words, shown as a pull quote on the release's page */
+  quote?: string;
+  /** 1-2 sentences about the release */
+  about?: string;
+  /** Spotify track ids, in tracklist order */
+  spotifyTracks?: string[];
+  /** a color per track (tracklist order), hidden until you press REVEAL */
+  trackColors?: string[];
+  /** credits, shown under the tracklist */
+  credits?: string;
+  /** tracks that only live on the album page on Bandcamp (no page of their own) */
+  albumOnlyTracks?: string[];
+  /** a work-in-progress song bank: [emoji, working title, status marks] */
+  songBank?: [string, string, string][];
+  /** a moodboard for the world of the release (e.g. a Pinterest board) */
+  moodboard?: string;
+  /** videos shown on the release's page; `vertical` for YouTube Shorts */
+  videos?: { title: string; embed: string; vertical?: boolean }[];
 }
 
 export const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/2gEqHMtzOfyjc8hZLsEVbF';
@@ -118,7 +130,11 @@ export const RELEASES: Release[] = [
       'Where The Sidewalk Never Ends',
     ],
     links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
-    bonus: true,
+    spotifyTracks: ['77Wr7WmavTIl9Uuf2dmG9z', '05Nwoyz47GcVphTfIkeTbu', '7xeFWp89dST5b2A4vRoVjP', '5w9xy0k8SPBngYrbWL6FPO', '4TZ5htwwwDwYsckZzHvJSj', '0dfy7w78BuTsZkjVZnC9K0',
+      '3PJj3cB8ARLEKbN0zNuaaU', '1lExcixYRMv6BrMY7P53aO', '6MQcYujKDnPLqtSFULdhzE', '6L1VipbVTCxuyXRWBbzTod', '3Ms22MsmqOYYB7vU34MwtD', '6jz84GysSFdcky5YFXrWKR'],
+    quote: 'How do you take the feelings of being an outsider and turn them into ways you can connect with other people?',
+    credits: 'My debut album, written and produced by me. Mixed by Graham Bechler, Rob Rox and Mark Yardley, and mastered by Stuart Hawkes at Metropolis Studios.',
+    videos: [{ title: 'A Sound is Born (Evolution of Self), official audio', embed: yt('AZYzyCN0Qxs') }],
   },
   {
     id: 'mechanics-guide-1',
@@ -133,7 +149,13 @@ export const RELEASES: Release[] = [
     angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
-    bonus: true,
+    spotifyTracks: ['09UDno3HC3yIfYchVoyiCx', '3D865L2fhGUS1tt1AulAyR', '1xtfUG12RkcN1J9cpqIlsI', '1mjEQ1cn4r3SiSmINGSw6V'],
+    about: 'My foray into dance music and a sincere attempt to convey what I think.',
+    albumOnlyTracks: ['Quest for Self', 'Be my only love'],
+    videos: [
+      { title: 'Deep Down, lyric video', embed: yt('kaOrPX5qenc') },
+      { title: 'Time Goes On (Silence is Golden), lyric video', embed: yt('LAgotYv-3wE') },
+    ],
   },
   {
     id: 'cmyk',
@@ -148,7 +170,11 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
-    bonus: true,
+    spotifyTracks: ['1HDXrAdUoY2FVbAlS1JZlY', '0RDmeaU0AZAi3WTKGUelwL', '7gGCdmj4OmzTqEUJKe7mk5', '50puonQ21y24vQwpKarvCd'],
+    about: 'Not quite synesthesia, but each song has its own color. Can you guess which is which?',
+    // Virtual Reality = K (black), The Mellow = cyan, Something = yellow, Island Vibes = magenta
+    trackColors: ['#111111', '#00AEEF', '#FFE600', '#EC008C'],
+    videos: [{ title: 'Something, a sneak peek', embed: yt('oXdbSLHQndw'), vertical: true }],
   },
   {
     id: 'outdoor-meditations',
@@ -163,7 +189,8 @@ export const RELEASES: Release[] = [
     angle: 200,
     tracks: ['Outdoor Meditations'],
     links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
-    bonus: true,
+    spotifyTracks: ['2rOCE7SdGMy69cy4tJkX0W'],
+    about: 'World bass!! My first real song :)',
   },
   {
     id: 'demons',
@@ -178,7 +205,8 @@ export const RELEASES: Release[] = [
     angle: 230,
     tracks: ['demons in me closet (eek)'],
     links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
-    bonus: true,
+    spotifyTracks: ['7EEcXDFcRvTf3RdaTT90Lz'],
+    about: "Unfortunately, I didn't have a better photo for the cover than a mirror selfie in front of my closet.",
   },
   {
     id: 'blue-screen',
@@ -193,7 +221,9 @@ export const RELEASES: Release[] = [
     angle: 345,
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
-    bonus: true,
+    spotifyTracks: ['4UbU7eYWOPv20E7Tb9FyL0'],
+    about: 'Sometimes there are so many miscommunications that you forget what the argument was even about. There is something almost beautiful in that.',
+    videos: [{ title: "it's a weary road", embed: yt('86G_2TdoWT4'), vertical: true }],
   },
   {
     id: 'frustrated',
@@ -208,7 +238,8 @@ export const RELEASES: Release[] = [
     angle: 75,
     tracks: ['frustrated!!'],
     links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
-    bonus: true,
+    spotifyTracks: ['23Lh9QyC67SA0s0UiPIUUF'],
+    about: 'A song about being stuck. I know you know about this.',
   },
   {
     id: 'mechanics-guide-2',
@@ -222,6 +253,7 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: [],
     links: {},
+    about: "I can't ride a skateboard, but this EP makes me want to learn.",
     videos: [
       { title: 'this song feels like watching your empire crumble in slow motion', embed: yt('X6Nzc_Phf-o') },
       { title: 'this song feels like dissolving into storm lightning at 3am', embed: yt('qs2VUvBR4Zk') },
@@ -240,8 +272,49 @@ export const RELEASES: Release[] = [
     ring: true,
     tracks: [],
     links: {},
+    about: "We're full of contradictions, and so wonderfully multi-faceted. We think one way and act another. We dream about doing things we may never get to.",
+    moodboard: 'https://www.pinterest.com/reyesmadelynmr/dualityofman/',
+    // straight from my Notion. ⭐ i like this song · 💙 making the album · 🟧 vocals recorded · 🟩 done
+    songBank: [
+      ['🎮', 'a time apart (a sticky situation)', '⭐'],
+      ['🪔', 'a cozy bar in mars', '⭐'],
+      ['🕐', 'a beate (FRUSTRATED!.mp3)', '🟩'],
+      ['💾', 'and the world turns another page (on fear)', '🟧'],
+      ['🌞', 'sun', '🟧'],
+      ['💄', "kiss me (i'll go down with you)", '🟧'],
+      ['📄', "i don't know people", '💙 (MUST FINISH)'],
+      ['🕯️', 'match girl', '💙'],
+      ['🪬', 'dont gotta be bad (no air)', '💙'],
+      ['🌘', '6 pain (let it all float away)', '💙'],
+      ['🛬', 'fools gold (eons together)', '🟧'],
+      ['🥉', 'talk about it', '💙'],
+      ['🌖', 'change for other people (HYPE HYPE HYPE)', '🟧'],
+      ['🗺️', 'dont say ur lonely - i know', '💙'],
+      ['🏃‍♀️', 'running', '💙'],
+      ['📄', 'raincoat', '⭐'],
+      ['📄', 'i always come back to', ''],
+      ['🫧', 'something new', ''],
+      ['📄', 'bleeds another one', ''],
+      ['📄', 'dry my tears', ''],
+      ['📄', 'bright lights', ''],
+      ['📄', 'derivative', ''],
+      ['📄', 'eeoeeeeoeoeeoeoee', ''],
+      ['📄', 'i love the sunshine and i love the rain', ''],
+      ['📄', 'girl takes her dog to the gym', ''],
+      ['📄', 'a new pancake', ''],
+    ],
   },
 ];
+
+// Hidden things on THE DESK. TODO: swap these placeholders for the real thing.
+export const DESK_SECRETS = {
+  /** the back of the "finish the album!!" sticky note */
+  stickyBack: ['finish the album!!', '(your to-do list or lyric scraps go here)'],
+  /** crumpled drafts in the trash can: one pops out per click */
+  trash: ['(a lyric that got cut)', '(another line that didn\'t make it)', '(a verse you rewrote 4 times)'],
+  /** voice memos and demos in the drawer. Put the audio in public/memos/ and list it here. */
+  drawer: [] as { title: string; src: string }[],
+};
 
 // Photos pinned on THE DESK. Click one to open the slideshow.
 // The first three show on the wall (two polaroids and the postcard). Captions are from the old site.
@@ -315,3 +388,17 @@ export const SOCIALS: Social[] = [
   { name: 'X', url: 'https://twitter.com/madebitmusic', icon: 'x' },
   { name: 'Email', url: `mailto:${EMAIL}`, icon: 'email' },
 ];
+
+// A track's own Spotify page, if we have it.
+export function spotifyTrackUrl(r: Release, i: number): string | undefined {
+  const id = r.spotifyTracks?.[i];
+  return id ? `https://open.spotify.com/track/${id}` : undefined;
+}
+
+// A track's own Bandcamp page (falls back to the release's page when it doesn't have one).
+export function trackUrl(r: Release, title: string): string | undefined {
+  if (!r.links.bandcamp) return undefined;
+  if (r.tracks.length === 1 || r.albumOnlyTracks?.includes(title)) return r.links.bandcamp;
+  const slug = title.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `${BANDCAMP}track/${slug}`;
+}

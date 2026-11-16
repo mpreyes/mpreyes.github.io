@@ -11,6 +11,36 @@ function audio(): AudioContext | null {
   return ctx;
 }
 
+// Phones (iPhones especially) keep Web Audio silent until the page "unlocks" it on a tap, and the
+// ringer switch mutes it entirely unless a real media element has played. So on the first tap we
+// resume the context, play a tiny silent clip, and ask for "playback" audio, then every bleep works.
+// Returns true once sound is on, so the caller can stop listening.
+let unlocked = false;
+export async function unlockAudio(): Promise<boolean> {
+  if (unlocked) return true;
+  const nav = navigator as Navigator & { audioSession?: { type: string } };
+  if (nav.audioSession) nav.audioSession.type = 'playback';
+  const a = audio();
+  try {
+    // 0.05s of silence as a WAV, built in code so there's no file to load
+    const n = 2205;
+    const buf = new ArrayBuffer(44 + n * 2);
+    const v = new DataView(buf);
+    const str = (o: number, t: string) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 44100, true); v.setUint32(28, 88200, true);
+    v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
+    const el = new Audio(URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })));
+    el.setAttribute('playsinline', '');
+    // start both right away, while the browser still counts this as a tap
+    const playing = el.play();
+    const resumed = a && a.state !== 'running' ? a.resume() : Promise.resolve();
+    await Promise.all([playing, resumed]);
+    unlocked = true;
+  } catch { /* not a tap the browser counts yet; try again on the next one */ }
+  return unlocked;
+}
+
 export function blip(freq = 440, dur = 0.12, type: OscillatorType = 'square', vol = 0.06, when = 0) {
   const a = audio();
   if (!a) return;
@@ -24,6 +54,31 @@ export function blip(freq = 440, dur = 0.12, type: OscillatorType = 'square', vo
   o.connect(g).connect(a.destination);
   o.start(t);
   o.stop(t + dur + 0.02);
+}
+
+// The desk keyboard is one voice: a new key cuts off the note before it, so notes never pile up.
+let keyVoice: { o: OscillatorNode; g: GainNode } | null = null;
+export function keyNote(freq: number, seconds: number) {
+  const a = audio();
+  if (!a) return;
+  const t = a.currentTime;
+  if (keyVoice) {
+    keyVoice.g.gain.cancelScheduledValues(t);
+    keyVoice.g.gain.setTargetAtTime(0.0001, t, 0.015);
+    keyVoice.o.stop(t + 0.08);
+  }
+  const dur = Math.min(1.4, Math.max(0.3, seconds));
+  const o = a.createOscillator();
+  const g = a.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.16, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination);
+  o.start(t);
+  o.stop(t + dur + 0.02);
+  keyVoice = { o, g };
 }
 
 // A short burst of filtered noise, for crunchy sounds.
@@ -104,4 +159,24 @@ export const sfx = {
   paper: () => { crunchBurst(0, 0.12, 4000, 0.06); crunchBurst(0.1, 0.1, 3000, 0.05); },
   dunk: () => { blip(600, 0.08, 'sine', 0.08); blip(300, 0.2, 'sine', 0.07, 0.08); },
   sip: () => blip(180, 0.15, 'sine', 0.06),
+  // the sun spinning
+  whoosh: () => { crunchBurst(0, 0.35, 700, 0.07); blip(300, 0.3, 'sine', 0.05); blip(600, 0.25, 'sine', 0.03, 0.08); },
+  // 5 taps on the sun: a rising rumble, then a bright burst
+  supernova: () => {
+    [0, 0.1, 0.2, 0.3, 0.4, 0.5].forEach((w, i) => blip(110 * 2 ** (i / 2), 0.14, 'square', 0.05, w));
+    crunchBurst(0.65, 0.9, 400, 0.22);
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => blip(f, 0.6, 'triangle', 0.08, 0.7 + i * 0.07));
+  },
+  // little twinkle for secrets found (a shooting star caught, the lights' tune played)
+  sparkle: () => { [1318.5, 1568, 2093, 2637].forEach((f, i) => blip(f, 0.18, 'triangle', 0.05, i * 0.06)); },
+  // crumpled paper
+  crumple: () => { [0, 0.05, 0.11, 0.18].forEach((w) => crunchBurst(w, 0.05, 2500 + Math.random() * 2000, 0.09)); },
+  // a drawer sliding
+  drawer: () => { crunchBurst(0, 0.25, 300, 0.12); blip(90, 0.12, 'triangle', 0.06, 0.2); },
+  // one note of a melody: a soft triangle with a quiet square an octave up (`beats` long, `when` seconds from now)
+  melody: (hz: number, seconds = 0.4, when = 0) => {
+    const dur = Math.min(1.6, Math.max(0.22, seconds));
+    blip(hz, dur, 'triangle', 0.14, when);
+    blip(hz * 2, dur * 0.5, 'square', 0.02, when);
+  },
 };
