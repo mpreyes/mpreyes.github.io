@@ -2,7 +2,7 @@
 // Output goes to public/ (git-ignored) so the originals stay the source of truth.
 // Also copies the favicon and CNAME (custom domain) into public/ so they ship with the build.
 import sharp from 'sharp';
-import { mkdir, access, copyFile, writeFile } from 'node:fs/promises';
+import { mkdir, access, copyFile, writeFile, readdir } from 'node:fs/promises';
 
 const SRC = 'img/music-artwork';
 const OUT = 'public/art';
@@ -24,8 +24,10 @@ for (const [file, name] of Object.entries(covers)) {
 
 await copyFile('img/favicon.svg', 'public/favicon.svg');
 await copyFile('CNAME', 'public/CNAME');
-// Press kit (EPK). Optional: only copied when madebit-epk.pdf is in the repo root.
-try { await copyFile('madebit-epk.pdf', 'public/madebit-epk.pdf'); } catch {}
+// Press kit (EPK). Any PDF in the repo root whose name starts with "madebit-epk" works
+// (GitHub's uploader names re-uploads "madebit-epk (1).pdf"). If there are several, the last by name wins.
+const epk = (await readdir('.')).filter((f) => /^madebit-epk.*\.pdf$/i.test(f)).sort().pop();
+if (epk) await copyFile(epk, 'public/madebit-epk.pdf');
 
 // Personal photos for THE DESK slideshow (same photos as the old site's desk)
 await mkdir('public/gallery', { recursive: true });
