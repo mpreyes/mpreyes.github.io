@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type ButtonHTMLAttributes } from 'react';
 import { DESK_SECRETS, GALLERY, type CartId } from '../../data';
 import Lightbox from '../Lightbox';
-import { sfx } from '../../sound';
+import { keyNote, sfx } from '../../sound';
 import Sprite from '../Sprite';
 import Ragdoll, { type RagdollHandle } from '../Ragdoll';
 import LetterWindow from '../LetterWindow';
@@ -164,7 +164,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const KEYS = 10;
   const playNote = () => {
     const [note, beats] = DESK_MELODY[step];
-    sfx.melody(noteHz(note), beats * BEAT);
+    keyNote(noteHz(note), beats * BEAT);
     const k = keyFor(DESK_MELODY, note, KEYS);
     setLit(k);
     later(() => setLit((cur) => (cur === k ? null : cur)), 220);

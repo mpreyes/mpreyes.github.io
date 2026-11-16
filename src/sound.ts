@@ -56,6 +56,31 @@ export function blip(freq = 440, dur = 0.12, type: OscillatorType = 'square', vo
   o.stop(t + dur + 0.02);
 }
 
+// The desk keyboard is one voice: a new key cuts off the note before it, so notes never pile up.
+let keyVoice: { o: OscillatorNode; g: GainNode } | null = null;
+export function keyNote(freq: number, seconds: number) {
+  const a = audio();
+  if (!a) return;
+  const t = a.currentTime;
+  if (keyVoice) {
+    keyVoice.g.gain.cancelScheduledValues(t);
+    keyVoice.g.gain.setTargetAtTime(0.0001, t, 0.015);
+    keyVoice.o.stop(t + 0.08);
+  }
+  const dur = Math.min(1.4, Math.max(0.3, seconds));
+  const o = a.createOscillator();
+  const g = a.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.16, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination);
+  o.start(t);
+  o.stop(t + dur + 0.02);
+  keyVoice = { o, g };
+}
+
 // A short burst of filtered noise, for crunchy sounds.
 function crunchBurst(when: number, dur = 0.07, freq = 1800, vol = 0.18) {
   const a = audio();
