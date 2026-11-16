@@ -139,3 +139,20 @@
 }
 .stage-box.panning { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
 .stage-box.panning::-webkit-scrollbar { display: none; }
+
+/* ---------- a release's page: liner notes ---------- */
+.liner-quote { margin: 0; padding: 4px 0 4px 14px; border-left: 4px solid var(--pink); font-size: 15px; line-height: 1.6; font-style: italic; color: #E4DED0; max-width: 620px; }
+.liner-about { color: #CFCFC4; font-size: 14px; max-width: 620px; }
+.liner-label { margin: 6px 0 8px; font-family: var(--pixel); font-size: 10px; font-weight: 400; color: var(--lime); }
+.release .track { color: var(--cream); text-decoration: none; flex-wrap: nowrap; }
+.release .track-title { min-width: 0; }
+.track-go { font-family: var(--pixel); font-size: 8px; color: var(--gold); opacity: .55; white-space: nowrap; transition: opacity .15s; }
+.release .track:hover .track-title, .release .track:focus-visible .track-title { color: var(--lime); }
+.release .track:hover .track-go, .release .track:focus-visible .track-go { opacity: 1; }
+@media (max-width: 960px) {
+  .release-head { align-items: flex-start; }
+  .release-art { width: 72px; height: 72px; }
+  .release-name { font-size: 13px; }
+  .liner-quote { font-size: 13px; }
+  .track-go { font-size: 7px; }
+}

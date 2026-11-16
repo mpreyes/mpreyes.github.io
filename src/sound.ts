@@ -11,6 +11,36 @@ function audio(): AudioContext | null {
   return ctx;
 }
 
+// Phones (iPhones especially) keep Web Audio silent until the page "unlocks" it on a tap, and the
+// ringer switch mutes it entirely unless a real media element has played. So on the first tap we
+// resume the context, play a tiny silent clip, and ask for "playback" audio, then every bleep works.
+// Returns true once sound is on, so the caller can stop listening.
+let unlocked = false;
+export async function unlockAudio(): Promise<boolean> {
+  if (unlocked) return true;
+  const nav = navigator as Navigator & { audioSession?: { type: string } };
+  if (nav.audioSession) nav.audioSession.type = 'playback';
+  const a = audio();
+  try {
+    // 0.05s of silence as a WAV, built in code so there's no file to load
+    const n = 2205;
+    const buf = new ArrayBuffer(44 + n * 2);
+    const v = new DataView(buf);
+    const str = (o: number, t: string) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 44100, true); v.setUint32(28, 88200, true);
+    v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
+    const el = new Audio(URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })));
+    el.setAttribute('playsinline', '');
+    // start both right away, while the browser still counts this as a tap
+    const playing = el.play();
+    const resumed = a && a.state !== 'running' ? a.resume() : Promise.resolve();
+    await Promise.all([playing, resumed]);
+    unlocked = true;
+  } catch { /* not a tap the browser counts yet; try again on the next one */ }
+  return unlocked;
+}
+
 export function blip(freq = 440, dur = 0.12, type: OscillatorType = 'square', vol = 0.06, when = 0) {
   const a = audio();
   if (!a) return;

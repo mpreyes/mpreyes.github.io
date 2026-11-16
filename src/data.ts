@@ -26,8 +26,6 @@ export const STATEMENT = [
   'Much in the way that a captivating fiction writer can take you on a fantastic journey & transport you into other worlds, I want people ' +
     'to see this body of work as an exploration of new sounds, compelling stories, and sincere emotions that invite people to escape the ' +
     'mundane and immerse themselves in a world of sonic experimentation.',
-  'An Alien Among Us deals with this chief question: How do you take the feelings of being an outsider and turn them into ways you can ' +
-    'connect with other people?',
 ];
 // Press kit PDF. Lives at img/press/madebit-epk.pdf; the build copies it to the site root.
 export const EPK_URL = 'madebit-epk.pdf';
@@ -78,8 +76,12 @@ export interface Release {
   ring?: boolean;
   tracks: string[];
   links: StreamLinks;
-  /** offer instrumental + a cappella downloads for each track */
-  bonus?: boolean;
+  /** a line in my own words, shown as a pull quote on the release's page */
+  quote?: string;
+  /** 1-2 sentences about the release */
+  about?: string;
+  /** tracks that only live on the album page on Bandcamp (no page of their own) */
+  albumOnlyTracks?: string[];
   /** videos shown on the release's screen (e.g. teasers for a coming-soon release) */
   videos?: { title: string; embed: string }[];
 }
@@ -91,6 +93,7 @@ const bcArt = (id: string) => `https://f4.bcbits.com/img/${id}_16.jpg`;
 
 // Singles already on an album or EP are listed under that release, not as their own planet.
 // Planets are chronological: inner rings are the oldest releases, outer rings the newest.
+// TODO: add an `about` (1-2 sentences) to the releases that don't have one yet.
 export const RELEASES: Release[] = [
   {
     id: 'alien',
@@ -118,7 +121,8 @@ export const RELEASES: Release[] = [
       'Where The Sidewalk Never Ends',
     ],
     links: { spotify: album('48VsV9PYq9b6APVSaEue4S'), bandcamp: `${BANDCAMP}album/an-alien-among-us` },
-    bonus: true,
+    quote: 'How do you take the feelings of being an outsider and turn them into ways you can connect with other people?',
+    about: 'My debut album, written and produced by me. Mixed by Graham Bechler, Rob Rox and Mark Yardley, and mastered by Stuart Hawkes at Metropolis Studios.',
   },
   {
     id: 'mechanics-guide-1',
@@ -133,7 +137,8 @@ export const RELEASES: Release[] = [
     angle: 140,
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
-    bonus: true,
+    about: 'My foray into dance music and a sincere attempt to convey what I think.',
+    albumOnlyTracks: ['Quest for Self', 'Be my only love'],
   },
   {
     id: 'cmyk',
@@ -148,7 +153,6 @@ export const RELEASES: Release[] = [
     angle: 20,
     tracks: ['Virtual Reality', 'The Mellow', 'Something', 'Island Vibes'],
     links: { spotify: album('2tgtUERWbhirxISb20Lk8Q'), bandcamp: `${BANDCAMP}album/cmyk` },
-    bonus: true,
   },
   {
     id: 'outdoor-meditations',
@@ -163,7 +167,6 @@ export const RELEASES: Release[] = [
     angle: 200,
     tracks: ['Outdoor Meditations'],
     links: { spotify: album('7cGrEtPfouq3ZOUdi6XOmu'), bandcamp: `${BANDCAMP}track/outdoor-meditations` },
-    bonus: true,
   },
   {
     id: 'demons',
@@ -178,7 +181,6 @@ export const RELEASES: Release[] = [
     angle: 230,
     tracks: ['demons in me closet (eek)'],
     links: { spotify: album('2wfK3YcXYsZ4YLchyaUT4I'), bandcamp: `${BANDCAMP}track/demons-in-me-closet-eek` },
-    bonus: true,
   },
   {
     id: 'blue-screen',
@@ -193,7 +195,6 @@ export const RELEASES: Release[] = [
     angle: 345,
     tracks: ['blue_screen.mp3'],
     links: { spotify: album('48KA494GY09hortwvIwciz'), bandcamp: `${BANDCAMP}track/blue-screen` },
-    bonus: true,
   },
   {
     id: 'frustrated',
@@ -208,7 +209,6 @@ export const RELEASES: Release[] = [
     angle: 75,
     tracks: ['frustrated!!'],
     links: { spotify: album('4SdXq0SMnBPL6XiuDNiKcV'), bandcamp: `${BANDCAMP}track/frustrated` },
-    bonus: true,
   },
   {
     id: 'mechanics-guide-2',
@@ -315,3 +315,11 @@ export const SOCIALS: Social[] = [
   { name: 'X', url: 'https://twitter.com/madebitmusic', icon: 'x' },
   { name: 'Email', url: `mailto:${EMAIL}`, icon: 'email' },
 ];
+
+// A track's own Bandcamp page (falls back to the release's page when it doesn't have one).
+export function trackUrl(r: Release, title: string): string | undefined {
+  if (!r.links.bandcamp) return undefined;
+  if (r.tracks.length === 1 || r.albumOnlyTracks?.includes(title)) return r.links.bandcamp;
+  const slug = title.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `${BANDCAMP}track/${slug}`;
+}

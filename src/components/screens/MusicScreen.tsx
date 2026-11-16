@@ -1,5 +1,5 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
-import { RELEASES, type Release } from '../../data';
+import { RELEASES, trackUrl, type Release } from '../../data';
 import { sfx } from '../../sound';
 import Stage from '../Stage';
 
@@ -18,6 +18,9 @@ const hideBroken = (e: SyntheticEvent<HTMLImageElement>) => { e.currentTarget.st
 const CENTER = { x: 350, y: 245 };
 // Ring radii (x, y), innermost first. Inner rings hold the oldest releases.
 const RINGS: [number, number][] = [[90, 90], [150, 120], [230, 165], [315, 205]];
+// On an upright phone the rings are a little wider than a straight swap, so the system fills the screen.
+const RINGS_TALL: [number, number][] = [[90, 96], [150, 140], [230, 180], [315, 212]];
+const ring = (i: number, tall: boolean) => (tall ? RINGS_TALL : RINGS)[i];
 
 // On a phone held upright the whole system is turned on its side (x and y swapped), so the orbits run tall.
 const PORTRAIT = '(max-width: 960px) and (orientation: portrait)';
@@ -37,7 +40,7 @@ const center = (tall: boolean) => (tall ? { x: CENTER.y - 10, y: 375 } : CENTER)
 const flip = (dx: number, dy: number, tall: boolean) => (tall ? [dy, dx] : [dx, dy]);
 
 function position(r: Release, tall: boolean) {
-  const [rx, ry] = RINGS[r.orbit - 1];
+  const [rx, ry] = ring(r.orbit - 1, tall);
   const a = (r.angle * Math.PI) / 180;
   const c = center(tall);
   const [dx, dy] = flip(rx * Math.cos(a), ry * Math.sin(a), tall);
@@ -73,7 +76,7 @@ function System({ pick }: { pick: (id: string) => void }) {
         {STARS.map(([x, y], i) => (
           <span key={i} className={`star ${i % 2 ? 'twinkle' : ''}`} style={tall ? { left: y, top: x } : { left: x, top: y }} />
         ))}
-        {RINGS.map(([rx, ry], i) => (
+        {RINGS.map((_, i) => ring(i, tall)).map(([rx, ry], i) => (
           <span
             key={i}
             className="orbit"
@@ -107,8 +110,11 @@ function ReleaseVideos({ videos }: { videos: NonNullable<Release['videos']> }) {
   );
 }
 
+// A release's page reads like liner notes: the cover and links, a line in my words, a little about it,
+// the tracklist (each song links to its Bandcamp page), then any videos.
 function ReleaseView({ r, back }: { r: Release; back: () => void }) {
   const links = LINK_LABELS.filter(([k]) => r.links[k]);
+  const single = r.tracks.length === 1;
   return (
     <div className="screen-pad release">
       <button className="btn-outline" onClick={back}>&lt; BACK TO SYSTEM</button>
@@ -117,7 +123,7 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
           {r.art ? <img src={r.art} alt={`${r.name} cover art`} onError={hideBroken} /> : <span className="mystery">?</span>}
         </div>
         <div className="release-meta">
-          <span className="eyebrow">{r.kind}</span>
+          <span className="eyebrow">{r.kind}{r.year !== 'soon' ? ` · ${r.year}` : ''}</span>
           <h2 className="release-name">{r.name}</h2>
           {links.length > 0 && (
             <div className="pills">
@@ -128,26 +134,34 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
           )}
         </div>
       </div>
-      {r.tracks.length > 0 ? (
-        <ol className="tracks">
-          {r.tracks.map((t, i) => (
-            <li key={i} className="track">
-              <span className="track-n">{String(i + 1).padStart(2, '0')}</span>
-              <span className="track-title">{t}</span>
-              {r.bonus && (
-                <span className="track-bonus">
-                  <a className="pill pill-ghost-gold" href={r.links.bandcamp} target="_blank" rel="noreferrer" title="Instrumental, name your price">INST $1+</a>
-                  <a className="pill pill-ghost-pink" href={r.links.bandcamp} target="_blank" rel="noreferrer" title="A cappella, name your price">ACAP $1+</a>
-                </span>
-              )}
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>
+      {r.quote && <blockquote className="liner-quote">{r.quote}</blockquote>}
+      {r.about && <p className="screen-copy liner-about">{r.about}</p>}
+      {r.tracks.length > 0 && !single && (
+        <section>
+          <h3 className="liner-label">TRACKLIST</h3>
+          <ol className="tracks">
+            {r.tracks.map((t, i) => {
+              const url = trackUrl(r, t);
+              return (
+                <li key={i}>
+                  <a className="track" href={url} target="_blank" rel="noreferrer" aria-label={`${t} on Bandcamp`}>
+                    <span className="track-n">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="track-title">{t}</span>
+                    <span className="track-go" aria-hidden="true">LISTEN &gt;</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
       )}
-      {r.videos && r.videos.length > 0 && <ReleaseVideos videos={r.videos} />}
-      {r.bonus && <p className="screen-note">instrumentals + a cappellas are name-your-price on bandcamp</p>}
+      {r.tracks.length === 0 && <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>}
+      {r.videos && r.videos.length > 0 && (
+        <section>
+          <h3 className="liner-label">VIDEOS</h3>
+          <ReleaseVideos videos={r.videos} />
+        </section>
+      )}
     </div>
   );
 }
