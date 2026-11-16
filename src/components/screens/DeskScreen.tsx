@@ -177,9 +177,12 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         <span className="desk-leg" style={{ left: 60 }} />
         <span className="desk-leg" style={{ right: 60 }} />
 
-        <Obj label={__HAS_TRACK__ ? (playing ? 'pause: speaker' : 'play: speaker') : 'music: speaker'} className={`speaker ${playing ? 'playing' : ''}`} onClick={speaker}>
-          <span className="cone small" /><span className="cone big" />
-        </Obj>
+        {/* a stereo pair: either one plays/pauses the song */}
+        {(['l', 'r'] as const).map((side) => (
+          <Obj key={side} label={__HAS_TRACK__ ? (playing ? 'pause: speaker' : 'play: speaker') : 'music: speaker'} className={`speaker ${side} ${playing ? 'playing' : ''}`} onClick={speaker}>
+            <span className="cone small" /><span className="cone big" />
+          </Obj>
+        ))}
 
         <div
           className="mug-zone"
@@ -209,7 +212,9 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           onCrash={() => say('...and the caffeine crash')}
         />
 
-        <Obj label="item shop: headphones" className="headphones" onClick={() => go('shop')}>
+        {/* headphones hang on a hook under the desk */}
+        <span className="desk-hook" aria-hidden="true" />
+        <Obj label="item shop: headphones" className="headphones hung" onClick={() => go('shop')}>
           <span className="band" /><span className="cup l" /><span className="cup r" />
         </Obj>
 
