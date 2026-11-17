@@ -308,6 +308,10 @@ export const RELEASES: Release[] = [
 
 // Hidden things on THE DESK.
 export const DESK_SECRETS = {
+  /** the back of the "finish the album!!" sticky note. TODO: decide what goes here */
+  stickyBack: ['finish the album!!', '(something goes here soon)'],
+  /** what pops out of the trash can, one per click. TODO: decide what goes here */
+  trash: ['(something goes here soon)'],
   /** voice memos and demos in the drawer. Put the audio in the memos/ folder (repo root) and list it here. */
   drawer: [
     { title: 'a beat (the demos, vol 2)', src: 'memos/a-beat-demo.mp3' },

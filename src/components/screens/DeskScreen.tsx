@@ -65,7 +65,9 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [rainbow, setRainbow] = useState(false); // played the whole melody
   const [day, setDay] = useState(false);
   const [star, setStar] = useState(0); // bumps to send a shooting star across the window
+  const [paper, setPaper] = useState<{ title: string; lines: string[] } | null>(null);
   const [drawer, setDrawer] = useState(false);
+  const trashIdx = useRef(0);
   const secret = useSecretSong();
   const memos = useExisting(DESK_SECRETS.drawer.map((m) => m.src));
   const timers = useRef<number[]>([]);
@@ -201,6 +203,13 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   }, [day]);
   const catchStar = () => { sfx.sparkle(); setStar(0); say('you caught a shooting star. make a wish!'); };
 
+  const openTrash = () => {
+    sfx.crumple();
+    const line = DESK_SECRETS.trash[trashIdx.current % DESK_SECRETS.trash.length];
+    trashIdx.current += 1;
+    setPaper({ title: 'crumpled_draft.txt', lines: [line] });
+  };
+
   const allGone = cookies.every((c) => c === 'eaten');
   const coffeeH = Math.max(6, 32 - Math.min(sips, 3) * 8);
 
@@ -250,7 +259,11 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           {!day && star > 0 && <button key={star} className="shooting-star" onClick={catchStar} aria-label="a shooting star" />}
           <span className="mullion" />
         </div>
-        <span className="sticky">finish the album!!</span>
+        <Obj
+          label="flip me: sticky note"
+          className="sticky"
+          onClick={() => { sfx.paper(); setPaper({ title: 'sticky_note_back.txt', lines: DESK_SECRETS.stickyBack }); }}
+        >finish the album!!</Obj>
 
         <span className="desktop-surface" />
         <span className="desk-leg" style={{ left: 60 }} />
@@ -307,6 +320,10 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           </div>
         )}
 
+        <Obj label="dig in: trash" className="trash" onClick={openTrash}>
+          <span className="trash-lid" /><span className="trash-can" /><span className="trash-paper" />
+        </Obj>
+
         {/* headphones hang on a hook under the desk */}
         <span className="desk-hook" aria-hidden="true" />
         <Obj label="item shop: headphones" className="headphones hung" onClick={() => go('shop')}>
@@ -339,6 +356,14 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         </Obj>
 
         {toast && <div className="toast" role="status">{toast}</div>}
+        {paper && (
+          <div className="letter-backdrop" onClick={() => setPaper(null)}>
+            <div className="letter-win paper-win" role="dialog" aria-label={paper.title} onClick={(e) => e.stopPropagation()}>
+              <div className="letter-bar"><span>{paper.title}</span><button onClick={() => setPaper(null)} aria-label="Close">X</button></div>
+              <div className="letter-body">{paper.lines.map((l, i) => <p key={i}>{l}</p>)}</div>
+            </div>
+          </div>
+        )}
         {letter && <LetterWindow onClose={() => setLetter(false)} onSignUp={() => { setLetter(false); go('mailbox'); }} />}
       </div>
       {photo !== null && <Lightbox photos={GALLERY} index={photo} onIndex={setPhoto} onClose={() => setPhoto(null)} />}
