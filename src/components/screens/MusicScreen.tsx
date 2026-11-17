@@ -177,7 +177,7 @@ function ReleaseVideos({ videos, teasers }: { videos: NonNullable<Release['video
       </div>
       <div className="video-controls">
         {videos.length > 1 && <button className="btn-solid" onClick={() => flip(-1)} aria-label="Previous video">&lt;</button>}
-        <span className="screen-copy" style={{ flex: 1, fontSize: 13, textAlign: videos.length > 1 ? undefined : 'center' }}>{v.title}</span>
+        <span className="screen-copy" style={{ flex: 1, maxWidth: 'none', fontSize: 13, textAlign: videos.length > 1 ? undefined : 'center' }}>{v.title}</span>
         {videos.length > 1 && <button className="btn-solid" onClick={() => flip(1)} aria-label="Next video">&gt;</button>}
       </div>
     </div>
