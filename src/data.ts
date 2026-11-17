@@ -334,9 +334,9 @@ export const DESK_SECRETS = {
     "my ambition (from Graph Paper, an album that was never 2 be ;_;)",
     "dnb (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
   ],
-  /** voice memos and demos in the drawer. Put the audio in the memos/ folder (repo root) and list it here. */
+  /** voice memos and demos in the drawer. Put the .mp3 in the repo root (or a memos/ folder) and list it here. */
   drawer: [
-    { title: 'a beat (the demos, vol 2)', src: 'memos/a-beat-demo.mp3' },
+    { title: 'a beat (the demos, vol 2)', src: 'a-beat-demo.mp3' },
   ] as { title: string; src: string }[],
 };
 
