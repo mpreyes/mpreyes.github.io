@@ -83,11 +83,21 @@ export function keyNote(freq: number, seconds: number): number {
 }
 
 // A whole phrase at once, in rhythm: [start tick, length in ticks, MIDI note], `tick` seconds per tick.
-// Notes hold at full volume for their length. Returns how long the phrase lasts, in seconds.
+// Notes hold at full volume for their length. Starting a phrase cuts off the one still playing.
+// Returns how long the phrase lasts, in seconds.
+let phraseNotes: { o: OscillatorNode; g: GainNode }[] = [];
 export function phrase(notes: [number, number, number][], tick: number): number {
   const a = audio();
   if (!a || notes.length === 0) return 0;
-  const t0 = a.currentTime + 0.05 - notes[0][0] * tick;
+  const now = a.currentTime;
+  for (const { o, g } of phraseNotes) {
+    g.gain.cancelScheduledValues(now);
+    g.gain.setValueAtTime(g.gain.value, now);
+    g.gain.linearRampToValueAtTime(0.0001, now + 0.03);
+    try { o.stop(now + 0.05); } catch { /* already stopped */ }
+  }
+  phraseNotes = [];
+  const t0 = now + 0.06 - notes[0][0] * tick;
   let end = 0;
   for (const [start, len, n] of notes) {
     const t = t0 + start * tick;
@@ -103,9 +113,10 @@ export function phrase(notes: [number, number, number][], tick: number): number 
     o.connect(g).connect(a.destination);
     o.start(t);
     o.stop(t + dur + 0.02);
+    phraseNotes.push({ o, g });
     end = Math.max(end, t + dur);
   }
-  return end - a.currentTime;
+  return end - now;
 }
 
 // A short burst of filtered noise, for crunchy sounds.

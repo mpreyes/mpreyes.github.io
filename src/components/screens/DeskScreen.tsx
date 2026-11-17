@@ -7,15 +7,14 @@ import Ragdoll, { type RagdollHandle } from '../Ragdoll';
 import LetterWindow from '../LetterWindow';
 import Stage from '../Stage';
 import { findBeats, followBeats, type BeatFollower } from '../../beat';
-import { BEAT, DESK_MELODY, keyFor, noteHz } from '../../melody';
+import { BEAT, DESK_MELODY, LIGHTS_MELODY, keyFor, noteHz } from '../../melody';
 import { useExisting, useSecretSong } from '../../secret';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
 const TRACK_URL = 'speaker.mp3';
 const TRACK_TITLE = 'phoney phonky business';
-// The keyboard and the string lights both only ever play my melody, one note per click, picking up
-// where the other left off. Play it all the way through and the lights go rainbow, and the hidden
-// song shows up in the drawer.
+// The keyboard plays my piano melody and the string lights play their own tune, one note per click.
+// Play either all the way through and the lights go rainbow, and the hidden song shows up in the drawer.
 const LIGHTS = Array.from({ length: 14 }, (_, i) => ({
   x: 20 + i * 48,
   y: 20 + (i % 2) * 4,
@@ -59,7 +58,8 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [photo, setPhoto] = useState<number | null>(null);
   const [letter, setLetter] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [step, setStep] = useState(0); // next note of the melody
+  const [step, setStep] = useState(0); // next note of the piano melody
+  const [lightStep, setLightStep] = useState(0); // next note of the lights' tune
   const [lit, setLit] = useState<number | null>(null); // keyboard key that's lit up
   const [glow, setGlow] = useState<number | null>(null); // string light that's glowing
   const [rainbow, setRainbow] = useState(false); // played the whole melody
@@ -159,29 +159,40 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
     else { void track.current.play(); beats.current?.start(); setPlaying(true); say(`now playing: ${TRACK_TITLE}`); }
   };
 
-  // each click on the keyboard (or a string light) plays the next note of my melody
+  const finished = () => {
+    if (!rainbow) {
+      setRainbow(true);
+      later(() => { sfx.sparkle(); say('you played the whole thing! check the drawer'); }, 400);
+    } else say('that\'s the whole thing. again!');
+  };
+
+  // each click on the keyboard plays the next note of my piano melody
   const KEYS = 10;
-  const playNote = (bulb?: number) => {
+  const playNote = () => {
     const [note, beats] = DESK_MELODY[step];
     // the note may wait for the one before it to finish holding; light up the key when it actually plays
     const wait = keyNote(noteHz(note), beats * BEAT) * 1000;
     const hold = Math.max(220, beats * BEAT * 1000);
     const k = keyFor(DESK_MELODY, note, KEYS);
-    later(() => {
-      setLit(k);
-      if (bulb !== undefined) setGlow(bulb);
-    }, wait);
-    later(() => {
-      setLit((cur) => (cur === k ? null : cur));
-      if (bulb !== undefined) setGlow((g) => (g === bulb ? null : g));
-    }, wait + hold);
+    later(() => setLit(k), wait);
+    later(() => setLit((cur) => (cur === k ? null : cur)), wait + hold);
     const next = (step + 1) % DESK_MELODY.length;
     setStep(next);
-    if (next === 0 && !rainbow) {
-      setRainbow(true);
-      later(() => { sfx.sparkle(); say('you played the whole thing! check the drawer'); }, 400);
-    } else if (step === 0) say('that\'s my melody! keep going');
-    else if (next === 0) say('that\'s the whole thing. again!');
+    if (next === 0) finished();
+    else if (step === 0) say('that\'s my melody! keep going');
+  };
+
+  // each tap on a string light plays the next note of the lights' own tune
+  const playLight = (bulb: number) => {
+    const [note, beats] = LIGHTS_MELODY[lightStep];
+    const wait = keyNote(noteHz(note), beats * BEAT) * 1000;
+    const hold = Math.max(180, beats * BEAT * 1000);
+    later(() => setGlow(bulb), wait);
+    later(() => setGlow((g) => (g === bulb ? null : g)), wait + hold);
+    const next = (lightStep + 1) % LIGHTS_MELODY.length;
+    setLightStep(next);
+    if (next === 0) finished();
+    else if (lightStep === 0) say('the lights have their own song. keep tapping');
   };
 
   // the moon: flip night and day. At night a shooting star goes by now and then.
@@ -211,7 +222,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
             key={i}
             className={`bulb ${l.twinkle ? 'twinkle' : ''} ${glow === i ? 'glow' : ''} ${rainbow ? 'rainbow' : ''}`}
             style={{ left: l.x, top: l.y, background: rainbow ? undefined : l.c, animationDelay: rainbow ? `${i * -0.12}s` : undefined }}
-            onClick={() => playNote(i)}
+            onClick={() => playLight(i)}
             aria-label={`string light ${i + 1}`}
           />
         ))}
