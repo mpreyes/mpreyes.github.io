@@ -56,29 +56,30 @@ export function blip(freq = 440, dur = 0.12, type: OscillatorType = 'square', vo
   o.stop(t + dur + 0.02);
 }
 
-// The desk keyboard is one voice: a new key cuts off the note before it, so notes never pile up.
-let keyVoice: { o: OscillatorNode; g: GainNode } | null = null;
-export function keyNote(freq: number, seconds: number) {
+// The desk keyboard: every note holds at full volume for exactly its length in the MIDI, like a held
+// key. A click while a note is still holding doesn't cut it off; the next note waits its turn, so even
+// fast clicking plays the melody in its real rhythm. Returns how many seconds until this note starts.
+let keyFreeAt = 0;
+export function keyNote(freq: number, seconds: number): number {
   const a = audio();
-  if (!a) return;
-  const t = a.currentTime;
-  if (keyVoice) {
-    keyVoice.g.gain.cancelScheduledValues(t);
-    keyVoice.g.gain.setTargetAtTime(0.0001, t, 0.015);
-    keyVoice.o.stop(t + 0.08);
-  }
-  const dur = Math.min(3, Math.max(0.3, seconds)); // rings its real length, until the next key cuts it
+  if (!a) return 0;
+  const now = a.currentTime;
+  const t = Math.max(now + 0.01, keyFreeAt);
+  const dur = Math.max(0.15, seconds);
+  const release = Math.min(0.08, dur / 4);
   const o = a.createOscillator();
   const g = a.createGain();
   o.type = 'triangle';
   o.frequency.setValueAtTime(freq, t);
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.linearRampToValueAtTime(0.16, t + 0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  g.gain.linearRampToValueAtTime(0.16, t + 0.012);
+  g.gain.setValueAtTime(0.16, t + dur - release);
+  g.gain.linearRampToValueAtTime(0.0001, t + dur);
   o.connect(g).connect(a.destination);
   o.start(t);
   o.stop(t + dur + 0.02);
-  keyVoice = { o, g };
+  keyFreeAt = t + dur;
+  return t - now;
 }
 
 // A short burst of filtered noise, for crunchy sounds.
