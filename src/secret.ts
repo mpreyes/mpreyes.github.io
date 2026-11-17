@@ -27,3 +27,25 @@ export function useSecretSong() {
   }, []);
   return url;
 }
+
+// Which of these files are actually on the site (so the drawer never shows a dead link).
+const checked = new Map<string, Promise<boolean>>();
+function exists(src: string) {
+  if (!checked.has(src)) {
+    checked.set(src, fetch(src, { method: 'HEAD' })
+      .then((r) => r.ok && !(r.headers.get('content-type') ?? '').includes('text/html'))
+      .catch(() => false));
+  }
+  return checked.get(src)!;
+}
+
+export function useExisting(srcs: string[]) {
+  const [ok, setOk] = useState<string[]>([]);
+  const key = srcs.join('|');
+  useEffect(() => {
+    let on = true;
+    void Promise.all(srcs.map(exists)).then((r) => { if (on) setOk(srcs.filter((_, i) => r[i])); });
+    return () => { on = false; };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return ok;
+}

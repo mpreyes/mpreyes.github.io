@@ -8,7 +8,7 @@ import LetterWindow from '../LetterWindow';
 import Stage from '../Stage';
 import { findBeats, followBeats, type BeatFollower } from '../../beat';
 import { BEAT, DESK_MELODY, keyFor, noteHz } from '../../melody';
-import { useSecretSong } from '../../secret';
+import { useExisting, useSecretSong } from '../../secret';
 
 type Cookie = 'fresh' | 'soggy' | 'eaten';
 const TRACK_URL = 'speaker.mp3';
@@ -69,6 +69,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [drawer, setDrawer] = useState(false);
   const trashIdx = useRef(0);
   const secret = useSecretSong();
+  const memos = useExisting(DESK_SECRETS.drawer.map((m) => m.src));
   const timers = useRef<number[]>([]);
   const me = useRef<RagdollHandle>(null);
   const track = useRef<HTMLAudioElement | null>(null);
@@ -298,13 +299,13 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
         </Obj>
         {drawer && (
           <div className="drawer-tray">
-            {DESK_SECRETS.drawer.map((m) => (
-              <a key={m.src} className="memo" href={m.src} target="_blank" rel="noreferrer">▶ {m.title}</a>
+            {DESK_SECRETS.drawer.filter((m) => memos.includes(m.src)).map((m) => (
+              <a key={m.src} className="memo" href={m.src} download>↓ {m.title}</a>
             ))}
             {rainbow && (secret
               ? <a className="memo secret" href={secret} download>★ secret song (yours to keep)</a>
               : <span className="memo secret">★ a secret song goes here soon</span>)}
-            {DESK_SECRETS.drawer.length === 0 && !rainbow && <span className="memo empty">nothing in here yet... (some old voice memos soon)</span>}
+            {memos.length === 0 && !rainbow && <span className="memo empty">nothing in here yet... (some old voice memos soon)</span>}
           </div>
         )}
 
