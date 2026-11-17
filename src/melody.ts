@@ -17,18 +17,17 @@ export const DESK_MELODY: [number, number][] = DESK_TICKS.map(([n, t]) => [n, ((
 const LIGHTS_TICKS: [number, number][] = [[62, 48], [65, 48], [62, 47], [60, 49], [62, 47], [57, 47], [60, 50], [62, 47], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [69, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 148], [72, 389], [74, 378]];
 export const LIGHTS_MELODY: [number, number][] = LIGHTS_TICKS.map(([n, t]) => [n, t / TPB]);
 
-// The TV knobs: a call (higher.mid) and its response (higher_2.mid), played in rhythm at 130 bpm.
+// The TV knobs: higher.mid is two sections, so the top knob plays the first half (the call)
+// and the bottom knob plays the second half (the response), in rhythm at 130 bpm.
 // Each note is [start tick, length in ticks, MIDI note].
 export type Phrase = [number, number, number][];
 export const CALL: Phrase = [
   [192, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64],
-  [913, 105, 59], [1726, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 61, 62], [2203, 98, 66], [2295, 60, 64], [2375, 106, 62],
-  [2496, 69, 59],
+  [913, 105, 59],
 ];
 export const RESPONSE: Phrase = [
-  [200, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64],
-  [913, 105, 59], [1728, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 85, 64], [2104, 98, 62], [2196, 98, 64], [2295, 60, 66],
-  [2350, 107, 64], [2448, 141, 59],
+  [1726, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 61, 62], [2203, 98, 66], [2295, 60, 64], [2375, 106, 62],
+  [2496, 69, 59],
 ];
 /** seconds per MIDI tick at the songs' 130 bpm */
 export const TICK = 60 / DESK_BPM / TPB;
