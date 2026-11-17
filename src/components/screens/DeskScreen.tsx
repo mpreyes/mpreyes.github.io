@@ -162,14 +162,18 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const KEYS = 10;
   const playNote = (bulb?: number) => {
     const [note, beats] = DESK_MELODY[step];
-    keyNote(noteHz(note), beats * BEAT);
+    // the note may wait for the one before it to finish holding; light up the key when it actually plays
+    const wait = keyNote(noteHz(note), beats * BEAT) * 1000;
+    const hold = Math.max(220, beats * BEAT * 1000);
     const k = keyFor(DESK_MELODY, note, KEYS);
-    setLit(k);
-    later(() => setLit((cur) => (cur === k ? null : cur)), 220);
-    if (bulb !== undefined) {
-      setGlow(bulb);
-      later(() => setGlow((g) => (g === bulb ? null : g)), 250);
-    }
+    later(() => {
+      setLit(k);
+      if (bulb !== undefined) setGlow(bulb);
+    }, wait);
+    later(() => {
+      setLit((cur) => (cur === k ? null : cur));
+      if (bulb !== undefined) setGlow((g) => (g === bulb ? null : g));
+    }, wait + hold);
     const next = (step + 1) % DESK_MELODY.length;
     setStep(next);
     if (next === 0 && !rainbow) {
