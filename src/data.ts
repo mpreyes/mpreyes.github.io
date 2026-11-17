@@ -345,7 +345,7 @@ export const DESK_SECRETS = {
     "✗ frenzy",
     "✗ partay",
     "✗ contender",
-    "GRAPH PAPER (an album that was never 2 be ;_;):",
+    "GRAPH PAPER (an EP that was never 2 be ;_;):",
     "✗ graph paper, 92 bpm",
     "✗ sweet music, 87 bpm",
     "✗ say you wanted to dance, 130 bpm",
