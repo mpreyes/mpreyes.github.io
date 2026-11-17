@@ -33,6 +33,12 @@ const song = (await readdir('.')).filter((f) => /\.mp3$/i.test(f)).sort()[0];
 if (song) await copyFile(song, 'public/speaker.mp3');
 // ...and it's also the hidden song people can download (supernova on the sun, or the desk drawer).
 if (song) await copyFile(song, 'public/secret-song.mp3');
+// Voice memos and demos for the desk drawer: anything in memos/ ships as-is (listed in DESK_SECRETS.drawer).
+try {
+  const memos = await readdir('memos');
+  await mkdir('public/memos', { recursive: true });
+  for (const f of memos) await copyFile(`memos/${f}`, `public/memos/${f}`);
+} catch { /* no memos yet */ }
 
 // Personal photos for THE DESK slideshow (same photos as the old site's desk)
 await mkdir('public/gallery', { recursive: true });
