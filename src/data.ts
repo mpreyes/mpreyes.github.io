@@ -150,6 +150,7 @@ export const RELEASES: Release[] = [
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     spotifyTracks: ['09UDno3HC3yIfYchVoyiCx', '3D865L2fhGUS1tt1AulAyR', '1xtfUG12RkcN1J9cpqIlsI', '1mjEQ1cn4r3SiSmINGSw6V'],
+    quote: 'An alien mechanic gets handed a fake manual on how to throw a party. She aces every ridiculous step anyway.',
     about: 'My foray into dance music and a sincere attempt to convey what I think.',
     albumOnlyTracks: ['Quest for Self', 'Be my only love'],
     videos: [
@@ -308,10 +309,31 @@ export const RELEASES: Release[] = [
 
 // Hidden things on THE DESK.
 export const DESK_SECRETS = {
-  /** the back of the "finish the album!!" sticky note. TODO: decide what goes here */
-  stickyBack: ['finish the album!!', '(something goes here soon)'],
-  /** what pops out of the trash can, one per click. TODO: decide what goes here */
-  trash: ['(something goes here soon)'],
+  /** the back of the "finish the album!!" sticky note: my goals for The Duality of Man (from my Notion) */
+  stickyBack: [
+    'finish the album!!',
+    '☐ better sound selections',
+    '☐ a new signature sound',
+    '☐ make the 2nd verse go somewhere completely different (like kpop)',
+    '☐ create MOMENTS that feel unexpected',
+    '☐ look into jersey club muuusic',
+    '☐ write a storyteller song (like hotel california)',
+  ],
+  /** the trash can: songs that got cut, one crumpled page per click */
+  trash: [
+    "dido dodo (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "sweet music, 87 bpm (from Graph Paper, an album that was never 2 be ;_;)",
+    "DISCO LOVE (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "frenzy (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "say you wanted to dance, 130 bpm (from Graph Paper, an album that was never 2 be ;_;)",
+    "funky (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "partay (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "i've got a mess under my bed (from Graph Paper, an album that was never 2 be ;_;)",
+    "contender (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "dance me (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "my ambition (from Graph Paper, an album that was never 2 be ;_;)",
+    "dnb (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+  ],
   /** voice memos and demos in the drawer. Put the audio in the memos/ folder (repo root) and list it here. */
   drawer: [
     { title: 'a beat (the demos, vol 2)', src: 'memos/a-beat-demo.mp3' },
