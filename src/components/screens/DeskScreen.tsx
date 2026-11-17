@@ -67,7 +67,6 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [star, setStar] = useState(0); // bumps to send a shooting star across the window
   const [paper, setPaper] = useState<{ title: string; lines: string[] } | null>(null);
   const [drawer, setDrawer] = useState(false);
-  const trashIdx = useRef(0);
   const secret = useSecretSong();
   const memos = useExisting(DESK_SECRETS.drawer.map((m) => m.src));
   const timers = useRef<number[]>([]);
@@ -205,9 +204,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
 
   const openTrash = () => {
     sfx.crumple();
-    const line = DESK_SECRETS.trash[trashIdx.current % DESK_SECRETS.trash.length];
-    trashIdx.current += 1;
-    setPaper({ title: 'crumpled_draft.txt', lines: [line] });
+    setPaper({ title: 'songs_that_didnt_make_it.txt', lines: DESK_SECRETS.trash });
   };
 
   const allGone = cookies.every((c) => c === 'eaten');

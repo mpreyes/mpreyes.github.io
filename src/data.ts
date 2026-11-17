@@ -150,7 +150,8 @@ export const RELEASES: Release[] = [
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     spotifyTracks: ['09UDno3HC3yIfYchVoyiCx', '3D865L2fhGUS1tt1AulAyR', '1xtfUG12RkcN1J9cpqIlsI', '1mjEQ1cn4r3SiSmINGSw6V'],
-    quote: 'An alien mechanic gets handed a fake manual on how to throw a party. She aces every ridiculous step anyway.',
+    // straight from my story notes for the EP
+    quote: 'our little alien protagonist lands on earth and knows nothing about it. she eventually finds a job as a mechanic at a race track',
     about: 'My foray into dance music and a sincere attempt to convey what I think.',
     albumOnlyTracks: ['Quest for Self', 'Be my only love'],
     videos: [
@@ -319,20 +320,23 @@ export const DESK_SECRETS = {
     '☐ look into jersey club muuusic',
     '☐ write a storyteller song (like hotel california)',
   ],
-  /** the trash can: songs that got cut, one crumpled page per click */
+  /** the trash can: every song that didn't make it, all on one crumpled page */
   trash: [
-    "dido dodo (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "sweet music, 87 bpm (from Graph Paper, an album that was never 2 be ;_;)",
-    "DISCO LOVE (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "frenzy (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "say you wanted to dance, 130 bpm (from Graph Paper, an album that was never 2 be ;_;)",
-    "funky (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "partay (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "i've got a mess under my bed (from Graph Paper, an album that was never 2 be ;_;)",
-    "contender (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "dance me (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
-    "my ambition (from Graph Paper, an album that was never 2 be ;_;)",
-    "dnb (cut from A Mechanic's Guide. NOT GONNA MAKE IT)",
+    "NOT GONNA MAKE IT (cut from A Mechanic's Guide):",
+    "✗ dido dodo",
+    "✗ DISCO LOVE",
+    "✗ dance me",
+    "✗ funky",
+    "✗ dnb",
+    "✗ frenzy",
+    "✗ partay",
+    "✗ contender",
+    "GRAPH PAPER (an album that was never 2 be ;_;):",
+    "✗ graph paper, 92 bpm",
+    "✗ sweet music, 87 bpm",
+    "✗ say you wanted to dance, 130 bpm",
+    "✗ my ambition",
+    "✗ i've got a mess under my bed",
   ],
   /** voice memos and demos in the drawer. Put the .mp3 in the repo root (or a memos/ folder) and list it here. */
   drawer: [
