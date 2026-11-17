@@ -245,3 +245,6 @@ a.memo:hover { color: var(--teal); }
 .sb-marks { font-size: 12px; white-space: nowrap; }
 .pin-board { margin-top: 10px; background: #F8F6EF; border-radius: 6px; padding: 10px; overflow: hidden; }
 .pin-board > a { font-family: var(--mono); color: var(--ink); }
+/* the secret screen's buttons: same size, text centered */
+.secret-box .btn-solid, .secret-box .btn-outline { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 220px; padding: 0 22px; box-sizing: border-box; }
+.secret-box .btn-solid { color: var(--ink); }
