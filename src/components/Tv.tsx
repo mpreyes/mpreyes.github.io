@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { CartId } from '../data';
 import { CALL, RESPONSE, TICK } from '../melody';
 import { phrase } from '../sound';
@@ -19,12 +19,14 @@ const KNOBS = [
 export default function Tv({ on, go }: { on: CartId | null; go: (id: CartId) => void }) {
   const [turning, setTurning] = useState<number | null>(null);
   const [turns, setTurns] = useState([0, 0]);
+  const timer = useRef(0);
+  // either knob turns any time; turning one cuts off whatever phrase was still playing
   const turn = (i: number) => {
-    if (turning !== null) return;
     const secs = phrase(KNOBS[i].notes, TICK);
     setTurning(i);
     setTurns((t) => t.map((n, k) => (k === i ? n + 1 : n)));
-    window.setTimeout(() => setTurning(null), Math.max(300, secs * 1000));
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setTurning(null), Math.max(300, secs * 1000));
   };
   return (
     <div className="tv">
