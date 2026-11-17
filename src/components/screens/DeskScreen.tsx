@@ -67,7 +67,6 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
   const [star, setStar] = useState(0); // bumps to send a shooting star across the window
   const [paper, setPaper] = useState<{ title: string; lines: string[] } | null>(null);
   const [drawer, setDrawer] = useState(false);
-  const trashIdx = useRef(0);
   const secret = useSecretSong();
   const memos = useExisting(DESK_SECRETS.drawer.map((m) => m.src));
   const timers = useRef<number[]>([]);
@@ -205,9 +204,7 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
 
   const openTrash = () => {
     sfx.crumple();
-    const line = DESK_SECRETS.trash[trashIdx.current % DESK_SECRETS.trash.length];
-    trashIdx.current += 1;
-    setPaper({ title: 'crumpled_draft.txt', lines: [line] });
+    setPaper({ title: 'songs_that_didnt_make_it.txt', lines: DESK_SECRETS.trash });
   };
 
   const allGone = cookies.every((c) => c === 'eaten');
@@ -247,7 +244,10 @@ export default function DeskScreen({ go }: { go: (id: CartId) => void }) {
           </Obj>
           <Pinned i={1} className="p3" open={setPhoto} />
           <Obj label="read me: pinned letter" className="pinned-letter" onClick={() => setLetter(true)} />
-          <span className="note-card">tour dates: [TBD]</span>
+          {/* no tour yet: a call to action instead */}
+          <a className="note-card desk-obj" style={{ height: 'auto', width: 104, top: 86, left: 130, fontSize: 9, lineHeight: 1.25, textDecoration: 'none', fontFamily: 'var(--mono)' }} href="https://www.instagram.com/madebit/" target="_blank" rel="noreferrer" aria-label="want me at your show? DM me on Instagram">
+            want me at your show? DM me ↗
+          </a>
           <span className="pin" style={{ left: 112, top: 2, background: '#C8332D' }} />
           <span className="pin" style={{ left: 30, top: 8, background: '#F2B84B' }} />
           <span className="pin" style={{ left: 190, top: 10, background: '#187489' }} />
