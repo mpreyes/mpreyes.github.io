@@ -80,6 +80,8 @@ export interface Release {
   quote?: string;
   /** 1-2 sentences about the release */
   about?: string;
+  /** the story behind the release, one paragraph per line (lines starting with "• " are list items) */
+  story?: string[];
   /** Spotify track ids, in tracklist order */
   spotifyTracks?: string[];
   /** a color per track (tracklist order), hidden until you press REVEAL */
@@ -150,9 +152,21 @@ export const RELEASES: Release[] = [
     tracks: ['Deep Down', 'Time Goes On (Silence is Golden)', 'Quest for Self', 'Be my only love'],
     links: { spotify: album('194XpkdJMTSBHrodsNGWtg'), bandcamp: `${BANDCAMP}album/a-mechanics-guide-to-throwing-a-dance-party-vol-1` },
     spotifyTracks: ['09UDno3HC3yIfYchVoyiCx', '3D865L2fhGUS1tt1AulAyR', '1xtfUG12RkcN1J9cpqIlsI', '1mjEQ1cn4r3SiSmINGSw6V'],
-    // straight from my story notes for the EP
-    quote: 'our little alien protagonist lands on earth and knows nothing about it. she eventually finds a job as a mechanic at a race track',
     about: 'My foray into dance music and a sincere attempt to convey what I think.',
+    // straight from my story notes for the EP (a few side comments taken out)
+    story: [
+      "protagonist: alienígena (or ali for short)",
+      "our little alien protagonist lands on earth and knows nothing about it. she eventually finds a job as a mechanic at a race track (since she built her own ship, she knows a lot about mechanical stuff and such, so she is easily hired)",
+      "one day a new guy gets so fed up with her being so kind to everyone that he decides to tell her that in order to make friends on earth, she has to throw a party",
+      "since she doesn't know how to throw a party (what is that), he gives her a very thick manual on how to throw a party that includes a lot of nonsensical trials, such as:",
+      "• learn a choreographed dance cause your party goers expect it",
+      "• learn to DJ but only oldies disco songs",
+      "• learn to juggle but only bananas",
+      "funnily enough, our protagonist is actually quite good at all these things and nails them, much to the fury of the antagonist",
+      "the day of the party arrives and she performs all of her weird little rituals",
+      "eventually the antagonist says he was just testing her, and that you didn't have to do all those things to throw a party. he was quite tired of seeing her be kind at every turn and also acing all the challenges he set",
+      "but the alien gworl knew those were not the steps to throw a party (google, duh). she just went along with it cause she wanted the antagonist to be her friend. right after he gave her the manual, she was watching a youtube video that said \"all you need to throw a good party is good vibes and good music. besides that, you don't need anything else...\"",
+    ],
     albumOnlyTracks: ['Quest for Self', 'Be my only love'],
     videos: [
       { title: 'Deep Down, lyric video', embed: yt('kaOrPX5qenc') },

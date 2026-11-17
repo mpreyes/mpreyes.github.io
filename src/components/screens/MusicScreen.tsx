@@ -274,6 +274,14 @@ function ReleaseView({ r, back }: { r: Release; back: () => void }) {
           {r.credits && <p className="screen-note liner-credits">{r.credits}</p>}
         </section>
       )}
+      {r.story && (
+        <section>
+          <h3 className="liner-label">THE STORY</h3>
+          {r.story.map((line, i) => (
+            <p key={i} className="screen-copy liner-about" style={line.startsWith('• ') ? { margin: '0 0 4px', paddingLeft: 16 } : { margin: '0 0 10px' }}>{line}</p>
+          ))}
+        </section>
+      )}
       {r.tracks.length === 0 && <p className="screen-copy">Still being made. Check the MAILBOX cartridge to hear it first.</p>}
       {r.songBank && (
         <section>
