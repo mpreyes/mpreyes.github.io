@@ -31,6 +31,8 @@ if (epk) await copyFile(epk, 'public/madebit-epk.pdf');
 // Song for the desk speaker: the first .mp3 in the repo root, served as speaker.mp3.
 const song = (await readdir('.')).filter((f) => /\.mp3$/i.test(f)).sort()[0];
 if (song) await copyFile(song, 'public/speaker.mp3');
+// ...and it's also the hidden song people can download (supernova on the sun, or the desk drawer).
+if (song) await copyFile(song, 'public/secret-song.mp3');
 
 // Personal photos for THE DESK slideshow (same photos as the old site's desk)
 await mkdir('public/gallery', { recursive: true });

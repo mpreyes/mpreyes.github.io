@@ -67,7 +67,7 @@ export function keyNote(freq: number, seconds: number) {
     keyVoice.g.gain.setTargetAtTime(0.0001, t, 0.015);
     keyVoice.o.stop(t + 0.08);
   }
-  const dur = Math.min(1.4, Math.max(0.3, seconds));
+  const dur = Math.min(3, Math.max(0.3, seconds)); // rings its real length, until the next key cuts it
   const o = a.createOscillator();
   const g = a.createGain();
   o.type = 'triangle';
