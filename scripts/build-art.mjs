@@ -28,11 +28,17 @@ await copyFile('CNAME', 'public/CNAME');
 // (GitHub's uploader names re-uploads "madebit-epk (1).pdf"). If there are several, the last by name wins.
 const epk = (await readdir('.')).filter((f) => /^madebit-epk.*\.pdf$/i.test(f)).sort().pop();
 if (epk) await copyFile(epk, 'public/madebit-epk.pdf');
-// Song for the desk speaker: the first .mp3 in the repo root, served as speaker.mp3.
-const song = (await readdir('.')).filter((f) => /\.mp3$/i.test(f)).sort()[0];
-if (song) await copyFile(song, 'public/speaker.mp3');
-// ...and it's also the hidden song people can download (supernova on the sun, or the desk drawer).
-if (song) await copyFile(song, 'public/secret-song.mp3');
+// Song for the desk speaker, served as speaker.mp3. It's also the hidden song people can download
+// (supernova on the sun, or the desk drawer). Any other .mp3 in the repo root (demos for the drawer)
+// ships as-is under its own name.
+const SPEAKER_SONG = 'phoney phonky business.mp3';
+const mp3s = (await readdir('.')).filter((f) => /\.mp3$/i.test(f)).sort();
+const song = mp3s.includes(SPEAKER_SONG) ? SPEAKER_SONG : mp3s[0];
+if (song) {
+  await copyFile(song, 'public/speaker.mp3');
+  await copyFile(song, 'public/secret-song.mp3');
+}
+for (const f of mp3s) if (f !== song) await copyFile(f, `public/${f}`);
 // Voice memos and demos for the desk drawer: anything in memos/ ships as-is (listed in DESK_SECRETS.drawer).
 try {
   const memos = await readdir('memos');
