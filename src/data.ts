@@ -306,12 +306,8 @@ export const RELEASES: Release[] = [
   },
 ];
 
-// Hidden things on THE DESK. TODO: swap these placeholders for the real thing.
+// Hidden things on THE DESK.
 export const DESK_SECRETS = {
-  /** the back of the "finish the album!!" sticky note */
-  stickyBack: ['finish the album!!', '(your to-do list or lyric scraps go here)'],
-  /** crumpled drafts in the trash can: one pops out per click */
-  trash: ['(a lyric that got cut)', '(another line that didn\'t make it)', '(a verse you rewrote 4 times)'],
   /** voice memos and demos in the drawer. Put the audio in the memos/ folder (repo root) and list it here. */
   drawer: [
     { title: 'a beat (the demos, vol 2)', src: 'memos/a-beat-demo.mp3' },
@@ -384,7 +380,7 @@ export const SOCIALS: Social[] = [
   { name: 'TikTok', url: 'https://www.tiktok.com/@madebitmusic', icon: 'tiktok' },
   { name: 'YouTube', url: 'https://www.youtube.com/channel/UCIvz8TjpKD7LWEfOBxW4vFw', icon: 'youtube' },
   { name: 'Spotify', url: SPOTIFY_ARTIST, icon: 'spotify' },
-  // TODO: { name: 'Apple Music', url: '', icon: 'applemusic' },
+  { name: 'Apple Music', url: 'https://music.apple.com/us/artist/madebit/1604028728', icon: 'applemusic' },
   { name: 'Bandcamp', url: BANDCAMP, icon: 'bandcamp' },
   { name: 'SoundCloud', url: 'https://soundcloud.com/madebitmusic', icon: 'soundcloud' },
   { name: 'X', url: 'https://twitter.com/madebitmusic', icon: 'x' },
