@@ -2,14 +2,31 @@
 export const BEAT = 0.5;
 
 // The desk keyboard: each click plays the next note, then it loops. (CF_Tones_Ah_A4_Falsetto_5.mid)
-// Original octave, at the song's 130 bpm. The two quick grace notes before the 3-beat D are folded in.
+// Every note, original octave, held exactly as long as in the MIDI (until the next note starts), at 130 bpm.
 const DESK_BPM = 130;
-const DESK_RAW: [number, number][] = [
-  [43, 4], [45, 4], [48, 3], [50, 0.5], [48, 1], [43, 1.5], [55, 0.5], [53, 0.5],
-  [57, 2], [50, 3], [48, 4], [50, 3], [53, 1], [55, 5],
+const TPB = 96; // MIDI ticks per beat
+const DESK_TICKS: [number, number][] = [
+  [43, 386], [45, 378], [48, 292], [50, 49], [48, 94], [43, 141], [55, 52], [53, 47],
+  [57, 145], [55, 24], [53, 24], [50, 288], [48, 384], [50, 288], [53, 97], [55, 480],
 ];
 // stored in this file's BEAT units (120 bpm), so every melody shares one clock
-export const DESK_MELODY: [number, number][] = DESK_RAW.map(([n, b]) => [n, (b * 120) / DESK_BPM]);
+export const DESK_MELODY: [number, number][] = DESK_TICKS.map(([n, t]) => [n, ((t / TPB) * 120) / DESK_BPM]);
+
+// The TV knobs: a call (higher.mid) and its response (higher_2.mid), played in rhythm at 130 bpm.
+// Each note is [start tick, length in ticks, MIDI note].
+export type Phrase = [number, number, number][];
+export const CALL: Phrase = [
+  [192, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64],
+  [913, 105, 59], [1726, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 61, 62], [2203, 98, 66], [2295, 60, 64], [2375, 106, 62],
+  [2496, 69, 59],
+];
+export const RESPONSE: Phrase = [
+  [200, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64],
+  [913, 105, 59], [1728, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 85, 64], [2104, 98, 62], [2196, 98, 64], [2295, 60, 66],
+  [2350, 107, 64], [2448, 141, 59],
+];
+/** seconds per MIDI tick at the songs' 130 bpm */
+export const TICK = 60 / DESK_BPM / TPB;
 
 // The solar system: each tap on the sun plays the next 8-note phrase while the planets take a lap. (MIDI_Audio.mid)
 export const SPACE_MELODY: [number, number][] = [

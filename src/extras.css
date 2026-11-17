@@ -248,3 +248,8 @@ a.memo:hover { color: var(--teal); }
 /* the secret screen's buttons: same size, text centered */
 .secret-box .btn-solid, .secret-box .btn-outline { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 220px; padding: 0 22px; box-sizing: border-box; }
 .secret-box .btn-solid { color: var(--ink); }
+/* TV knobs: call and response. Each turn plays a little phrase. */
+button.knob { border: 0; padding: 0; cursor: pointer; position: relative; transition: transform .5s cubic-bezier(.3,.7,.4,1.3); }
+button.knob::after { content: ''; position: absolute; left: 50%; top: 4px; width: 4px; height: 30%; margin-left: -2px; background: #5A5446; border-radius: 2px; }
+button.knob:hover { filter: brightness(1.1); }
+button.knob.turning { box-shadow: inset -6px -6px 0 #6E6656, 0 0 0 4px rgba(247,127,161,.45); }

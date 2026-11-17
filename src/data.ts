@@ -312,8 +312,10 @@ export const DESK_SECRETS = {
   stickyBack: ['finish the album!!', '(your to-do list or lyric scraps go here)'],
   /** crumpled drafts in the trash can: one pops out per click */
   trash: ['(a lyric that got cut)', '(another line that didn\'t make it)', '(a verse you rewrote 4 times)'],
-  /** voice memos and demos in the drawer. Put the audio in public/memos/ and list it here. */
-  drawer: [] as { title: string; src: string }[],
+  /** voice memos and demos in the drawer. Put the audio in the memos/ folder (repo root) and list it here. */
+  drawer: [
+    { title: 'a beat (the demos, vol 2)', src: 'memos/a-beat-demo.mp3' },
+  ] as { title: string; src: string }[],
 };
 
 // Photos pinned on THE DESK. Click one to open the slideshow.
