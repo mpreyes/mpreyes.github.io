@@ -12,6 +12,11 @@ const DESK_TICKS: [number, number][] = [
 // stored in this file's BEAT units (120 bpm), so every melody shares one clock
 export const DESK_MELODY: [number, number][] = DESK_TICKS.map(([n, t]) => [n, ((t / TPB) * 120) / DESK_BPM]);
 
+// The string lights: their own tune (Analog_Lab_V_5.mid), one note per light you tap. No tempo in the
+// file, so it plays at MIDI's default 120 bpm. Each note holds until the next one starts.
+const LIGHTS_TICKS: [number, number][] = [[62, 48], [65, 48], [62, 47], [60, 49], [62, 47], [57, 47], [60, 50], [62, 47], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [69, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 148], [72, 389], [74, 378]];
+export const LIGHTS_MELODY: [number, number][] = LIGHTS_TICKS.map(([n, t]) => [n, t / TPB]);
+
 // The TV knobs: a call (higher.mid) and its response (higher_2.mid), played in rhythm at 130 bpm.
 // Each note is [start tick, length in ticks, MIDI note].
 export type Phrase = [number, number, number][];
