@@ -218,7 +218,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   }
 
   function building(p: Place) {
-    const link = el<SVGAElement>('a', { href: p.href || '#', class: 'spot', 'aria-label': `Walk to ${p.name}` }, svg);
+    const link = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': `Walk to ${p.name}` }, svg);
     const lift = el('g', { class: 'lift' }, link);
     const g = el<SVGGElement>('g', {}, lift);
     if (p.id === 'akta') {
