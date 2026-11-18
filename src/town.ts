@@ -77,6 +77,9 @@ const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
 /** A wobbly closed outline around (cx, cy), with optional bays cut into it. */
 function coast(cx: number, cy: number, rx: number, ry: number, wob: number, n = 64, bays: { a: number; depth: number; w: number }[] = []): string {
+  return smooth(coastPoints(cx, cy, rx, ry, wob, n, bays));
+}
+function coastPoints(cx: number, cy: number, rx: number, ry: number, wob: number, n = 64, bays: { a: number; depth: number; w: number }[] = []): [number, number][] {
   const pts: [number, number][] = [];
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2;
@@ -84,7 +87,16 @@ function coast(cx: number, cy: number, rx: number, ry: number, wob: number, n = 
     for (const b of bays) { const d = Math.atan2(Math.sin(a - b.a), Math.cos(a - b.a)); r -= b.depth * Math.exp(-(d * d) / (2 * b.w * b.w)); }
     pts.push([cx + Math.cos(a) * rx * r, cy + Math.sin(a) * ry * r]);
   }
-  return smooth(pts);
+  return pts;
+}
+/** Point-in-polygon (works even before the page is drawn, unlike isPointInFill). */
+function inside(pts: [number, number][], x: number, y: number) {
+  let hit = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) hit = !hit;
+  }
+  return hit;
 }
 function smooth(p: [number, number][]): string {
   let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
@@ -101,10 +113,21 @@ function roadPath(p: Place): string {
   return `M${CENTER.x} ${CENTER.y} Q${mx} ${my} ${p.door.x} ${p.door.y}`;
 }
 
+/** The area each building's art covers before scaling (matches building() below). */
+function artBounds(p: Place) {
+  const [l, t, r, b] = {
+    akta: [p.x - 45, p.y - 30, p.x + 145, p.y + 58],
+    mash: [p.x - 60, p.y - 50, p.x + 52, p.y + 53],
+    madebit: [p.x - 40, p.y - 88, p.x + 122, p.y + 24],
+    farm: [p.x - 130, p.y - 85, p.x + 68, p.y + 58],
+  }[p.id];
+  return { x: l, y: t, width: r - l, height: b - t };
+}
+
 // ---------- the map ----------
 export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLeave: () => void) {
   const ISLAND = { cx: 640, cy: 420, rx: 520, ry: 330 };
-  let land: SVGPathElement;
+  let shore: [number, number][] = [];
 
   function paper() {
     const defs = el('defs', {}, svg);
@@ -119,7 +142,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
 
   function island() {
     seed = 11;
-    const main = coast(ISLAND.cx, ISLAND.cy, ISLAND.rx, ISLAND.ry, 0.09, 72, [{ a: 0.55, depth: 0.22, w: 0.18 }, { a: 3.6, depth: 0.12, w: 0.14 }]);
+    shore = coastPoints(ISLAND.cx, ISLAND.cy, ISLAND.rx, ISLAND.ry, 0.09, 72, [{ a: 0.55, depth: 0.22, w: 0.18 }, { a: 3.6, depth: 0.12, w: 0.14 }]);
+    const main = smooth(shore);
     // the sea, deep at the edge, with little wave marks
     el('path', { d: main, fill: 'none', stroke: '#BFE3F2', 'stroke-width': 150, 'stroke-linejoin': 'round' }, svg);
     el('path', { d: main, fill: 'none', stroke: '#9CD2EA', 'stroke-width': 80, 'stroke-linejoin': 'round' }, svg);
@@ -131,7 +155,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       el('path', { d: `M${x} ${y} q5 -5 10 0 q5 5 10 0`, fill: 'none', stroke: '#5FA9CC', 'stroke-width': 2, 'stroke-linecap': 'round' }, svg);
     }
     // beach rim, then lush green, kept inside the island
-    land = el<SVGPathElement>('path', { d: main, fill: '#EBDDB0', stroke: K, 'stroke-width': 3 }, svg);
+    el('path', { d: main, fill: '#EBDDB0', stroke: K, 'stroke-width': 3 }, svg);
     const inset = 'translate(640 420) scale(.955) translate(-640 -420)';
     const clip = el('clipPath', { id: 'islandClip' }, svg.querySelector('defs')!);
     el('path', { d: main, transform: inset }, clip);
@@ -153,7 +177,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     shark();
   }
 
-  const onLand = (x: number, y: number) => land.isPointInFill(new DOMPoint(x, y));
+  const onLand = (x: number, y: number) => inside(shore, x, y);
 
   function grassAndFlowers(n: number) {
     for (let i = 0; i < n; i++) {
@@ -218,8 +242,10 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
         for (let j = 0; j < 8; j++) el('rect', { x: p.x - 38 + j * 14, y: p.y - 85 + i * 14, width: 6, height: 6, fill: '#5E9A4A' }, g);
       }
     }
-    // scale the art up from its bottom centre, then hang the sign above it
-    const bb = g.getBBox(), cx = bb.x + bb.width / 2, by = bb.y + bb.height;
+    // scale the art up from its bottom centre, then hang the sign above it.
+    // (Bounds are worked out from the art itself, not getBBox, which reads 0
+    // when the page loads hidden, e.g. in a background tab or an iframe.)
+    const bb = artBounds(p), cx = bb.x + bb.width / 2, by = bb.y + bb.height;
     g.setAttribute('transform', `translate(${cx} ${by}) scale(${BIG}) translate(${-cx} ${-by})`);
     const top = by - bb.height * BIG;
     sign(lift, cx, top - 52, p.name);
