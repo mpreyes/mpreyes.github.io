@@ -1,4 +1,4 @@
-# Madelyn's Town
+# mpreyes.github.io
 
 My personal site: a little island where each building is one of my projects.
 Click a place and pixel-me walks there, then a card links out.

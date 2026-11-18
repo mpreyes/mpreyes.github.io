@@ -12,7 +12,6 @@
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); }
 header { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; padding: 16px 20px; border-bottom: 2px solid var(--ink); background: var(--cream); }
 header h1 { margin: 0; font-family: var(--pixel); font-size: 16px; line-height: 1.5; }
-header p { margin: 0; font-size: 15px; color: var(--muted); }
 main { max-width: 1280px; margin: 0 auto; }
 .stage { position: relative; }
 svg { display: block; width: 100%; height: auto; }
@@ -27,10 +26,6 @@ svg { display: block; width: 100%; height: auto; }
 .card span { font-size: 15px; color: var(--muted); }
 .card a { align-self: flex-start; font-family: var(--pixel); font-size: 11px; background: var(--pink); color: var(--ink); text-decoration: none; border: 2px solid var(--ink); padding: 10px 12px; box-shadow: 0 3px 0 var(--ink); }
 .card a.soon { background: #ddd; pointer-events: none; }
-.places { list-style: none; margin: 18px auto 0; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-.places button { font-family: var(--pixel); font-size: 10px; padding: 12px 12px; border: 2px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 var(--ink); min-height: 44px; }
-.places button:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
-footer { text-align: center; color: var(--muted); font-size: 14px; padding: 18px 20px 32px; }
 @media (prefers-reduced-motion: reduce) { .lift { transition: none; } }
 /* phones: the map is small, so the card goes under it instead of on top */
 @media (max-width: 700px) {
