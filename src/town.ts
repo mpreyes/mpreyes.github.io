@@ -82,6 +82,7 @@ const BODY = ['...HTTTTTTTTH...', '..TTTTTTTTTTTT..', '.STTTTTTTTTTTTS.', '.STTT
 // a camera on a tripod, lens pointing left at the family
 const CAMERA = ['..KKK.....', 'KKKKKKKKKK', 'KLKGGGGGRK', 'KLLKGGGGGK', 'KLKGGGGGGK', 'KKKKKKKKKK', '....KK....', '...K..K...', '..K....K..', '.K......K.', 'K........K'];
 const LONG_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '..HHSSSSSSSSHH..', '..HSSESSSSESSH..', '..HSSSSSSSSSSH..', '..HSSSSMMSSSSH..', '..HHSSSSSSSSHH..', '..HHH.SSSS.HHH..'].concat(BODY);
+const TALL = (rows: string[]) => rows.slice(0, 12).concat([rows[12]], rows.slice(12, 16), [rows[16], rows[16]], rows.slice(17));
 const SHORT_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HSSSSSSSSH...', '...SSESSSSESS...', '...SSSSSSSSSS...', '...SSSSMMSSSS...', '....SSSSSSSS....', '......SSSS......'].concat(BODY.map((r, i) => (i === 0 ? '....TTTTTTTT....' : r)));
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
 // an open book held up in front of her: two white pages with lines, pink cover underneath
@@ -428,8 +429,10 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const DANCE_AT: Pt = { x: CENTER.x + 6, y: CENTER.y + 8 }; // people dance in the town centre
   const CASA_DOOR: Pt = { x: 490, y: 716 }; // the family's green house, south shore
   // mom, dad, Carlos, Steven, Robert
+  const personArt = (f: (typeof FAMILY)[number]) => (f.long ? LONG_HAIR : f.tall ? TALL(SHORT_HAIR) : SHORT_HAIR);
+  const personColors = (f: (typeof FAMILY)[number]): Palette => ({ H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K });
   const FAM_X = [-104, -52, 52, 104, 156]; // mom, dad | her | Carlos, Steven, Robert
-  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1', long: true }, { hair: '#4A4A4A', shirt: '#5FA9CC', long: false }, { hair: '#2A1B1B', shirt: '#93C78E', long: false }, { hair: '#2A1B1B', shirt: '#F2B84B', long: false }, { hair: '#3B2A1B', shirt: '#796AD8', long: false }];
+  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1', long: true, tall: false }, { hair: '#4A4A4A', shirt: '#5FA9CC', long: false, tall: false }, { hair: '#2A1B1B', shirt: '#93C78E', long: false, tall: true }, { hair: '#2A1B1B', shirt: '#F2B84B', long: false, tall: true }, { hair: '#3B2A1B', shirt: '#796AD8', long: false, tall: false }];
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
@@ -695,7 +698,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const out = el<SVGGElement>('g', {}, root);
     FAMILY.forEach((f, i) => {
       const g = el<SVGGElement>('g', {}, out);
-      pix(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x + FAM_X[i] - 32, CASA_DOOR.y - 72, 4, g); // shoulder to shoulder with her
+      const art = personArt(f);
+      pix(art, personColors(f), CASA_DOOR.x + FAM_X[i] - 32, CASA_DOOR.y - art.length * 4 + 8, 4, g); // shoulder to shoulder with her
       g.animate?.([{ transform: 'translateY(6px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { duration: 300, delay: i * 150, fill: 'both' });
     });
     for (let i = 0; i < 5; i++) {
@@ -706,6 +710,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 176);
     await wait(1500);
     // everyone holds still... say cheese!
+    lunaGoal = { x: CASA_DOOR.x + FAM_X[0] - 50, y: CASA_DOOR.y + 6 }; // Luna joins the end of the row
     // a little camera on a tripod pops up and takes the picture
     const cam = el<SVGGElement>('g', {}, root);
     pix(CAMERA, { K, G: '#6F7B90', L: '#9FD3E8', R: '#C8332D', B: '#8A4A3A' }, CASA_DOOR.x + 216, CASA_DOOR.y - 82, 6, cam);
@@ -720,6 +725,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     await wait(1400);
     out.remove();
     cam.remove();
+    lunaGoal = null;
   }
 
   function flash() {
@@ -744,9 +750,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     g.strokeRect(24, 24, 512, 336);
     px(CASA, CASA_C, 280 - 92, 60, 8);
     const feet = 340;
-    FAMILY.forEach((f, i) => px(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 232 + FAM_X[i] - 20, feet - 80, 4));
+    FAMILY.forEach((f, i) => { const art = personArt(f); px(art, personColors(f), 232 + FAM_X[i] - 20, feet - art.length * 4, 4); });
     px(ME, ME_C, 212, feet - 80, 4);
-    px(LUNA, LUNA_C, 60, feet - 30, 3);
+    px(LUNA, LUNA_C, 232 + FAM_X[0] - 20 - 52, feet - 30, 3); // Luna sits at the end of the row, next to mom
     // caption
     g.fillStyle = K;
     g.font = "16px 'Press Start 2P', monospace";
