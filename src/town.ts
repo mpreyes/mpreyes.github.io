@@ -20,6 +20,7 @@ type Palette = Record<string, string>;
 const NS = 'http://www.w3.org/2000/svg';
 const K = '#111';
 const W = 1440;
+export const onWalk = { at: (_x: number) => {} }; // the camera listens here
 const SHIFT = 80; // the island's old 1280 layout, centred in the wider canvas
 const WIDE = 1.15; // how much wider the island is than it was
 const H = 800;
@@ -495,6 +496,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
         standing.style.display = alt ? 'none' : '';
         stepping.style.display = alt ? '' : 'none';
         moveTo(p.x, p.y - (alt ? 2 : 0));
+        onWalk.at(p.x + SHIFT);
         if (t < 1) requestAnimationFrame(step);
         else { standing.style.display = ''; stepping.style.display = 'none'; moveTo(p.x, p.y); done(); }
       };

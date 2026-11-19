@@ -1,7 +1,8 @@
 import '@fontsource/press-start-2p';
 import '@fontsource-variable/literata';
 import './styles.css';
-import { mountTown } from './town';
+import { mountTown, onWalk } from './town';
+import { mountCamera } from './camera';
 import { isMuted, setMuted, unlockAudio } from './sound';
 
 const svg = document.getElementById('map') as unknown as SVGSVGElement;
@@ -11,6 +12,9 @@ const sub = document.getElementById('card-sub')!;
 
 const go = document.getElementById('card-go') as HTMLAnchorElement;
 const coinsEl = document.getElementById('coins')!;
+
+const cam = mountCamera(svg, document.getElementById('pan-left') as HTMLButtonElement, document.getElementById('pan-right') as HTMLButtonElement);
+onWalk.at = (x) => cam.follow(x);
 
 // Click a building -> she walks there -> this card opens -> VISIT takes you to the site.
 mountTown(

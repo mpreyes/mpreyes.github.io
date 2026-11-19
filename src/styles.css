@@ -52,3 +52,13 @@ footer a:hover { color: #c8332d; }
 .photo-actions a, .photo-actions button { font-family: var(--pixel); font-size: 11px; border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); padding: 10px 12px; color: var(--ink); text-decoration: none; cursor: pointer; background: #fff; }
 .photo-actions a { background: var(--pink); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* phones: arrows to look around the island (you can also swipe) */
+.pan { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--pixel); font-size: 14px; width: 40px; height: 48px; background: var(--cream); color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); cursor: pointer; padding: 0; animation: nudge 1.6s ease-in-out infinite; }
+#pan-left { left: 8px; --d: -4px; }
+#pan-right { right: 8px; --d: 4px; }
+.pan[hidden] { display: none; }
+@keyframes nudge { 50% { transform: translateY(-50%) translateX(var(--d)); } }
+@media (prefers-reduced-motion: reduce) { .pan { animation: none; } }
+#map { touch-action: none; }
+@media (max-width: 480px) { footer { gap: 6px 14px; padding: 8px 12px; } footer a { font-size: 9px; padding: 8px 2px; } }
