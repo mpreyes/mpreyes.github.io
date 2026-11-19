@@ -65,6 +65,7 @@ const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.
 const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
 const LUNA = ['..........K.K.', '.........KBKBK', 'KK......KBBBBK', 'KBK.....KBWEWK', '.KBKKKKKBBWWWK', '..KBBBBBBBWWNK', '..KBBBBBBWWWK.', '..KWWWWWWWWK..', '..KWK.KWKKWK..', '..KK..KK.KK...'];
 const LUNA_PEE = ['..........K.K.', '.........KBKBK', 'KK......KBBBBK', 'KBK.....KBWEWK', '.KBKKKKKBBWWWK', '.KKBBBBBBBWWNK', 'KWKBBBBBBWWWK.', 'KW.WWWWWWWWK..', '.....KWKKWK...', '.....KK.KK....'];
+const LUNA_SLEEP = ['....KKKKKK..', '..KKBBBBBBK.', '.KBBBWWBBBBK', 'KBBBWKKWBBBK', 'KWWWWWWWBBBK', 'KWWWWWWWWWBK', '.KKKKKKKKKK.'];
 const LUNA_STEP = LUNA.slice(0, 8).concat(['.KWK..KWK.KWK.', '.KK...KK..KK..']);
 const LUNA_C: Palette = { K, B: '#8A5A3A', W: '#F3EBDD', E: '#5FA9CC', N: K };
 const LAPTOP = ['KKKKKKKKKKKKKK', 'KDDDDDDDDDDDDK', 'KDGGGDDDDDDDDK', 'KDDPPPPPDDDDDK', 'KDDDGGGGDDDDDK', 'KDYYDDDDDDDDDK', 'SLLLLLLLLLLLLS', '.LLLLLLLLLLLL.'];
@@ -95,6 +96,12 @@ const BOOK_TURN = ['.WWWWWWW.WWW.WWW.', 'PPPPPPPPKPPPWPPPP', 'PRRRRRRRKRRRRRRRP'
 const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
 const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
 const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
+const FEAST = ['....KKK....KKK.....KK...', '...KBBBK..KYYYK...KWWK..', '..KBBBBBK.KYRYK..KWWWWK.', '..KBBBBBK.KYYYK...KWWK..', 'KKKKKKKKKKKKKKKKKKKKKKKK', 'KCCCCCCCCCCCCCCCCCCCCCCK', 'KKKKKKKKKKKKKKKKKKKKKKKK', '.KK..................KK.', '.KK..................KK.', '.KK..................KK.'];
+const FEAST_C: Palette = { K, B: '#A0622D', Y: '#F2B84B', R: '#C8332D', W: '#F8F6EF', C: '#C9A06B' };
+const LEAF = ['..O..', '.OOO.', 'OOOOO', '.OOO.', '..K..'];
+const XMAS_TREE = ['....Y....', '...KGK...', '..KGRGK..', '..KGGGK..', '.KGGYGGK.', '.KRGGGGK.', 'KGGGGRGGK', 'KGYGGGGGK', 'KKKKBKKKK', '....B....'];
+const XMAS_C: Palette = { K, G: '#2F6B3A', R: '#C8332D', Y: '#F2B84B', B: '#8A4A3A' };
+const PUMPKIN = ['..GG..', '.KKKK.', 'KOKOOK', 'KOOKOK', 'KOKOOK', '.KKKK.'];
 const SHARK = ['.......KK.......', '......KGGK......', 'K....KGGGGKKKKK.', 'KGKKKGGGGGGGGEGK', 'KGGGGGGGGGGGGGGK', 'KGKKWWWWWWWWWKK.', 'K...KKKKKKKKK...'];
 const SHARK_C: Palette = { K, G: '#6E7C8C', W: '#E8EEF2', E: '#fff' };
 const MOUNTAIN = ['.........KK.........', '........KWWK........', '.......KWWWWK.......', '......KWWKWWWK......', '.....KGWKGKWWGK.....', '....KGGKGGGKGGGK....', '...KGGGGGDGGGGGGK...', '..KGGDGGGGGGGDGGGK..', '.KGGGGGGDGGGGGGGGGK.', 'KGGGGGGGGGGGGGDGGGGK'];
@@ -364,6 +371,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
       if (x > 1060 && x < 1200 && y > 230 && y < 370) return; // Luna's tree
       if (x > 960 && x < 1110 && y > 190 && y < 330) return; // a little space beside the tent
+      if (x > 980 && x < 1200 && y > 370 && y < 530) return; // the Dankesgiving table
       if (x > 330 && x < 790 && y > 500 && y < 740) return; // the family's house and the photo spot
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
@@ -437,6 +445,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const personColors = (f: (typeof FAMILY)[number]): Palette => ({ H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K });
   const FAM_X = [-104, -52, 52, 104, 156]; // mom, dad | her | Carlos, Steven, Robert
   const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1', long: true, tall: false }, { hair: '#4A4A4A', shirt: '#5FA9CC', long: false, tall: false }, { hair: '#2A1B1B', shirt: '#93C78E', long: false, tall: true }, { hair: '#2A1B1B', shirt: '#F2B84B', long: false, tall: true }, { hair: '#3B2A1B', shirt: '#796AD8', long: false, tall: false }];
+  const FEAST_AT: Pt = { x: 1090, y: 480 }; // the Dankesgiving table, east side of the island
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
@@ -493,6 +502,90 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     });
   }
 
+  // ---------- seasons: Dankesgiving in November, snow in December and January,
+  // hearts in February, pumpkins in October. Try one any time with ?season=dankesgiving (or winter, valentine, spooky).
+  function seasons() {
+    const forced = new URLSearchParams(location.search).get('season');
+    const m = new Date().getMonth();
+    const season = forced ?? (m === 10 ? 'dankesgiving' : m === 11 || m === 0 ? 'winter' : m === 1 ? 'valentine' : m === 9 ? 'spooky' : '');
+    if (!season) return;
+    const sky = el<SVGGElement>('g', { 'pointer-events': 'none' }, svg); // falls over everything
+    if (season === 'dankesgiving') {
+      // a little feast table west of the plaza, leaves falling everywhere
+      const table = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dankesgiving dinner' }, root);
+      pix(FEAST, FEAST_C, FEAST_AT.x - 48, FEAST_AT.y - 40, 4, el('g', { class: 'lift' }, table));
+      const banner = el('g', {}, table);
+      el('rect', { x: FEAST_AT.x - 92 + 20, y: FEAST_AT.y - 112, width: 184, height: 26, fill: '#F8F6EF', stroke: K, 'stroke-width': 2 }, banner);
+      const t = el('text', { x: FEAST_AT.x + 20, y: FEAST_AT.y - 94, 'text-anchor': 'middle', 'font-family': "'Press Start 2P', monospace", 'font-size': 9, fill: '#C8332D' }, banner);
+      t.textContent = 'HAPPY DANKESGIVING';
+      roads.feast = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${FEAST_AT.x - 200} ${CENTER.y + 90} ${FEAST_AT.x - 70} ${FEAST_AT.y + 4}`, fill: 'none' }, root);
+      table.addEventListener('click', (e) => { e.preventDefault(); go('feast', feast); });
+      falling(sky, 26, (g) => pix(LEAF, { O: ['#E8742B', '#C8332D', '#F2B84B'][Math.floor(Math.random() * 3)], K }, -6, -6, 3, g), 0.6);
+    } else if (season === 'winter') {
+      pix(XMAS_TREE, XMAS_C, CENTER.x + 150, CENTER.y - 108, 6, root);
+      falling(sky, 60, (g) => el('circle', { r: 2 + Math.random() * 2.5, fill: '#fff', stroke: '#B8C9DA', 'stroke-width': 0.6 }, g), 0.4);
+    } else if (season === 'valentine') {
+      falling(sky, 14, (g) => pix(HEART, { P: '#F77FA1', K }, -10, -8, 2, g), 0.35, true);
+    } else if (season === 'spooky') {
+      [[790, 610], [830, 640], [1010, 600]].forEach(([x, y]) => pix(PUMPKIN, { K, O: '#E8742B', G: '#4E9A3A' }, x, y, 4, root));
+    }
+  }
+  /** Particles drifting down (or up) across the whole map, wrapping around forever. */
+  function falling(layer: Element, n: number, make: (g: SVGGElement) => void, speed: number, up = false) {
+    if (reduced) n = Math.round(n / 3);
+    const bits = Array.from({ length: n }, () => {
+      const g = el<SVGGElement>('g', {}, layer);
+      make(g);
+      return { g, x: Math.random() * W, y: Math.random() * H, v: (0.5 + Math.random()) * speed, sway: Math.random() * 6, spin: Math.random() * 360 };
+    });
+    if (reduced) { bits.forEach((b) => b.g.setAttribute('transform', `translate(${b.x} ${b.y})`)); return; }
+    const tick = (now: number) => {
+      for (const b of bits) {
+        b.y += up ? -b.v : b.v;
+        if (b.y > H + 10) b.y = -10;
+        if (b.y < -10) b.y = H + 10;
+        const x = b.x + Math.sin(now / 900 + b.sway) * 18;
+        b.g.setAttribute('transform', `translate(${x} ${b.y}) rotate(${(b.spin + now / 20) % 360})`);
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  /** Dankesgiving: she sits down to the feast and has some pie. Luna begs. */
+  async function feast() {
+    lunaGoal = { x: FEAST_AT.x + 76, y: FEAST_AT.y + 10 };
+    for (let i = 0; i < 3; i++) { sfx.crunch(); await wait(380); }
+    say('so full', FEAST_AT.x - 70, FEAST_AT.y - 140);
+    const h = el<SVGGElement>('g', {}, root);
+    pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
+    animateBits(h, 1200, (t) => `translate(${FEAST_AT.x - 64} ${FEAST_AT.y - 90 - t * 60})`);
+    await wait(1200);
+    lunaGoal = null;
+  }
+
+  // ---------- Luna's naps ----------
+  const NAP_AFTER = 15000; // ms of nobody clicking anything
+  let lastActive = performance.now();
+  let lunaNapping = false;
+  let zzz: number | undefined;
+  addEventListener('pointerdown', () => { lastActive = performance.now(); });
+  function startNap() {
+    lunaNapping = true;
+    zzz = window.setInterval(() => {
+      const { x, y } = lunaAt();
+      const z = el('text', { x: x + 10, y: y - 20, 'font-family': "'Press Start 2P', monospace", 'font-size': 10, fill: '#5FA9CC' }, root);
+      z.textContent = 'z';
+      animateBits(z, 1800, (t) => `translate(${t * 18 + Math.sin(t * 6) * 4} ${-t * 40}) scale(${1 + t})`);
+    }, reduced ? 3000 : 900);
+  }
+  function wakeLuna() {
+    if (!lunaNapping) return;
+    lunaNapping = false;
+    clearInterval(zzz);
+    lastActive = performance.now();
+    sfx.bark();
+  }
+
   // ---------- Luna, the brown husky ----------
   function drawLuna() {
     const link = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Pet Luna' }, root);
@@ -501,10 +594,13 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const a = pix(LUNA, LUNA_C, -21, -30, 3, face);
     const b = pix(LUNA_STEP, LUNA_C, -21, -30, 3, face);
     const pee = pix(LUNA_PEE, LUNA_C, -21, -30, 3, face);
+    const nap = pix(LUNA_SLEEP, LUNA_C, -18, -18, 3, face);
     b.style.display = 'none';
     pee.style.display = 'none';
+    nap.style.display = 'none';
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      if (lunaNapping) { wakeLuna(); return; }
       sfx.bark();
       const h = el<SVGGElement>('g', {}, root);
       pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
@@ -522,10 +618,14 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       const dx = tx - lx, dy = ty - ly, d = Math.hypot(dx, dy);
       const moving = d > 3;
       if (moving) { const k = Math.min(1, (reduced ? 1 : 0.06)); lx += dx * k; ly += dy * k; if (Math.abs(dx) > 1) faceLeft = dx < 0; }
+      // nobody's done anything for a while: she curls up for a nap
+      if (!lunaNapping && !moving && !walking && !lunaGoal && !lunaParty && now - lastActive > NAP_AFTER) startNap();
+      if (lunaNapping && moving) wakeLuna();
       const step = moving && Math.floor(now / 120) % 2 === 1;
-      a.style.display = step || lunaPeeing ? 'none' : '';
-      b.style.display = step && !lunaPeeing ? '' : 'none';
+      a.style.display = step || lunaPeeing || lunaNapping ? 'none' : '';
+      b.style.display = step && !lunaPeeing && !lunaNapping ? '' : 'none';
       pee.style.display = lunaPeeing ? '' : 'none';
+      nap.style.display = lunaNapping ? '' : 'none';
       face.setAttribute('transform', faceLeft ? 'scale(-1 1)' : '');
       luna.setAttribute('transform', `translate(${lx} ${ly})`);
       requestAnimationFrame(tick);
@@ -537,6 +637,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   async function go(id: string, then: () => Promise<void> | void) {
     if (walking) return;
     if (id === 'bench' && sitting) { swapReading(); return; }
+    lastActive = performance.now();
     walking = true;
     onLeave();
     standUp();
@@ -1008,6 +1109,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   casa.addEventListener('click', (e) => { e.preventDefault(); go('casa', visitFamily); });
   roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 60} ${CENTER.y + 160} ${CASA_DOOR.x} ${CASA_DOOR.y + 8}`, fill: 'none' }, roadLayer);
 
+  seasons();
   compass();
   drawLuna();
   drawWalker();
