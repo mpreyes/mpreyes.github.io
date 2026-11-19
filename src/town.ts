@@ -70,7 +70,10 @@ const LAPTOP_C: Palette = { K, D: '#1E2A38', G: '#93C78E', P: '#F77FA1', Y: '#F2
 const BOOMBOX = ['....KKKKKK....', '...K......K...', 'KKKKKKKKKKKKKK', 'KRRRRRRRRRRRRK', 'KRKKKRYYRKKKRK', 'KRKWKRRRRKWKRK', 'KRKKKRYYRKKKRK', 'KRRRRRRRRRRRRK', 'KKKKKKKKKKKKKK'];
 const CASA = ['.......KKKKKKKKK.......', '.....KKRRRRRRRRRKK.....', '...KKRRRRRRRRRRRRRKK...', '.KKRRRRRRRRRRRRRRRRRKK.', 'KKKKKKKKKKKKKKKKKKKKKKK', 'KGGGGGGGGGGGGGGGGGGGGGK', 'KGKKKKGGGGGGGGGGKKKKGGK', 'KGKWWKGGGGKKKGGGKWWKGGK', 'KGKWWKGGGGKYKGGGKWWKGGK', 'KGKKKKGGGGKYKGGGKKKKGGK', 'KGGGGGGPPGKYKGPPGGGGGGK', 'KGGGGGGGGGKYKGGGGGGGGGK', 'KKKKKKKKKKKKKKKKKKKKKKK'];
 const CASA_C: Palette = { K, R: '#C8332D', G: '#7DC07A', W: '#9FD3E8', Y: '#B98B5E', P: '#F77FA1' };
-const PERSON = ['..HHHH..', '.HSSSSH.', '.SKSSKS.', '.SSSSSS.', '..TTTT..', '.TTTTTT.', '.TTTTTT.', '..DDDD..', '..D..D..', '.BB..BB.'];
+// family members are drawn the same size as her (same body), with their own hair and shirts
+const BODY = ['...HTTTTTTTTH...', '..TTTTTTTTTTTT..', '.STTTTTTTTTTTTS.', '.STTTTTTTTTTTTS.', '..TTTTTTTTTTTT..', '...DDDDDDDDDD...', '...DDDD..DDDD...', '...DDDD..DDDD...', '...BBBB..BBBB...', '..BBBBB..BBBBB..'];
+const LONG_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '..HHSSSSSSSSHH..', '..HSSESSSSESSH..', '..HSSSSSSSSSSH..', '..HSSSSMMSSSSH..', '..HHSSSSSSSSHH..', '..HHH.SSSS.HHH..'].concat(BODY);
+const SHORT_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HSSSSSSSSH...', '...SSESSSSESS...', '...SSSSSSSSSS...', '...SSSSMMSSSS...', '....SSSSSSSS....', '......SSSS......'].concat(BODY.map((r, i) => (i === 0 ? '....TTTTTTTT....' : r)));
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
 // an open book held up in front of her: two white pages with lines, pink cover underneath
 const BOOK = ['.PPPPPPP.PPPPPPP.', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
@@ -346,7 +349,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
-      if (x > 330 && x < 560 && y > 560 && y < 730) return; // the family's house
+      if (x > 330 && x < 640 && y > 540 && y < 740) return; // the family's house
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
       if (!(onLand(x + 32, y + 60) && onLand(x - 10, y) && onLand(x + 74, y))) return;
@@ -412,9 +415,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const PEAK: Pt = { x: 705, y: 92 };
   const BOOMBOX_AT: Pt = { x: CENTER.x - 92, y: CENTER.y + 40 }; // bottom left of the boombox, on the plaza
   const DANCE_AT: Pt = { x: CENTER.x + 6, y: CENTER.y + 8 }; // people dance in the town centre
-  const CASA_DOOR: Pt = { x: 470, y: 716 }; // the family's green house, south shore
+  const CASA_DOOR: Pt = { x: 500, y: 716 }; // the family's green house, south shore
   // mom, dad, Carlos, Steven, Robert
-  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1' }, { hair: '#4A4A4A', shirt: '#5FA9CC' }, { hair: '#2A1B1B', shirt: '#93C78E' }, { hair: '#2A1B1B', shirt: '#F2B84B' }, { hair: '#3B2A1B', shirt: '#796AD8' }];
+  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1', long: true }, { hair: '#4A4A4A', shirt: '#5FA9CC', long: false }, { hair: '#2A1B1B', shirt: '#93C78E', long: false }, { hair: '#2A1B1B', shirt: '#F2B84B', long: false }, { hair: '#3B2A1B', shirt: '#796AD8', long: false }];
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
@@ -671,15 +674,15 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const out = el<SVGGElement>('g', {}, root);
     FAMILY.forEach((f, i) => {
       const g = el<SVGGElement>('g', {}, out);
-      pix(PERSON, { H: f.hair, S: '#D39A72', K, T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x - 100 + i * 34, CASA_DOOR.y - 36, 4, g);
+      pix(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x + [-190, -134, 134, 190, 246][i] - 32, CASA_DOOR.y - 76, 4, g); // either side of the house
       g.animate?.([{ transform: 'translateY(6px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { duration: 300, delay: i * 150, fill: 'both' });
     });
     for (let i = 0; i < 5; i++) {
       const h = el<SVGGElement>('g', {}, root);
       pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
-      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x - 62 + i * 20 + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
+      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x + [-190, -134, 134, 190, 246][i] + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
     }
-    say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 96);
+    say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 136);
     await wait(2600);
     out.remove();
   }
@@ -829,9 +832,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
 
   // ---------- the family's green house ----------
   const casa = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Visit the family' }, root);
-  pix(CASA, CASA_C, CASA_DOOR.x - 66, CASA_DOOR.y - 78, 6, el('g', { class: 'lift' }, casa));
+  pix(CASA, CASA_C, CASA_DOOR.x - 103, CASA_DOOR.y - 117, 9, el('g', { class: 'lift' }, casa)); // a real house: taller than them
   casa.addEventListener('click', (e) => { e.preventDefault(); go('casa', visitFamily); });
-  roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 140} ${CENTER.y + 120} ${CASA_DOOR.x + 116} ${CASA_DOOR.y + 4}`, fill: 'none' }, roadLayer);
+  roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 60} ${CENTER.y + 160} ${CASA_DOOR.x} ${CASA_DOOR.y + 8}`, fill: 'none' }, roadLayer);
 
   compass();
   drawLuna();
