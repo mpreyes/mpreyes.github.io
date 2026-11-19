@@ -3,7 +3,7 @@ import '@fontsource-variable/literata';
 import './styles.css';
 import { mountTown, onWalk } from './town';
 import { mountCamera } from './camera';
-import { isMuted, setMuted, unlockAudio } from './sound';
+import { audioReady, isMuted, setMuted, unlockAudio } from './sound';
 
 const svg = document.getElementById('map') as unknown as SVGSVGElement;
 const card = document.getElementById('card')!;
@@ -44,8 +44,9 @@ const soundBtn = document.getElementById('sound') as HTMLButtonElement;
 const showSound = () => { soundBtn.textContent = isMuted() ? 'SOUND OFF' : 'SOUND ON'; soundBtn.setAttribute('aria-pressed', String(!isMuted())); };
 showSound();
 soundBtn.addEventListener('click', () => { setMuted(!isMuted()); showSound(); unlockAudio(); });
-addEventListener('pointerdown', () => unlockAudio(), { once: true });
-addEventListener('keydown', () => unlockAudio(), { once: true });
+// iPhones only count touchend/click as a real tap for audio, so try on each until it's on
+const wake = () => { unlockAudio(); if (audioReady()) for (const t of ['pointerdown', 'touchend', 'click', 'keydown']) removeEventListener(t, wake, true); };
+for (const t of ['pointerdown', 'touchend', 'click', 'keydown']) addEventListener(t, wake, true);
 
 // The family photo: once you've taken one, PHOTO up top shows it, with a button to save it.
 const photoBtn = document.getElementById('photo') as HTMLButtonElement;

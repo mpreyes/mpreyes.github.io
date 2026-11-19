@@ -18,8 +18,10 @@ function audio(): AudioContext | null {
     if (!AC) return null;
     ctx = new AC();
   }
-  return ctx.state === 'running' ? ctx : null;
+  // once a tap has woken it up, sounds can be queued while it finishes starting, so the very first tap is heard
+  return ctx.state === 'running' || (unlocked && ctx.state !== 'closed') ? ctx : null;
 }
+let unlocked = false;
 
 // Browsers (iPhones especially) keep audio off until a tap. Call this from the first tap.
 export function unlockAudio() {
@@ -31,7 +33,12 @@ export function unlockAudio() {
   const nav = navigator as Navigator & { audioSession?: { type: string } };
   if (nav.audioSession) nav.audioSession.type = 'playback';
   if (ctx.state !== 'running') void ctx.resume();
+  // iPhones also want a sound started inside the tap itself: play a silent blip
+  const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource();
+  src.buffer = b; src.connect(ctx.destination); src.start(0);
+  unlocked = true;
 }
+export const audioReady = () => ctx?.state === 'running';
 
 function tone(freq: number, dur: number, type: OscillatorType, vol: number, when = 0, slideTo?: number) {
   const a = audio();
