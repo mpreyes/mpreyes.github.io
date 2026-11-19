@@ -73,3 +73,14 @@ svg .night .fly { animation: drift 7s ease-in-out infinite; }
 body { transition: background-color 0.9s; }
 body.night { background-color: #2B3462; }
 @media (prefers-reduced-motion: reduce) { svg .night .star, svg .night .fly { animation: none; } }
+
+svg.dusk rect, svg.dusk path, svg.dusk circle, svg.dusk ellipse { transition: fill 0.9s, stroke 0.9s; }
+svg .night ellipse, svg .night circle { mix-blend-mode: screen; }
+/* the whole page goes dark with the island */
+body.night { --ink: #F3EBDD; --cream: #1B2147; --muted: #B9C2CC; color: var(--ink); }
+body.night header, body.night footer { background: var(--cream); border-color: #F3EBDD; }
+body.night #sound, body.night #photo, body.night .photo-actions button { background: #2B3462; color: var(--ink); }
+body.night .card a { color: #111; }
+body.night #coins { color: #111; }
+header, footer, .card { transition: background-color 0.9s, color 0.9s; }
+body.night { background-image: linear-gradient(#3A4479 1.5px, transparent 1.5px), linear-gradient(90deg, #3A4479 1.5px, transparent 1.5px), linear-gradient(#323B6B 1px, transparent 1px), linear-gradient(90deg, #323B6B 1px, transparent 1px); }

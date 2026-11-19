@@ -322,12 +322,13 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       el('path', { d: `M${p.x - 40} ${p.y - 30} Q${p.x + 50} ${p.y} ${p.x + 140} ${p.y - 30}`, fill: 'none', stroke: K, 'stroke-width': 2 }, g);
       for (let i = 1; i < 8; i++) {
         const t = i / 8, bx = p.x - 40 + 180 * t, by = p.y - 30 + 60 * t * (1 - t);
-        el('circle', { cx: bx, cy: by + 3, r: 5, fill: ['#F2B84B', '#F77FA1', '#9FD3E8'][i % 3], stroke: K, 'stroke-width': 1.5 }, g);
+        el('circle', { cx: bx, cy: by + 3, r: 5, fill: ['#F2B84B', '#F77FA1', '#9FD3E8'][i % 3], stroke: K, 'stroke-width': 1.5, 'data-glow': 1 }, g);
         bulbs.push({ x: bx, y: by + 3 });
       }
       pix(AKTA, AKTA_C, p.x, p.y - 20, 6, g);
     } else if (p.id === 'mash') {
       pix(TENT, TENT_C, p.x - 60, p.y - 10, 7, g);
+      for (const [c, r, w] of [[7, 5, 1], [6, 6, 3], [6, 7, 3]]) el('rect', { x: p.x - 60 + c * 7, y: p.y - 10 + r * 7, width: w * 7, height: 7, fill: K, 'data-window': 1, 'shape-rendering': 'crispEdges' }, g);
       [[0, 0], [30, -14], [58, 4]].forEach(([dx, dy]) => el('path', { d: `M${p.x - 30 + dx} ${p.y - 30 + dy}l2 4 4 2-4 2-2 4-2-4-4-2 4-2z`, fill: '#F2B84B', stroke: K }, g));
     } else if (p.id === 'madebit') {
       pix(STUDIO, STUDIO_C, p.x - 40, p.y - 60, 7, g);
@@ -335,6 +336,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       pix(NOTE, { K: '#187489' }, p.x + 104, p.y - 88, 3, g);
     } else {
       pix(BARN, BARN_C, p.x - 130, p.y - 14, 6, g);
+      el('rect', { x: p.x - 130 + 7 * 6, y: p.y - 14 + 4 * 6, width: 12, height: 6, fill: K, 'data-window': 1, 'shape-rendering': 'crispEdges' }, g);
       const fieldLink = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dig up a carrot' }, root);
       // the hover lift goes on a wrapper: a CSS transform on the scaled group would undo its scale
       field = el<SVGGElement>('g', {}, el('g', { class: 'lift' }, fieldLink));
@@ -508,6 +510,56 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
 
   // ---------- seasons: Dankesgiving in November, snow in December and January,
   // hearts in February, pumpkins in October. Try one any time with ?season=dankesgiving (or winter, valentine, spooky).
+  // Night recolours the island itself: every colour gets darker and bluer, and windows light up warm yellow.
+  const WINDOWS = new Set(['#9fd3e8', '#cfeff7']);
+  const nightCache = new Map<string, string>();
+  function nightColor(c: string): string {
+    let h = c.trim().toLowerCase();
+    if (h === 'white') h = '#ffffff';
+    if (!/^#[0-9a-f]{3}([0-9a-f]{3})?$/.test(h)) return c;
+    const hit = nightCache.get(h);
+    if (hit) return hit;
+    if (h.length === 4) h = '#' + [...h.slice(1)].map((x) => x + x).join('');
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+    // moonlight: everything darker, blues kept a bit more than reds
+    const out = '#' + [r * 0.38 + 0.02, g * 0.44 + 0.03, b * 0.55 + 0.1].map((v) => Math.round(Math.min(1, v) * 255).toString(16).padStart(2, '0')).join('');
+    nightCache.set(c.trim().toLowerCase(), out);
+    return out;
+  }
+  const isWindow = (e: Element, fill: string) => {
+    if (e.hasAttribute('data-window')) return true;
+    const f = fill.toLowerCase(), spot = e.closest('a.spot');
+    if (!spot) return false;
+    if (WINDOWS.has(f)) return true;
+    return f === '#f2b84b' && /madebit/i.test(spot.getAttribute('aria-label') ?? '');
+  };
+  let dark = false;
+  function paintOne(e: Element) {
+    if (e.closest('[data-glow]')) return;
+    for (const a of ['fill', 'stroke'] as const) {
+      const day = e.getAttribute(`data-day-${a}`) ?? e.getAttribute(a);
+      if (!day || day === 'none' || day.startsWith('url')) continue;
+      if (dark) {
+        e.setAttribute(`data-day-${a}`, day);
+        e.setAttribute(a, a === 'fill' && isWindow(e, day) ? '#FFD866' : nightColor(day));
+      } else if (e.hasAttribute(`data-day-${a}`)) {
+        e.setAttribute(a, day);
+        e.removeAttribute(`data-day-${a}`);
+      }
+    }
+  }
+  const paintAll = (top: Element) => { paintOne(top); top.querySelectorAll('[fill],[stroke]').forEach(paintOne); };
+  function paintNight(on: boolean) {
+    if (on === dark) return;
+    dark = on;
+    svg.classList.add('dusk');
+    paintAll(root);
+    setTimeout(() => svg.classList.remove('dusk'), 1000);
+  }
+  // things that appear later (flowers, coins, puddles) get night colours too
+  new MutationObserver((ms) => { if (dark) for (const m of ms) m.addedNodes.forEach((n) => { if (n instanceof Element && root.contains(n)) paintAll(n); }); })
+    .observe(svg, { childList: true, subtree: true });
+
   // ---------- night: a dark blue sky over the island, the lamp and Akta's lights glowing, stars and fireflies
   let nightLayer: SVGGElement | null = null;
   function night() {
@@ -522,7 +574,6 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const n = el<SVGGElement>('g', { class: 'night', transform: `translate(${SHIFT} 0)`, 'pointer-events': 'none', 'aria-hidden': 'true' });
     root.after(n);
     nightLayer = n;
-    el('rect', { x: -3000, y: -3000, width: 8000, height: 8000, fill: '#141B45', opacity: 0.55 }, n);
     const lx = CENTER.x - 100, ly = CENTER.y - 82;
     el('ellipse', { cx: lx, cy: ly + 60, rx: 150, ry: 110, fill: 'url(#lampglow)' }, n);
     bulbs.forEach((b, i) => el('circle', { cx: b.x, cy: b.y, r: 22, fill: i % 2 ? 'url(#pinkglow)' : 'url(#lampglow)' }, n));
@@ -1112,6 +1163,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const lx = CENTER.x - 112 + 12, ly = CENTER.y - 92 + 10; // middle of the lantern
   el('rect', { x: lx - 30, y: ly - 20, width: 60, height: 150, fill: 'transparent' }, lamp); // a bigger tap target
   const lampOn = pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
+  lampOn.setAttribute('data-glow', '1');
   const lampOff = pix(LAMP, { K, Y: '#6F7B90' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
   // the lamp is the light switch for the whole island: on means night falls
   let lit = false;
@@ -1120,6 +1172,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     lamp.setAttribute('aria-pressed', String(lit));
     lamp.setAttribute('aria-label', lit ? 'Turn the lamp off and bring the day back' : 'Turn the lamp on and make it night');
     nightLayer?.classList.toggle('on', lit);
+    paintNight(lit);
     document.body.classList.toggle('night', lit);
   };
   lamp.addEventListener('click', (e) => { e.preventDefault(); lit = !lit; showLamp(); sfx.click(lit); });
@@ -1145,7 +1198,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   // ---------- boombox on the plaza: turning it on lights up the dance floor ----------
   const floorClip = el('clipPath', { id: 'plazaClip' }, svg.querySelector('defs')!);
   el('ellipse', { cx: CENTER.x, cy: CENTER.y + 4, rx: 74, ry: 40 }, floorClip);
-  danceFloor = el<SVGGElement>('g', { 'clip-path': 'url(#plazaClip)', style: 'display:none' }, roadLayer);
+  danceFloor = el<SVGGElement>('g', { 'clip-path': 'url(#plazaClip)', style: 'display:none', 'data-glow': 1 }, roadLayer);
   for (let i = 0; i < 7; i++) for (let j = 0; j < 5; j++)
     tiles.push(el('rect', { x: CENTER.x - 84 + i * 24, y: CENTER.y - 36 + j * 17, width: 24, height: 17, fill: '#F77FA1', stroke: K, 'stroke-width': 1 }, danceFloor));
   const boombox = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dance' }, root);
