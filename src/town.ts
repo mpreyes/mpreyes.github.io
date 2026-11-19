@@ -62,6 +62,7 @@ const BENCH = ['KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK',
 const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.KK......KK.', '.KK..K...KK.', '.KK..K...KK.', '.KK..B...KK.', 'KKKKKKKKKKKK', 'KSSKSSKSSKSK', 'KSKSSKSSKSSK', 'KKKKKKKKKKKK'];
 const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
 const LUNA = ['..........K.K.', '.........KBKBK', 'KK......KBBBBK', 'KBK.....KBWEWK', '.KBKKKKKBBWWWK', '..KBBBBBBBWWNK', '..KBBBBBBWWWK.', '..KWWWWWWWWK..', '..KWK.KWKKWK..', '..KK..KK.KK...'];
+const LUNA_PEE = ['..........K.K.', '.........KBKBK', 'KK......KBBBBK', 'KBK.....KBWEWK', '.KBKKKKKBBWWWK', '.KKBBBBBBBWWNK', 'KWKBBBBBBWWWK.', 'KW.WWWWWWWWK..', '.....KWKKWK...', '.....KK.KK....'];
 const LUNA_STEP = LUNA.slice(0, 8).concat(['.KWK..KWK.KWK.', '.KK...KK..KK..']);
 const LUNA_C: Palette = { K, B: '#8A5A3A', W: '#F3EBDD', E: '#5FA9CC', N: K };
 const LAPTOP = ['KKKKKKKKKKKKKK', 'KDDDDDDDDDDDDK', 'KDGGGDDDDDDDDK', 'KDDPPPPPDDDDDK', 'KDDDGGGGDDDDDK', 'KDYYDDDDDDDDDK', 'SLLLLLLLLLLLLS', '.LLLLLLLLLLLL.'];
@@ -78,6 +79,8 @@ const CASA = [
 const CASA_C: Palette = { K, R: '#C8332D', G: '#7DC07A', W: '#9FD3E8', Y: '#B98B5E', P: '#F77FA1' };
 // family members are drawn the same size as her (same body), with their own hair and shirts
 const BODY = ['...HTTTTTTTTH...', '..TTTTTTTTTTTT..', '.STTTTTTTTTTTTS.', '.STTTTTTTTTTTTS.', '..TTTTTTTTTTTT..', '...DDDDDDDDDD...', '...DDDD..DDDD...', '...DDDD..DDDD...', '...BBBB..BBBB...', '..BBBBB..BBBBB..'];
+// a camera on a tripod, lens pointing left at the family
+const CAMERA = ['..KKK.....', 'KKKKKKKKKK', 'KLKGGGGGRK', 'KLLKGGGGGK', 'KLKGGGGGGK', 'KKKKKKKKKK', '....KK....', '...K..K...', '..K....K..', '.K......K.', 'K........K'];
 const LONG_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '..HHSSSSSSSSHH..', '..HSSESSSSESSH..', '..HSSSSSSSSSSH..', '..HSSSSMMSSSSH..', '..HHSSSSSSSSHH..', '..HHH.SSSS.HHH..'].concat(BODY);
 const SHORT_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HSSSSSSSSH...', '...SSESSSSESS...', '...SSSSSSSSSS...', '...SSSSMMSSSS...', '....SSSSSSSS....', '......SSSS......'].concat(BODY.map((r, i) => (i === 0 ? '....TTTTTTTT....' : r)));
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
@@ -355,7 +358,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
-      if (x > 330 && x < 640 && y > 500 && y < 740) return; // the family's house
+      if (x > 980 && x < 1110 && y > 190 && y < 330) return; // Luna's tree
+      if (x > 330 && x < 790 && y > 500 && y < 740) return; // the family's house and the photo spot
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
       if (!(onLand(x + 32, y + 60) && onLand(x - 10, y) && onLand(x + 74, y))) return;
@@ -419,10 +423,12 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
+  const LUNA_TREE: Pt = { x: 1060, y: 300 }; // bottom middle of Luna's favorite pine, east of the tent
   const BOOMBOX_AT: Pt = { x: CENTER.x - 92, y: CENTER.y + 40 }; // bottom left of the boombox, on the plaza
   const DANCE_AT: Pt = { x: CENTER.x + 6, y: CENTER.y + 8 }; // people dance in the town centre
   const CASA_DOOR: Pt = { x: 490, y: 716 }; // the family's green house, south shore
   // mom, dad, Carlos, Steven, Robert
+  const FAM_X = [-104, -52, 52, 104, 156]; // mom, dad | her | Carlos, Steven, Robert
   const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1', long: true }, { hair: '#4A4A4A', shirt: '#5FA9CC', long: false }, { hair: '#2A1B1B', shirt: '#93C78E', long: false }, { hair: '#2A1B1B', shirt: '#F2B84B', long: false }, { hair: '#3B2A1B', shirt: '#796AD8', long: false }];
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
@@ -487,7 +493,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const face = el<SVGGElement>('g', {}, luna);
     const a = pix(LUNA, LUNA_C, -21, -30, 3, face);
     const b = pix(LUNA_STEP, LUNA_C, -21, -30, 3, face);
+    const pee = pix(LUNA_PEE, LUNA_C, -21, -30, 3, face);
     b.style.display = 'none';
+    pee.style.display = 'none';
     link.addEventListener('click', (e) => {
       e.preventDefault();
       sfx.bark();
@@ -496,18 +504,21 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       animateBits(h, 1200, (t) => `translate(${lx} ${ly - 40 - t * 60})`);
     });
     let lx = CENTER.x - 50, ly = CENTER.y + 10, faceLeft = false;
+    lunaAt = () => ({ x: lx, y: ly });
     const tick = (now: number) => {
       // where she wants to be: just behind Madelyn, or waiting on the shore / at the foot of the mountain
       let tx = pos.x + (flip.getAttribute('transform') ? 46 : -46), ty = pos.y + 8;
       if (at === 'lake' && !walking) { tx = LAKE_SHORE.x + 60; ty = LAKE_SHORE.y + 10; }
       if (pos.y < 250) { tx = 600; ty = 250; } // she won't climb
+      if (lunaGoal) { tx = lunaGoal.x; ty = lunaGoal.y; }
       if (lunaParty) { tx = DANCE_AT.x + 52; ty = DANCE_AT.y + 4 - (Math.floor(now / 360) % 2 ? 10 : 0); }
       const dx = tx - lx, dy = ty - ly, d = Math.hypot(dx, dy);
       const moving = d > 3;
       if (moving) { const k = Math.min(1, (reduced ? 1 : 0.06)); lx += dx * k; ly += dy * k; if (Math.abs(dx) > 1) faceLeft = dx < 0; }
       const step = moving && Math.floor(now / 120) % 2 === 1;
-      a.style.display = step ? 'none' : '';
-      b.style.display = step ? '' : 'none';
+      a.style.display = step || lunaPeeing ? 'none' : '';
+      b.style.display = step && !lunaPeeing ? '' : 'none';
+      pee.style.display = lunaPeeing ? '' : 'none';
       face.setAttribute('transform', faceLeft ? 'scale(-1 1)' : '');
       luna.setAttribute('transform', `translate(${lx} ${ly})`);
       requestAnimationFrame(tick);
@@ -684,24 +695,31 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const out = el<SVGGElement>('g', {}, root);
     FAMILY.forEach((f, i) => {
       const g = el<SVGGElement>('g', {}, out);
-      pix(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x + [-178, -122, 124, 180, 236][i] - 32, CASA_DOOR.y - 76, 4, g); // either side of the house
+      pix(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x + FAM_X[i] - 32, CASA_DOOR.y - 72, 4, g); // shoulder to shoulder with her
       g.animate?.([{ transform: 'translateY(6px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { duration: 300, delay: i * 150, fill: 'both' });
     });
     for (let i = 0; i < 5; i++) {
       const h = el<SVGGElement>('g', {}, root);
       pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
-      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x + [-178, -122, 124, 180, 236][i] + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
+      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x + FAM_X[i] + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
     }
     say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 176);
     await wait(1500);
     // everyone holds still... say cheese!
+    // a little camera on a tripod pops up and takes the picture
+    const cam = el<SVGGElement>('g', {}, root);
+    pix(CAMERA, { K, G: '#6F7B90', L: '#9FD3E8', R: '#C8332D', B: '#8A4A3A' }, CASA_DOOR.x + 216, CASA_DOOR.y - 82, 6, cam);
+    cam.animate?.([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 300, fill: 'both' });
     say('say cheese!', CASA_DOOR.x, CASA_DOOR.y - 176);
     await wait(900);
+    const blink = el('circle', { cx: CASA_DOOR.x + 226, cy: CASA_DOOR.y - 64, r: 22, fill: '#fff', opacity: 0.95 }, root);
+    setTimeout(() => blink.remove(), 220);
     flash();
     sfx.shutter();
     onPhoto(familyPhoto());
     await wait(1400);
     out.remove();
+    cam.remove();
   }
 
   function flash() {
@@ -726,10 +744,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     g.strokeRect(24, 24, 512, 336);
     px(CASA, CASA_C, 280 - 92, 60, 8);
     const feet = 340;
-    FAMILY.slice(0, 2).forEach((f, i) => px(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 40 + i * 64, feet - 80, 4));
-    px(ME, ME_C, 248, feet - 80, 4);
-    FAMILY.slice(2).forEach((f, i) => px(SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 328 + i * 64, feet - 80, 4));
-    px(LUNA, LUNA_C, 196, feet - 30, 3);
+    FAMILY.forEach((f, i) => px(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 232 + FAM_X[i] - 20, feet - 80, 4));
+    px(ME, ME_C, 212, feet - 80, 4);
+    px(LUNA, LUNA_C, 60, feet - 30, 3);
     // caption
     g.fillStyle = K;
     g.font = "16px 'Press Start 2P', monospace";
@@ -738,6 +755,48 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     g.font = "18px 'Literata Variable', Georgia, serif";
     g.fillText(new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }), 280, 432);
     return c.toDataURL('image/png');
+  }
+
+  /** At Luna's tree: half the time she pees on it, half the time a squirrel jumps out and she chases it. */
+  async function lunaTime() {
+    const base = { x: LUNA_TREE.x - 30, y: LUNA_TREE.y + 10 };
+    lunaGoal = base;
+    await lunaArrives();
+    await wait(200);
+    if (Math.random() < 0.5) {
+      lunaPeeing = true;
+      sfx.tinkle();
+      await wait(900);
+      const puddle = el('ellipse', { cx: base.x - 18, cy: base.y + 4, rx: 4, ry: 2, fill: '#F2D24B', opacity: 0.8 }, root);
+      puddle.animate?.([{ transform: 'scale(0.3)' }, { transform: 'scale(1.6)' }], { duration: 900, fill: 'forwards' });
+      await wait(1200);
+      lunaPeeing = false;
+      say('luna!!', base.x, base.y - 60);
+      setTimeout(() => puddle.remove(), 6000);
+      await wait(800);
+    } else {
+      sfx.squeak();
+      const sq = el<SVGGElement>('g', {}, root);
+      pix(SQUIRREL, { K, B: '#A0522D' }, -16, -24, 4, sq);
+      const t0 = performance.now(), dur = reduced ? 600 : 2600;
+      sfx.bark();
+      await new Promise<void>((done) => {
+        const run = (now: number) => {
+          const t = Math.min(1, (now - t0) / dur);
+          // the squirrel zigzags off around the field with Luna right behind
+          const sx = base.x + 20 + Math.sin(t * 6) * 70 + t * 40, sy = base.y + 30 + t * 120 + Math.cos(t * 9) * 20;
+          sq.setAttribute('transform', `translate(${sx} ${sy - Math.abs(Math.sin(t * 30)) * 6}) scale(${Math.cos(t * 6) > 0 ? -1 : 1} 1)`);
+          lunaGoal = { x: sx - 30, y: sy + 8 };
+          if (t < 1) requestAnimationFrame(run); else done();
+        };
+        requestAnimationFrame(run);
+      });
+      // up a tree and gone
+      sq.remove();
+      say('it got away', lunaGoal.x, lunaGoal.y - 50);
+      await wait(900);
+    }
+    lunaGoal = null;
   }
 
   /** Toss a coin in the well and make a wish. No coins? Go shake some trees. */
@@ -830,6 +889,13 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   }
   let carrots = 0;
   let lunaParty = false;
+  let lunaGoal: Pt | null = null; // when set, Luna goes here instead of following
+  let lunaPeeing = false;
+  let lunaAt: () => Pt = () => CENTER;
+  async function lunaArrives(timeout = 4000) {
+    const t0 = performance.now();
+    while (lunaGoal && Math.hypot(lunaAt().x - lunaGoal.x, lunaAt().y - lunaGoal.y) > 6 && performance.now() - t0 < timeout) await wait(80);
+  }
   const WISHES_FOR_SONG = 3;
   let wishes = (() => { try { return Number(localStorage.getItem('wishes')) || 0; } catch { return 0; } })();
   let danceFloor: SVGGElement;
@@ -860,6 +926,12 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     el('path', { d: roadPath(p), fill: 'none', stroke: '#E8D7A8', 'stroke-width': 26, 'stroke-linecap': 'round' }, roadLayer);
     roads[p.id] = el<SVGPathElement>('path', { d: roadPath(p), fill: 'none', stroke: '#B99E6B', 'stroke-width': 3, 'stroke-dasharray': '2 12', 'stroke-linecap': 'round' }, roadLayer);
   });
+  // ---------- Luna's tree: take her there and she pees on it or chases a squirrel ----------
+  const lunaTree = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': "Take Luna to her favorite tree" }, root);
+  pix(PINE, PINE_C, LUNA_TREE.x - 32, LUNA_TREE.y - 64, 8, el('g', { class: 'lift' }, lunaTree));
+  lunaTree.addEventListener('click', (e) => { e.preventDefault(); go('lunatree', lunaTime); });
+  roads.lunatree = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${LUNA_TREE.x - 80} ${CENTER.y - 20} ${LUNA_TREE.x - 70} ${LUNA_TREE.y + 14}`, fill: 'none' }, roadLayer);
+
   // ---------- town centre ----------
   seed = 88;
   el('ellipse', { cx: CENTER.x, cy: CENTER.y + 4, rx: 74, ry: 40, fill: '#E2D6B6', stroke: '#C9B98F', 'stroke-width': 2 }, roadLayer);
