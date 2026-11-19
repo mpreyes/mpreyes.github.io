@@ -2,6 +2,7 @@ import '@fontsource/press-start-2p';
 import '@fontsource-variable/literata';
 import './styles.css';
 import { mountTown } from './town';
+import { isMuted, setMuted, unlockAudio } from './sound';
 
 const svg = document.getElementById('map') as unknown as SVGSVGElement;
 const card = document.getElementById('card')!;
@@ -22,3 +23,11 @@ mountTown(
   },
   () => { card.hidden = true; },
 );
+
+// Sound: browsers only allow it after a tap, so switch it on with the first one.
+const soundBtn = document.getElementById('sound') as HTMLButtonElement;
+const showSound = () => { soundBtn.textContent = isMuted() ? 'SOUND OFF' : 'SOUND ON'; soundBtn.setAttribute('aria-pressed', String(!isMuted())); };
+showSound();
+soundBtn.addEventListener('click', () => { setMuted(!isMuted()); showSound(); unlockAudio(); });
+addEventListener('pointerdown', () => unlockAudio(), { once: true });
+addEventListener('keydown', () => unlockAudio(), { once: true });
