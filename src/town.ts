@@ -251,7 +251,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     } else {
       pix(BARN, BARN_C, p.x - 130, p.y - 14, 6, g);
       const fieldLink = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dig up a carrot' }, root);
-      field = el<SVGGElement>('g', { class: 'lift' }, fieldLink);
+      // the hover lift goes on a wrapper: a CSS transform on the scaled group would undo its scale
+      field = el<SVGGElement>('g', {}, el('g', { class: 'lift' }, fieldLink));
       for (let i = 0; i < 5; i++) {
         el('rect', { x: p.x - 42, y: p.y - 80 + i * 14, width: 110, height: 7, fill: '#7A5A3A' }, field);
         for (let j = 0; j < 8; j++) el('rect', { x: p.x - 38 + j * 14, y: p.y - 85 + i * 14, width: 6, height: 6, fill: '#5E9A4A' }, field);
