@@ -759,11 +759,11 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     wishes++;
     try { localStorage.setItem('wishes', String(wishes)); } catch { /* private mode */ }
     if (wishes % WISHES_FOR_SONG === 0) {
-      // every third coin: the well plays my song
-      sfx.higher();
-      for (let i = 0; i < 10; i++) setTimeout(() => { sparkles(); floatNote(WELL_AT.x, WELL_AT.y - 60); }, i * 450);
+      // every third coin: the well plays my piano melody
+      const secs = sfx.piano() ?? 8; // the piano melody from madebit.studio
+      for (let i = 0; i < Math.round(secs / 0.45); i++) setTimeout(() => { sparkles(); floatNote(WELL_AT.x, WELL_AT.y - 60); }, i * 450);
       say('♪ a song for you ♪', WELL_AT.x, WELL_AT.y - 110);
-      await wait(4500);
+      await wait(Math.min(4500, secs * 1000));
     } else {
       sfx.wish();
       const left = WISHES_FOR_SONG - (wishes % WISHES_FOR_SONG);

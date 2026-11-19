@@ -81,6 +81,8 @@ const LIGHTS: [number, number][] = [[62, 0.5], [65, 0.5], [62, 0.5], [60, 0.5], 
 // M.A.S.H.: the first phrase of the space tune (MIDI_Audio.mid)
 const SPACE: [number, number][] = [[62, 0.5], [60, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [65, 0.5], [61, 0.5], [60, 1]];
 // madebit: the call from higher.mid
+// the desk piano tune from madebit.studio: [MIDI note, length in ticks at 96 per beat]
+const PIANO: [number, number][] = [[43, 386], [45, 378], [48, 292], [50, 49], [48, 94], [43, 141], [55, 52], [53, 47], [57, 145], [55, 24], [53, 24], [50, 288], [48, 384], [50, 288], [53, 97], [55, 480]];
 // the response from higher_2.mid
 const RESPONSE: [number, number, number][] = [[1728, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 85, 64], [2104, 98, 62], [2196, 98, 64], [2295, 60, 66], [2350, 107, 64], [2448, 141, 59]];
 // [start tick, length in ticks, MIDI note], straight from the file, so the rests are kept
@@ -144,6 +146,34 @@ export const sfx = {
     return length;
   },
   stopLoop() { stopAll(); },
+  /** The desk keyboard melody from madebit.studio (CF_Tones_Ah_A4_Falsetto_5.mid), all 16 notes,
+   *  each held at full volume for its exact MIDI length at 130 bpm, like the piano on the desk. */
+  piano() {
+    const a = audio();
+    if (!a) return;
+    const tick = 60 / 130 / 96;
+    let t = Math.max(0.02, melodyEnd - a.currentTime);
+    for (const [n, len] of PIANO) {
+      const dur = Math.max(0.15, len * tick);
+      const o = a.createOscillator();
+      const g = a.createGain();
+      const at = a.currentTime + t;
+      const release = Math.min(0.08, dur / 4);
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(hz(n), at);
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.linearRampToValueAtTime(0.16, at + 0.012);
+      g.gain.setValueAtTime(0.16, at + dur - release);
+      g.gain.linearRampToValueAtTime(0.0001, at + dur);
+      o.connect(g).connect(a.destination);
+      o.start(at);
+      o.stop(at + dur + 0.02);
+      live.push(o);
+      t += dur;
+    }
+    melodyEnd = a.currentTime + t;
+    return t;
+  },
   /** The whole of higher.mid: the call, then the response. */
   higher() {
     const resp = RESPONSE.map(([st, l, n]) => [st - 560, l, n] as [number, number, number]);
