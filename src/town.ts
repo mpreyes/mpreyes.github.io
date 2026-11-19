@@ -61,6 +61,9 @@ const LAMP = ['.KKK.', 'KYYYK', 'KYYYK', '.KKK.', '..K..', '..K..', '..K..', '..
 const BENCH = ['KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', 'KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', '.K..............K.'];
 const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.KK......KK.', '.KK..K...KK.', '.KK..K...KK.', '.KK..B...KK.', 'KKKKKKKKKKKK', 'KSSKSSKSSKSK', 'KSKSSKSSKSSK', 'KKKKKKKKKKKK'];
 const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
+const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
+const BOOK = ['KKKKKKKK', 'KWWWKWWK', 'KWKWKWKK', 'KWWWKWWK', 'KPPPKPPK'];
+const BOOK_TURN = ['KKKKKKKK', 'KWWWKWK.', 'KWKWKWWK', 'KWWWKWWK', 'KPPPKPPK'];
 const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
 const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
 const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
@@ -336,8 +339,10 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       if (!(onLand(x + 32, y + 60) && onLand(x - 10, y) && onLand(x + 74, y))) return;
       const pine = i % 3 === 0;
       const tree = pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 8, layer);
-      tree.classList.add('tree');
-      tree.addEventListener('click', () => shakeTree(tree, x, y));
+      if (i % 3 === 1) { // only some trees have something in them
+        tree.classList.add('tree');
+        tree.addEventListener('click', () => shakeTree(tree, x, y));
+      }
     });
   }
 
@@ -397,7 +402,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const GH_DOOR: Pt = { x: 640, y: 580 };
   const GH_STAND: Pt = { x: 548, y: 586 }; // she stands beside the greenhouse, not in front of it
   const roads: Record<string, SVGPathElement> = {};
-  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement, seated: SVGGElement;
+  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement, seated: SVGGElement, pageA: SVGGElement, pageB: SVGGElement;
+  let reading: number | undefined;
   let at: string | null = null;
   let walking = false;
 
@@ -409,6 +415,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     stepping = pix(ME_STEP, ME_C, -32, -80, 4, flip);
     stepping.style.display = 'none';
     seated = pix(ME_SIT, ME_C, -32, -72, 4, flip);
+    pageA = pix(BOOK, { K, W: '#FFFFFF', P: '#F77FA1' }, -16, -34, 4, seated);
+    pageB = pix(BOOK_TURN, { K, W: '#FFFFFF', P: '#F77FA1' }, -16, -34, 4, seated);
+    pageB.style.display = 'none';
     seated.style.display = 'none';
     moveTo(CENTER.x, CENTER.y);
   }
@@ -523,17 +532,24 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     flip.removeAttribute('transform');
     moveTo(BENCH_AT.x, BENCH_AT.y - 6);
     sitting = true;
-    sfx.plink();
+    sfx.page();
+    // she reads: a page turns every few seconds
+    if (!reduced) reading = window.setInterval(() => {
+      pageA.style.display = 'none'; pageB.style.display = '';
+      sfx.page();
+      setTimeout(() => { pageA.style.display = ''; pageB.style.display = 'none'; }, 260);
+    }, 3200);
   }
   function standUp() {
     if (!sitting) return;
     sitting = false;
+    clearInterval(reading);
     seated.style.display = 'none';
     standing.style.display = '';
     moveTo(BENCH_AT.x, BENCH_AT.y + 8);
   }
 
-  /** Toss a coin in the well: a rainbow over the island. No coins? Go shake some trees. */
+  /** Toss a coin in the well and make a wish. No coins? Go shake some trees. */
   async function wish() {
     if (coins <= 0) {
       say('no coins! try the trees', WELL_AT.x, WELL_AT.y - 100);
@@ -548,17 +564,24 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     await new Promise<void>((done) => animateBits(c, 600, (t) => `translate(${WELL_AT.x - 50 + t * 50} ${WELL_AT.y - 70 - Math.sin(t * Math.PI) * 50 + t * 30})`, done));
     sfx.plink();
     await wait(300);
-    rainbow();
+    sparkles();
     sfx.wish();
     await wait(1200);
   }
-  function rainbow() {
-    const g = el<SVGGElement>('g', { opacity: '0.85' }, root);
-    ['#C8332D', '#F28C28', '#F2B84B', '#93C78E', '#5FA9CC', '#796AD8'].forEach((c, i) => {
-      el('path', { d: `M${80 + i * 14} 520 A ${560 - i * 14} 420 0 0 1 ${1200 - i * 14} 520`, fill: 'none', stroke: c, 'stroke-width': 14 }, g);
-    });
-    g.animate?.([{ opacity: 0 }, { opacity: 0.85, offset: 0.2 }, { opacity: 0.85, offset: 0.75 }, { opacity: 0 }], { duration: reduced ? 1500 : 4500 });
-    setTimeout(() => g.remove(), reduced ? 1500 : 4500);
+  // a wish: sparkles burst out of the well and little hearts float up
+  function sparkles() {
+    const x0 = WELL_AT.x, y0 = WELL_AT.y - 50;
+    for (let i = 0; i < 12; i++) {
+      const star = el('path', { d: 'M0 -7l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', fill: ['#F2B84B', '#F77FA1', '#fff'][i % 3], stroke: K, 'stroke-width': 1 }, root);
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.2, v = 70 + Math.random() * 60;
+      animateBits(star, 1100, (t) => `translate(${x0 + Math.cos(a) * v * t} ${y0 + Math.sin(a) * v * t + 40 * t * t}) scale(${1 - t * 0.7})`);
+    }
+    for (let i = 0; i < 3; i++) {
+      const h = el<SVGGElement>('g', {}, root);
+      pix(HEART, { P: '#F77FA1', K }, -10, -8, 4, h);
+      const dx = (i - 1) * 26;
+      setTimeout(() => animateBits(h, 1800, (t) => `translate(${x0 + dx + Math.sin(t * 8) * 6} ${y0 - t * 120}) scale(${1 - t * 0.4})`), i * 200);
+    }
   }
   function say(text: string, x: number, y: number) {
     const g = el('g', {}, root);
@@ -634,7 +657,15 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
     el('rect', { x: CENTER.x + Math.cos(a) * 64 * r - 4, y: CENTER.y + 4 + Math.sin(a) * 32 * r - 2, width: 8, height: 5, rx: 2, fill: '#CDBF9A' }, roadLayer);
   }
-  pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 112, CENTER.y - 92, 5, root); // about her height and a half
+  const lamp = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Switch the lamp on or off' }, root);
+  const lx = CENTER.x - 112 + 12, ly = CENTER.y - 92 + 10; // middle of the lantern
+  const glow = el('circle', { cx: lx, cy: ly, r: 46, fill: '#F2B84B', opacity: 0.28 }, lamp);
+  const lampOn = pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
+  const lampOff = pix(LAMP, { K, Y: '#6F7B90' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
+  let lit = true;
+  const showLamp = () => { glow.style.display = lit ? '' : 'none'; lampOn.style.display = lit ? '' : 'none'; lampOff.style.display = lit ? 'none' : ''; lamp.setAttribute('aria-pressed', String(lit)); };
+  showLamp();
+  lamp.addEventListener('click', (e) => { e.preventDefault(); lit = !lit; showLamp(); sfx.click(lit); });
   const bench = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Sit on the bench' }, root);
   pix(BENCH, { K, W: '#B98B5E' }, BENCH_AT.x - 36, BENCH_AT.y - 36, 4, el('g', { class: 'lift' }, bench));
   bench.addEventListener('click', (e) => { e.preventDefault(); go('bench', sit); });

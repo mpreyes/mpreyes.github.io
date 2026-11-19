@@ -100,13 +100,15 @@ export const sfx = {
   arrive(id: string) {
     if (id === 'akta') melody(LIGHTS, 0.22, 'square', 0.035);
     else if (id === 'mash') melody(SPACE, 0.25, 'square', 0.035);
-    else if (id === 'madebit') melody(CALL, 0.46, 'square', 0.035);
+    else if (id === 'madebit') melody(CALL, 0.28, 'triangle', 0.09);
     else if (id === 'farm') melody(DESK.map(([n, l]) => [n + 12, l] as [number, number]), 0.22, 'triangle', 0.08);
   },
   splash() { noise(0.45, 0.25, 1800); tone(500, 0.25, 'sine', 0.08, 0, 140); },
   bloop() { tone(300 + Math.random() * 200, 0.12, 'sine', 0.06, 0, 700); },
   dig() { noise(0.12, 0.2, 600); tone(110, 0.1, 'triangle', 0.08); },
   water() { for (let i = 0; i < 8; i++) tone(900 + Math.random() * 600, 0.05, 'sine', 0.03, i * 0.06); },
+  click(on: boolean) { tone(on ? 1400 : 900, 0.03, 'square', 0.04); },
+  page() { noise(0.12, 0.06, 4000); },
   coin() { tone(hz(83), 0.07, 'square', 0.04); tone(hz(88), 0.25, 'square', 0.04, 0.07); },
   squeak() { tone(1800, 0.06, 'square', 0.025, 0, 2400); tone(2000, 0.06, 'square', 0.025, 0.09, 2600); },
   plink() { tone(hz(84), 0.12, 'triangle', 0.06); },
