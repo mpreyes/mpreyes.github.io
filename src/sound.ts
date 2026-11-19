@@ -179,6 +179,7 @@ export const sfx = {
     const resp = RESPONSE.map(([st, l, n]) => [st - 560, l, n] as [number, number, number]);
     ticks(CALL.concat(resp), 0.0034, 'triangle', 0.09);
   },
+  crunch() { noise(0.09, 0.25, 2500); tone(140, 0.05, 'square', 0.03); },
   tinkle() { noise(0.8, 0.05, 2500); },
   shutter() { noise(0.05, 0.25, 6000); noise(0.08, 0.2, 3000, 0.09); },
   coin() { tone(hz(83), 0.07, 'square', 0.04); tone(hz(88), 0.25, 'square', 0.04, 0.07); },

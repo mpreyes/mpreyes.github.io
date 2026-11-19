@@ -53,6 +53,8 @@ const TREE_C: Palette = { K, G: '#5E9A4A', L: '#86C06A', B: '#8A4A3A' };
 const PINE = ['...KK...', '..KGGK..', '..KGGK..', '.KGGLGK.', '.KGLGGK.', 'KGGGGGLK', 'KKKBBKKK', '...BB...'];
 const PINE_C: Palette = { K, G: '#2F6B3A', L: '#3F8A4A', B: '#8A4A3A' };
 const CARROT = ['.G..G.', '..GG..', '.GGGG.', '.OOOO.', '.OKOO.', '..OO..', '..OK..', '...O..'];
+const CARROT_BITE1 = ['.G..G.', '..GG..', '.GGGG.', '.OOOO.', '.OKOO.', '..OO..', '......', '......'];
+const CARROT_BITE2 = ['.G..G.', '..GG..', '.GGGG.', '.OOOO.', '......', '......', '......', '......'];
 const CARROT_C: Palette = { G: '#4E9A3A', O: '#F28C28', K: '#C9661A' };
 const GREENHOUSE = ['.....KKKKKKKK.....', '...KKBBKBBKBBKK...', '..KBBBBKBBKBBBBK..', '.KBBBBBKBBKBBBBBK.', 'KKKKKKKKKKKKKKKKKK', 'KBBBBKBBBBBKBBBBBK', 'KBPBBKBGGBBKBBPBBK', 'KGGGBKBGGGBKBGGGBK', 'KGGGGKBKKKBKGGGGGK', 'KGGGGKBKDKBKGGGGGK', 'KKKKKKKKKKKKKKKKKK'];
 const GREENHOUSE_C: Palette = { K, B: '#CFEFF7', G: '#5E9A4A', P: '#F77FA1', D: '#F2B84B' };
@@ -86,9 +88,10 @@ const TALL = (rows: string[]) => rows.slice(0, 12).concat([rows[12]], rows.slice
 const SHORT_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HSSSSSSSSH...', '...SSESSSSESS...', '...SSSSSSSSSS...', '...SSSSMMSSSS...', '....SSSSSSSS....', '......SSSS......'].concat(BODY.map((r, i) => (i === 0 ? '....TTTTTTTT....' : r)));
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
 // an open book held up in front of her: two white pages with lines, pink cover underneath
-const BOOK = ['SPPPPPPPKPPPPPPPS', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', '.PPPPPPP.PPPPPPP.'];
-const BOOK_C: Palette = { K: '#C9B9A6', W: '#FFFDF5', L: '#B9C2CC', P: '#C8332D', S: '#D39A72' };
-const BOOK_TURN = ['SPPPPPPPKPPPPPPPS', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWWLLLWWP', 'PWWWWWWWKPWWWWWP.', 'PWLLLLLWK.PWLLWP.', 'PWWWWWWWK..PWWWP.', '.PPPPPPP.....PP..'];
+// she's facing us, so we see the outside of the book: the cover, with the pages facing her
+const BOOK = ['.WWWWWWW.WWWWWWW.', 'PPPPPPPPKPPPPPPPP', 'PRRRRRRRKRRRRRRRP', 'PRYYYYRRKRRRRRRRP', 'PRRRRRRRKRRRRRRRP', 'PRYYYRRRKRRRRRRRP', 'PRRRRRRRKRRRRRRRP', 'SPPPPPPPKPPPPPPPS'];
+const BOOK_C: Palette = { K: '#7A1E1A', W: '#FFFDF5', P: '#8E2420', R: '#C8332D', Y: '#F2B84B', S: '#D39A72' };
+const BOOK_TURN = ['.WWWWWWW.WWW.WWW.', 'PPPPPPPPKPPPWPPPP', 'PRRRRRRRKRRRRRRRP', 'PRYYYYRRKRRRRRRRP', 'PRRRRRRRKRRRRRRRP', 'PRYYYRRRKRRRRRRRP', 'PRRRRRRRKRRRRRRRP', 'SPPPPPPPKPPPPPPPS'];
 const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
 const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
 const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
@@ -886,13 +889,27 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       await wait(260);
     }
     sfx.pop();
-    const carrot = pix(CARROT, CARROT_C, digSpot.x + 34, digSpot.y - 96, 4, root);
-    const label = el('text', { x: digSpot.x + 46, y: digSpot.y - 104, 'text-anchor': 'middle', 'font-family': "'Press Start 2P', monospace", 'font-size': 11, fill: K }, root);
-    carrots++;
-    label.textContent = carrots === 1 ? '+1 CARROT' : `${carrots} CARROTS`;
-    await wait(1600);
+    // up it comes... then she eats it, three crunchy bites
+    const carrot = el<SVGGElement>('g', {}, root);
+    const bites = [CARROT, CARROT_BITE1, CARROT_BITE2].map((art) => pix(art, CARROT_C, -12, -16, 4, carrot));
+    bites[1].style.display = bites[2].style.display = 'none';
+    carrot.setAttribute('transform', `translate(${digSpot.x + 40} ${digSpot.y - 80})`);
+    await wait(500);
+    carrot.setAttribute('transform', `translate(${digSpot.x + 16} ${digSpot.y - 46}) rotate(-60)`); // up to her mouth
+    for (let i = 0; i < 3; i++) {
+      await wait(450);
+      sfx.crunch();
+      bites.forEach((b, j) => { b.style.display = j === i + 1 ? '' : 'none'; });
+      for (let c = 0; c < 3; c++) {
+        const crumb = el('rect', { x: digSpot.x + 10, y: digSpot.y - 44, width: 3, height: 3, fill: '#F28C28' }, root);
+        const vx = (Math.random() - 0.5) * 50;
+        animateBits(crumb, 500, (t) => `translate(${vx * t} ${-20 * t + 90 * t * t})`);
+      }
+    }
     carrot.remove();
-    label.remove();
+    carrots++;
+    say(carrots === 1 ? 'nom nom' : `${carrots} carrots eaten`, digSpot.x, digSpot.y - 100);
+    await wait(900);
   }
   let carrots = 0;
   let lunaParty = false;
