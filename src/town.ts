@@ -61,6 +61,16 @@ const LAMP = ['.KKK.', 'KYYYK', 'KYYYK', '.KKK.', '..K..', '..K..', '..K..', '..
 const BENCH = ['KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', 'KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', '.K..............K.'];
 const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.KK......KK.', '.KK..K...KK.', '.KK..K...KK.', '.KK..B...KK.', 'KKKKKKKKKKKK', 'KSSKSSKSSKSK', 'KSKSSKSSKSSK', 'KKKKKKKKKKKK'];
 const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
+const LUNA = ['..........K.K.', '.........KBKBK', 'KK......KBBBBK', 'KBK.....KBWEWK', '.KBKKKKKBBWWWK', '..KBBBBBBBWWNK', '..KBBBBBBWWWK.', '..KWWWWWWWWK..', '..KWK.KWKKWK..', '..KK..KK.KK...'];
+const LUNA_STEP = LUNA.slice(0, 8).concat(['.KWK..KWK.KWK.', '.KK...KK..KK..']);
+const LUNA_C: Palette = { K, B: '#8A5A3A', W: '#F3EBDD', E: '#5FA9CC', N: K };
+const LAPTOP = ['KKKKKKKKKKKKKK', 'KDDDDDDDDDDDDK', 'KDGGGDDDDDDDDK', 'KDDPPPPPDDDDDK', 'KDDDGGGGDDDDDK', 'KDYYDDDDDDDDDK', 'SLLLLLLLLLLLLS', '.LLLLLLLLLLLL.'];
+const LAPTOP_2 = ['KKKKKKKKKKKKKK', 'KDDPPPPDDDDDDK', 'KDDDGGGGGDDDDK', 'KDYYYDDDDDDDDK', 'KDGGGDDDDDDDDK', 'KDDPPPPPPDDDDK', 'SLLLLLLLLLLLLS', '.LLLLLLLLLLLL.'];
+const LAPTOP_C: Palette = { K, D: '#1E2A38', G: '#93C78E', P: '#F77FA1', Y: '#F2B84B', L: '#B9C2CC', S: '#D39A72' };
+const BOOMBOX = ['....KKKKKK....', '...K......K...', 'KKKKKKKKKKKKKK', 'KRRRRRRRRRRRRK', 'KRKKKRYYRKKKRK', 'KRKWKRRRRKWKRK', 'KRKKKRYYRKKKRK', 'KRRRRRRRRRRRRK', 'KKKKKKKKKKKKKK'];
+const CASA = ['.......KKKKKKKKK.......', '.....KKRRRRRRRRRKK.....', '...KKRRRRRRRRRRRRRKK...', '.KKRRRRRRRRRRRRRRRRRKK.', 'KKKKKKKKKKKKKKKKKKKKKKK', 'KGGGGGGGGGGGGGGGGGGGGGK', 'KGKKKKGGGGGGGGGGKKKKGGK', 'KGKWWKGGGGKKKGGGKWWKGGK', 'KGKWWKGGGGKYKGGGKWWKGGK', 'KGKKKKGGGGKYKGGGKKKKGGK', 'KGGGGGGPPGKYKGPPGGGGGGK', 'KGGGGGGGGGKYKGGGGGGGGGK', 'KKKKKKKKKKKKKKKKKKKKKKK'];
+const CASA_C: Palette = { K, R: '#C8332D', G: '#7DC07A', W: '#9FD3E8', Y: '#B98B5E', P: '#F77FA1' };
+const PERSON = ['..HHHH..', '.HSSSSH.', '.SKSSKS.', '.SSSSSS.', '..TTTT..', '.TTTTTT.', '.TTTTTT.', '..DDDD..', '..D..D..', '.BB..BB.'];
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
 // an open book held up in front of her: two white pages with lines, pink cover underneath
 const BOOK = ['.PPPPPPP.PPPPPPP.', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
@@ -336,6 +346,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
+      if (x > 1010 && x < 1240 && y > 330 && y < 530) return; // the dance floor
+      if (x > 330 && x < 560 && y > 560 && y < 730) return; // the family's house
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
       if (!(onLand(x + 32, y + 60) && onLand(x - 10, y) && onLand(x + 74, y))) return;
@@ -399,12 +411,16 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
+  const BOOMBOX_AT: Pt = { x: 1150, y: 432 }; // bottom left of the boombox, east side of the island
+  const DANCE_AT: Pt = { x: 1125, y: 482 };
+  const CASA_DOOR: Pt = { x: 470, y: 716 }; // the family's green house, south shore
+  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1' }, { hair: '#3B3B3B', shirt: '#5FA9CC' }, { hair: '#2A1B1B', shirt: '#F2B84B' }];
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
   const GH_STAND: Pt = { x: 548, y: 586 }; // she stands beside the greenhouse, not in front of it
   const roads: Record<string, SVGPathElement> = {};
-  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement, seated: SVGGElement, pageA: SVGGElement, pageB: SVGGElement;
+  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement, seated: SVGGElement, pageA: SVGGElement, pageB: SVGGElement, codeA: SVGGElement, codeB: SVGGElement;
   let reading: number | undefined;
   let at: string | null = null;
   let walking = false;
@@ -420,10 +436,15 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     pageA = pix(BOOK, BOOK_C, -26, -42, 3, seated);
     pageB = pix(BOOK_TURN, BOOK_C, -26, -42, 3, seated);
     pageB.style.display = 'none';
+    codeA = pix(LAPTOP, LAPTOP_C, -21, -40, 3, seated);
+    codeB = pix(LAPTOP_2, LAPTOP_C, -21, -40, 3, seated);
+    codeA.style.display = 'none';
+    codeB.style.display = 'none';
     seated.style.display = 'none';
     moveTo(CENTER.x, CENTER.y);
   }
-  const moveTo = (x: number, y: number) => walker.setAttribute('transform', `translate(${x} ${y})`);
+  const pos: Pt = { x: CENTER.x, y: CENTER.y };
+  const moveTo = (x: number, y: number) => { pos.x = x; pos.y = y; walker.setAttribute('transform', `translate(${x} ${y})`); };
 
   function walkAlong(road: SVGPathElement, backwards: boolean): Promise<void> {
     const speed = road === roads.mountain ? 120 : 170;
@@ -450,12 +471,49 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     });
   }
 
+  // ---------- Luna, the brown husky ----------
+  function drawLuna() {
+    const link = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Pet Luna' }, root);
+    const luna = el<SVGGElement>('g', {}, link);
+    const face = el<SVGGElement>('g', {}, luna);
+    const a = pix(LUNA, LUNA_C, -21, -30, 3, face);
+    const b = pix(LUNA_STEP, LUNA_C, -21, -30, 3, face);
+    b.style.display = 'none';
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      sfx.bark();
+      const h = el<SVGGElement>('g', {}, root);
+      pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
+      animateBits(h, 1200, (t) => `translate(${lx} ${ly - 40 - t * 60})`);
+    });
+    let lx = CENTER.x - 50, ly = CENTER.y + 10, faceLeft = false;
+    const tick = (now: number) => {
+      // where she wants to be: just behind Madelyn, or waiting on the shore / at the foot of the mountain
+      let tx = pos.x + (flip.getAttribute('transform') ? 46 : -46), ty = pos.y + 8;
+      if (at === 'lake' && !walking) { tx = LAKE_SHORE.x + 60; ty = LAKE_SHORE.y + 10; }
+      if (pos.y < 250) { tx = 600; ty = 250; } // she won't climb
+      if (lunaParty) { tx = DANCE_AT.x - 56; ty = DANCE_AT.y + 4 - (Math.floor(now / 270) % 2 ? 10 : 0); }
+      const dx = tx - lx, dy = ty - ly, d = Math.hypot(dx, dy);
+      const moving = d > 3;
+      if (moving) { const k = Math.min(1, (reduced ? 1 : 0.06)); lx += dx * k; ly += dy * k; if (Math.abs(dx) > 1) faceLeft = dx < 0; }
+      const step = moving && Math.floor(now / 120) % 2 === 1;
+      a.style.display = step ? 'none' : '';
+      b.style.display = step ? '' : 'none';
+      face.setAttribute('transform', faceLeft ? 'scale(-1 1)' : '');
+      luna.setAttribute('transform', `translate(${lx} ${ly})`);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   /** Walk to a spot (back through the middle if she's somewhere else), then do the thing there. */
   async function go(id: string, then: () => Promise<void> | void) {
     if (walking) return;
+    if (id === 'bench' && sitting) { swapReading(); return; }
     walking = true;
     onLeave();
     standUp();
+    stopDancing();
     if (at !== id) {
       if (at) await walkAlong(roads[at], true);
       await walkAlong(roads[id], false);
@@ -534,14 +592,34 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     flip.removeAttribute('transform');
     moveTo(BENCH_AT.x, BENCH_AT.y - 6);
     sitting = true;
-    sfx.page();
-    // she reads: a page turns every few seconds
-    if (!reduced) reading = window.setInterval(() => {
-      pageA.style.display = 'none'; pageB.style.display = '';
-      sfx.page();
-      setTimeout(() => { pageA.style.display = ''; pageB.style.display = 'none'; }, 260);
-    }, 3200);
+    onLaptop = false;
+    startReading();
   }
+  // Sitting: she reads (a page turns now and then) or codes on her laptop. Click the bench again to switch.
+  let onLaptop = false;
+  function startReading() {
+    clearInterval(reading);
+    pageA.style.display = onLaptop ? 'none' : '';
+    pageB.style.display = 'none';
+    codeA.style.display = onLaptop ? '' : 'none';
+    codeB.style.display = 'none';
+    if (onLaptop) sfx.typing(); else sfx.page();
+    if (reduced) return;
+    let flipFlop = false;
+    reading = window.setInterval(() => {
+      if (onLaptop) {
+        flipFlop = !flipFlop;
+        codeA.style.display = flipFlop ? 'none' : '';
+        codeB.style.display = flipFlop ? '' : 'none';
+        sfx.typing();
+      } else {
+        pageA.style.display = 'none'; pageB.style.display = '';
+        sfx.page();
+        setTimeout(() => { pageA.style.display = ''; pageB.style.display = 'none'; }, 260);
+      }
+    }, onLaptop ? 700 : 3200);
+  }
+  function swapReading() { onLaptop = !onLaptop; startReading(); }
   function standUp() {
     if (!sitting) return;
     sitting = false;
@@ -549,6 +627,61 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     seated.style.display = 'none';
     standing.style.display = '';
     moveTo(BENCH_AT.x, BENCH_AT.y + 8);
+  }
+
+  /** Dance by the boombox: she bounces side to side while the music plays. Luna joins in. */
+  let dancing: number | undefined;
+  let danceEnd: number | undefined;
+  async function dance() {
+    sfx.danceLoop();
+    let beat = 0;
+    lunaParty = true;
+    dancing = window.setInterval(() => {
+      beat++;
+      flip.setAttribute('transform', beat % 2 ? 'scale(-1 1)' : '');
+      standing.style.display = beat % 4 < 2 ? '' : 'none';
+      stepping.style.display = beat % 4 < 2 ? 'none' : '';
+      moveTo(DANCE_AT.x + (beat % 2 ? 6 : -6), DANCE_AT.y - (beat % 2 ? 8 : 0));
+      if (beat % 2 === 0) floatNote(BOOMBOX_AT.x + 30, BOOMBOX_AT.y - 40);
+    }, reduced ? 1000 : 270);
+    danceEnd = window.setTimeout(stopDancing, 6200);
+  }
+  function stopDancing() {
+    if (dancing === undefined) return;
+    clearInterval(dancing);
+    clearTimeout(danceEnd);
+    dancing = undefined;
+    lunaParty = false;
+    sfx.stopLoop();
+    flip.removeAttribute('transform');
+    standing.style.display = '';
+    stepping.style.display = 'none';
+    moveTo(DANCE_AT.x, DANCE_AT.y);
+  }
+  function floatNote(x: number, y: number) {
+    const n = el<SVGGElement>('g', {}, root);
+    pix(NOTE, { K: ['#187489', '#F77FA1', '#796AD8'][Math.floor(Math.random() * 3)] }, -6, -12, 3, n);
+    const dx = (Math.random() - 0.5) * 40;
+    animateBits(n, 1200, (t) => `translate(${x + dx * t} ${y - t * 70})`);
+  }
+
+  /** Visit the family: they come out and wave. */
+  async function visitFamily() {
+    sfx.family();
+    const out = el<SVGGElement>('g', {}, root);
+    FAMILY.forEach((f, i) => {
+      const g = el<SVGGElement>('g', {}, out);
+      pix(PERSON, { H: f.hair, S: '#D39A72', K, T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x - 46 + i * 30, CASA_DOOR.y - 24, 3, g);
+      g.animate?.([{ transform: 'translateY(6px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { duration: 300, delay: i * 150, fill: 'both' });
+    });
+    for (let i = 0; i < 4; i++) {
+      const h = el<SVGGElement>('g', {}, root);
+      pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
+      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x - 30 + i * 20 + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
+    }
+    say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 96);
+    await wait(2600);
+    out.remove();
   }
 
   /** Toss a coin in the well and make a wish. No coins? Go shake some trees. */
@@ -628,6 +761,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     label.remove();
   }
   let carrots = 0;
+  let lunaParty = false;
   function dirt(x: number, y: number) {
     for (let i = 0; i < 5; i++) {
       const bit = el('rect', { x, y, width: 5, height: 5, fill: '#7A5A3A' }, root);
@@ -687,7 +821,23 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   roads.carrot = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${(CENTER.x + digSpot.x) / 2} ${CENTER.y + 10} ${digSpot.x} ${digSpot.y}`, fill: 'none' }, roadLayer);
   const swimClip = el('clipPath', { id: 'swimClip' }, svg.querySelector('defs')!);
   el('rect', { x: -40, y: -90, width: 80, height: 58 }, swimClip);
+  // ---------- dance floor ----------
+  const floor = el('g', {}, roadLayer);
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++)
+    el('rect', { x: DANCE_AT.x - 70 + i * 28, y: DANCE_AT.y - 40 + j * 20, width: 28, height: 20, fill: (i + j) % 2 ? '#F77FA1' : '#F8F6EF', stroke: K, 'stroke-width': 1 }, floor);
+  const boombox = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dance' }, root);
+  pix(BOOMBOX, { K, R: '#796AD8', Y: '#F2B84B', W: '#F8F6EF' }, BOOMBOX_AT.x, BOOMBOX_AT.y - 36, 4, el('g', { class: 'lift' }, boombox));
+  boombox.addEventListener('click', (e) => { e.preventDefault(); go('dance', dance); });
+  roads.dance = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${(CENTER.x + DANCE_AT.x) / 2} ${CENTER.y + 50} ${DANCE_AT.x} ${DANCE_AT.y}`, fill: 'none' }, roadLayer);
+
+  // ---------- the family's green house ----------
+  const casa = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Visit the family' }, root);
+  pix(CASA, CASA_C, CASA_DOOR.x - 66, CASA_DOOR.y - 78, 6, el('g', { class: 'lift' }, casa));
+  casa.addEventListener('click', (e) => { e.preventDefault(); go('casa', visitFamily); });
+  roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 120} ${CENTER.y + 120} ${CASA_DOOR.x + 104} ${CASA_DOOR.y + 4}`, fill: 'none' }, roadLayer);
+
   compass();
+  drawLuna();
   drawWalker();
 
   return { walkTo };

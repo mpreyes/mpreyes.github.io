@@ -83,6 +83,7 @@ const CALL: [number, number, number][] = [[192, 45, 59], [287, 141, 59], [422, 1
 const DESK: [number, number][] = [[43, 1.9], [45, 1.8], [48, 1.4], [50, 0.3], [48, 0.5], [43, 0.7]];
 
 let melodyEnd = 0;
+let loopOn = false;
 function melody(notes: [number, number][], beat: number, type: OscillatorType, vol: number) {
   const a = audio();
   if (!a) return;
@@ -120,6 +121,19 @@ export const sfx = {
   water() { for (let i = 0; i < 8; i++) tone(900 + Math.random() * 600, 0.05, 'sine', 0.03, i * 0.06); },
   click(on: boolean) { tone(on ? 1400 : 900, 0.03, 'square', 0.04); },
   page() { noise(0.12, 0.06, 4000); },
+  typing() { for (let i = 0; i < 4; i++) tone(1800 + Math.random() * 400, 0.02, 'square', 0.015, i * 0.09 + Math.random() * 0.03); },
+  bark() { tone(420, 0.09, 'square', 0.06, 0, 300); tone(460, 0.12, 'square', 0.06, 0.16, 320); },
+  family() { melody([[67, 0.5], [71, 0.5], [74, 0.5], [79, 1.5]], 0.22, 'triangle', 0.08); },
+  danceLoop() {
+    // the lights tune, twice through, with a little kick drum on every beat
+    loopOn = true;
+    const a = audio();
+    if (!a) return;
+    melodyEnd = a.currentTime;
+    melody(LIGHTS.concat(LIGHTS), 0.18, 'square', 0.035);
+    for (let i = 0; i < 24; i++) if (loopOn) tone(90, 0.1, 'sine', 0.12, i * 0.27, 45);
+  },
+  stopLoop() { loopOn = false; },
   coin() { tone(hz(83), 0.07, 'square', 0.04); tone(hz(88), 0.25, 'square', 0.04, 0.07); },
   squeak() { tone(1800, 0.06, 'square', 0.025, 0, 2400); tone(2000, 0.06, 'square', 0.025, 0.09, 2600); },
   plink() { tone(hz(84), 0.12, 'triangle', 0.06); },
