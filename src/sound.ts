@@ -48,6 +48,8 @@ function tone(freq: number, dur: number, type: OscillatorType, vol: number, when
   o.connect(g).connect(a.destination);
   o.start(t);
   o.stop(t + dur + 0.02);
+  live.push(o);
+  o.onended = () => { const i = live.indexOf(o); if (i >= 0) live.splice(i, 1); };
 }
 
 function noise(dur: number, vol: number, filterHz: number, when = 0) {
@@ -73,6 +75,8 @@ const hz = (n: number) => 440 * 2 ** ((n - 69) / 12);
 
 // ---------- my melodies (MIDI note, length in beats) ----------
 // Akta's string lights: the lights tune (Analog_Lab_V_5.mid)
+// the whole lights song, every note (ticks at 96 per beat), for dancing
+const LIGHTS_FULL: [number, number][] = ([[62, 48], [65, 48], [62, 47], [60, 49], [62, 47], [57, 47], [60, 50], [62, 47], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [69, 143], [62, 48], [65, 48], [62, 48], [60, 48], [62, 48], [57, 47], [60, 49], [62, 48], [62, 48], [65, 48], [62, 47], [60, 49], [62, 48], [57, 148], [72, 389], [74, 378]] as [number, number][]).map(([n, t]) => [n, t / 96]);
 const LIGHTS: [number, number][] = [[62, 0.5], [65, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [57, 0.5], [60, 0.5], [62, 0.5], [62, 0.5], [65, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [57, 1.5]];
 // M.A.S.H.: the first phrase of the space tune (MIDI_Audio.mid)
 const SPACE: [number, number][] = [[62, 0.5], [60, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [65, 0.5], [61, 0.5], [60, 1]];
@@ -83,7 +87,8 @@ const CALL: [number, number, number][] = [[192, 45, 59], [287, 141, 59], [422, 1
 const DESK: [number, number][] = [[43, 1.9], [45, 1.8], [48, 1.4], [50, 0.3], [48, 0.5], [43, 0.7]];
 
 let melodyEnd = 0;
-let loopOn = false;
+const live: OscillatorNode[] = [];
+function stopAll() { const a = ctx; if (!a) return; for (const o of live.splice(0)) { try { o.stop(a.currentTime + 0.02); } catch { /* already done */ } } melodyEnd = a.currentTime; }
 function melody(notes: [number, number][], beat: number, type: OscillatorType, vol: number) {
   const a = audio();
   if (!a) return;
@@ -124,16 +129,19 @@ export const sfx = {
   typing() { for (let i = 0; i < 4; i++) tone(1800 + Math.random() * 400, 0.02, 'square', 0.015, i * 0.09 + Math.random() * 0.03); },
   bark() { tone(420, 0.09, 'square', 0.06, 0, 300); tone(460, 0.12, 'square', 0.06, 0.16, 320); },
   family() { melody([[67, 0.5], [71, 0.5], [74, 0.5], [79, 1.5]], 0.22, 'triangle', 0.08); },
-  danceLoop() {
-    // the lights tune, twice through, with a little kick drum on every beat
-    loopOn = true;
+  /** The whole lights song with a kick drum on every beat. Returns how long it lasts, in seconds. */
+  danceLoop(): number {
+    const beat = 0.36;
+    const length = LIGHTS_FULL.reduce((t, [, l]) => t + l, 0) * beat;
     const a = audio();
-    if (!a) return;
+    if (!a) return length;
+    stopAll();
     melodyEnd = a.currentTime;
-    melody(LIGHTS.concat(LIGHTS), 0.18, 'square', 0.035);
-    for (let i = 0; i < 24; i++) if (loopOn) tone(90, 0.1, 'sine', 0.12, i * 0.27, 45);
+    melody(LIGHTS_FULL, beat, 'square', 0.035);
+    for (let t = 0; t < length - 0.2; t += beat) tone(90, 0.1, 'sine', 0.12, t, 45);
+    return length;
   },
-  stopLoop() { loopOn = false; },
+  stopLoop() { stopAll(); },
   coin() { tone(hz(83), 0.07, 'square', 0.04); tone(hz(88), 0.25, 'square', 0.04, 0.07); },
   squeak() { tone(1800, 0.06, 'square', 0.025, 0, 2400); tone(2000, 0.06, 'square', 0.025, 0.09, 2600); },
   plink() { tone(hz(84), 0.12, 'triangle', 0.06); },

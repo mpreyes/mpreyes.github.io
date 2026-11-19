@@ -501,7 +501,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       let tx = pos.x + (flip.getAttribute('transform') ? 46 : -46), ty = pos.y + 8;
       if (at === 'lake' && !walking) { tx = LAKE_SHORE.x + 60; ty = LAKE_SHORE.y + 10; }
       if (pos.y < 250) { tx = 600; ty = 250; } // she won't climb
-      if (lunaParty) { tx = DANCE_AT.x + 52; ty = DANCE_AT.y + 4 - (Math.floor(now / 270) % 2 ? 10 : 0); }
+      if (lunaParty) { tx = DANCE_AT.x + 52; ty = DANCE_AT.y + 4 - (Math.floor(now / 360) % 2 ? 10 : 0); }
       const dx = tx - lx, dy = ty - ly, d = Math.hypot(dx, dy);
       const moving = d > 3;
       if (moving) { const k = Math.min(1, (reduced ? 1 : 0.06)); lx += dx * k; ly += dy * k; if (Math.abs(dx) > 1) faceLeft = dx < 0; }
@@ -642,7 +642,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let dancing: number | undefined;
   let danceEnd: number | undefined;
   async function dance() {
-    sfx.danceLoop();
+    const songLength = sfx.danceLoop();
     let beat = 0;
     lunaParty = true;
     danceFloor.style.display = '';
@@ -655,8 +655,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       stepping.style.display = beat % 4 < 2 ? 'none' : '';
       moveTo(DANCE_AT.x + (beat % 2 ? 6 : -6), DANCE_AT.y - (beat % 2 ? 8 : 0));
       if (beat % 2 === 0) floatNote(BOOMBOX_AT.x + 30, BOOMBOX_AT.y - 40);
-    }, reduced ? 1000 : 270);
-    danceEnd = window.setTimeout(stopDancing, 6200);
+    }, reduced ? 1000 : 360);
+    danceEnd = window.setTimeout(stopDancing, songLength * 1000 + 300); // dance until the song ends
   }
   function stopDancing() {
     if (dancing === undefined) return;
