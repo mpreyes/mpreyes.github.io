@@ -1,18 +1,31 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <!-- title, description, share card + structured data are added at build time from src/seo.ts (see vite.config.ts) -->
-    <meta name="theme-color" content="#111111" />
-    <style>
-      /* plain-text copy of the site for search engines + screen readers; the app replaces it on load */
-      .seo-copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Madelyn Reyes</title>
+    <meta name="description" content="Madelyn Reyes: a little island map of the things she makes. Akta, M.A.S.H. Adventure, madebit, and the farm." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <header>
+      <h1>Madelyn Reyes</h1>
+    </header>
+    <main>
+      <div class="stage">
+        <svg id="map" viewBox="0 0 1280 800" role="img" aria-label="A little island town. Each building is one of Madelyn's projects."></svg>
+        <div class="card" id="card" role="status" hidden>
+          <b id="card-title"></b>
+          <span id="card-sub"></span>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://www.instagram.com/mpreyes09/" target="_blank" rel="noreferrer">Instagram</a>
+      <a href="https://www.tiktok.com/@madelini38" target="_blank" rel="noreferrer">TikTok</a>
+      <a href="https://www.linkedin.com/in/madelyn-reyes/" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://github.com/mpreyes" target="_blank" rel="noreferrer">GitHub</a>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
