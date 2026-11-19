@@ -8,19 +8,16 @@ const card = document.getElementById('card')!;
 const title = document.getElementById('card-title')!;
 const sub = document.getElementById('card-sub')!;
 
-// She always walks to the spot first; then we head to the link.
-// Places without a link yet (the farm) show a little "coming soon" card instead.
-function visit(href: string) {
-  if (window.top !== window) window.open(href, '_blank', 'noopener'); // inside a preview frame
-  else location.assign(href);
-}
+const go = document.getElementById('card-go') as HTMLAnchorElement;
 
+// Click a building -> she walks there -> this card opens -> VISIT takes you to the site.
 mountTown(
   svg,
   (p) => {
-    if (p.href) { setTimeout(() => visit(p.href), 250); return; }
     title.textContent = p.name;
     sub.textContent = p.sub;
+    if (p.href) { go.href = p.href; go.textContent = 'VISIT ↗'; go.classList.remove('soon'); go.removeAttribute('aria-disabled'); }
+    else { go.removeAttribute('href'); go.textContent = 'SOON'; go.classList.add('soon'); go.setAttribute('aria-disabled', 'true'); }
     card.hidden = false;
   },
   () => { card.hidden = true; },
