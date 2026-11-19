@@ -135,9 +135,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     el('path', { d: 'M24 0H0V24', fill: 'none', stroke: '#cfdbe7' }, small);
     const big = el('pattern', { id: 'G', width: 120, height: 120, patternUnits: 'userSpaceOnUse' }, defs);
     el('path', { d: 'M120 0H0V120', fill: 'none', stroke: '#b8c9da', 'stroke-width': 1.5 }, big);
-    el('rect', { width: W, height: H, fill: '#FBFAF5' }, svg);
-    el('rect', { width: W, height: H, fill: 'url(#g)' }, svg);
-    el('rect', { width: W, height: H, fill: 'url(#G)' }, svg);
+    // the graph paper itself is the page background (styles.css), so it runs edge to edge
   }
 
   function island() {
