@@ -53,6 +53,8 @@ const PINE = ['...KK...', '..KGGK..', '..KGGK..', '.KGGLGK.', '.KGLGGK.', 'KGGGG
 const PINE_C: Palette = { K, G: '#2F6B3A', L: '#3F8A4A', B: '#8A4A3A' };
 const CARROT = ['.G..G.', '..GG..', '.GGGG.', '.OOOO.', '.OKOO.', '..OO..', '..OK..', '...O..'];
 const CARROT_C: Palette = { G: '#4E9A3A', O: '#F28C28', K: '#C9661A' };
+const SHARK = ['.......KK.......', '......KGGK......', 'K....KGGGGKKKKK.', 'KGKKKGGGGGGGGEGK', 'KGGGGGGGGGGGGGGK', 'KGKKWWWWWWWWWKK.', 'K...KKKKKKKKK...'];
+const SHARK_C: Palette = { K, G: '#6E7C8C', W: '#E8EEF2', E: '#fff' };
 const MOUNTAIN = ['.........KK.........', '........KWWK........', '.......KWWWWK.......', '......KWWKWWWK......', '.....KGWKGKWWGK.....', '....KGGKGGGKGGGK....', '...KGGGGGDGGGGGGK...', '..KGGDGGGGGGGDGGGK..', '.KGGGGGGDGGGGGGGGGK.', 'KGGGGGGGGGGGGGDGGGGK'];
 const MOUNTAIN_C: Palette = { K, W: '#FFFFFF', G: '#8E9AAE', D: '#6F7B90' };
 
@@ -178,9 +180,11 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     el('path', { d: coast(640, 300, 70, 30, 0.15, 24), fill: '#7FC4E4', stroke: K, 'stroke-width': 2.5 }, lake);
     [[610, 300, 18], [668, 310, 8]].forEach(([x, y]) => el('path', { d: `M${x} ${y} q8 -4 16 0`, fill: 'none', stroke: '#fff', 'stroke-width': 2 }, lake));
     lake.addEventListener('click', (e) => { e.preventDefault(); go('lake', swim); });
-    pix(MOUNTAIN, MOUNTAIN_C, 440, 100, 10, root);
-    pix(MOUNTAIN, MOUNTAIN_C, 790, 120, 8, root);
-    pix(MOUNTAIN, MOUNTAIN_C, 580, 60, 13, root);
+    const peaks = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Climb the mountain' }, root);
+    pix(MOUNTAIN, MOUNTAIN_C, 440, 100, 10, peaks);
+    pix(MOUNTAIN, MOUNTAIN_C, 790, 120, 8, peaks);
+    pix(MOUNTAIN, MOUNTAIN_C, 580, 60, 13, peaks);
+    peaks.addEventListener('click', (e) => { e.preventDefault(); go('mountain', summit); });
     el('rect', { x: 690, y: 190, width: 12, height: 94, fill: '#9FD3E8', stroke: K, 'stroke-width': 2 }, root);
     for (let i = 0; i < 5; i++) el('rect', { x: 693, y: 196 + i * 18, width: 6, height: 7, fill: '#fff' }, root);
     shark();
@@ -201,12 +205,41 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   }
 
   // a shark fin, just chilling in the water
+  // a shark fin, just chilling in the water. Click him and he jumps.
   function shark() {
-    const g = el('g', { transform: 'translate(-6 470)' }, root);
+    const link = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Say hi to the shark' }, root);
+    const g = el('g', { transform: 'translate(-6 470)' }, link);
     const bob = el('g', {}, g);
-    el('path', { d: 'M-26 6 q12 -4 26 0 q14 4 26 0', fill: 'none', stroke: '#fff', 'stroke-width': 3, 'stroke-linecap': 'round' }, bob);
-    el('path', { d: 'M-12 4 L4 -24 Q8 -10 14 4 Z', fill: '#6E7C8C', stroke: K, 'stroke-width': 2.5, 'stroke-linejoin': 'round' }, bob);
-    el('path', { d: 'M2 -16 L6 -4', stroke: '#9AA8B6', 'stroke-width': 2 }, bob);
+    const fin = el('g', {}, bob);
+    el('path', { d: 'M-26 6 q12 -4 26 0 q14 4 26 0', fill: 'none', stroke: '#fff', 'stroke-width': 3, 'stroke-linecap': 'round' }, fin);
+    el('path', { d: 'M-12 4 L4 -24 Q8 -10 14 4 Z', fill: '#6E7C8C', stroke: K, 'stroke-width': 2.5, 'stroke-linejoin': 'round' }, fin);
+    el('path', { d: 'M2 -16 L6 -4', stroke: '#9AA8B6', 'stroke-width': 2 }, fin);
+    el('rect', { x: -40, y: -40, width: 80, height: 60, fill: 'transparent' }, g); // easier to click
+    let leaping = false;
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (leaping) return;
+      leaping = true;
+      fin.style.display = 'none';
+      sfx.splash();
+      const body = el<SVGGElement>('g', {}, g);
+      pix(SHARK, SHARK_C, -40, -18, 5, body);
+      const t0 = performance.now(), dur = reduced ? 300 : 1300;
+      let chomped = false;
+      await new Promise<void>((done) => {
+        const frame = (now: number) => {
+          const t = Math.min(1, (now - t0) / dur);
+          if (t > 0.5 && !chomped) { sfx.chomp(); chomped = true; }
+          body.setAttribute('transform', `translate(${-30 + 60 * t} ${-130 * 4 * t * (1 - t)}) rotate(${-40 + 80 * t})`);
+          if (t < 1) requestAnimationFrame(frame); else done();
+        };
+        requestAnimationFrame(frame);
+      });
+      body.remove();
+      sfx.splash();
+      fin.style.display = '';
+      leaping = false;
+    });
     if (reduced) return;
     const t0 = performance.now();
     const tick = (now: number) => {
@@ -287,9 +320,9 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 40 && x < p.box.r + 10 && y > p.box.t - 70 && y < p.box.b + 30)) return;
       if (x > 420 && x < 960 && y < 300) return; // keep the mountains and lake clear
-      if (!(onLand(x + 16, y + 28) && onLand(x - 10, y) && onLand(x + 42, y))) return;
+      if (!(onLand(x + 20, y + 36) && onLand(x - 10, y) && onLand(x + 50, y))) return;
       const pine = i % 3 === 0;
-      pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 4, layer);
+      pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 5, layer);
     });
   }
 
@@ -304,6 +337,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let field: SVGGElement | null = null;
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
+  const PEAK: Pt = { x: 705, y: 92 };
   const roads: Record<string, SVGPathElement> = {};
   let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement;
   let at: string | null = null;
@@ -321,10 +355,11 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   const moveTo = (x: number, y: number) => walker.setAttribute('transform', `translate(${x} ${y})`);
 
   function walkAlong(road: SVGPathElement, backwards: boolean): Promise<void> {
+    const speed = road === roads.mountain ? 120 : 170;
     return new Promise((done) => {
       const L = road.getTotalLength();
       if (reduced) { const p = road.getPointAtLength(backwards ? 0 : L); moveTo(p.x, p.y); return done(); }
-      const dur = (L / 170) * 1000, t0 = performance.now();
+      const dur = (L / speed) * 1000, t0 = performance.now();
       let lastX: number | null = null;
       let lastAlt = false;
       const step = (now: number) => {
@@ -392,6 +427,20 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     moveTo(LAKE_SHORE.x, LAKE_SHORE.y);
   }
 
+  /** At the top: plant a flag (once) and celebrate. */
+  let flagged = false;
+  async function summit() {
+    sfx.fanfare();
+    if (!flagged) {
+      flagged = true;
+      const f = el('g', {}, root);
+      el('rect', { x: PEAK.x + 22, y: PEAK.y - 70, width: 4, height: 64, fill: K }, f);
+      el('path', { d: `M${PEAK.x + 26} ${PEAK.y - 70} L${PEAK.x + 60} ${PEAK.y - 60} L${PEAK.x + 26} ${PEAK.y - 50} Z`, fill: '#F77FA1', stroke: K, 'stroke-width': 2 }, f);
+    }
+    // a little hop of joy
+    for (let i = 0; i < 2; i++) { moveTo(PEAK.x, PEAK.y - 10); await wait(160); moveTo(PEAK.x, PEAK.y); await wait(200); }
+  }
+
   /** Dig, dig, dig... a carrot! */
   async function dig() {
     for (let i = 0; i < 3; i++) {
@@ -436,6 +485,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     el('path', { d: roadPath(p), fill: 'none', stroke: '#E8D7A8', 'stroke-width': 26, 'stroke-linecap': 'round' }, roadLayer);
     roads[p.id] = el<SVGPathElement>('path', { d: roadPath(p), fill: 'none', stroke: '#B99E6B', 'stroke-width': 3, 'stroke-dasharray': '2 12', 'stroke-linecap': 'round' }, roadLayer);
   });
+  // up the left side of the big mountain in little switchbacks
+  roads.mountain = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} C560 400 535 300 596 205 L632 165 L652 150 L670 122 L688 104 L${PEAK.x} ${PEAK.y}`, fill: 'none' }, roadLayer);
   roads.lake = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CENTER.x - 30} ${CENTER.y - 40} ${LAKE_SHORE.x} ${LAKE_SHORE.y}`, fill: 'none' }, roadLayer);
   roads.carrot = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${(CENTER.x + digSpot.x) / 2} ${CENTER.y + 10} ${digSpot.x} ${digSpot.y}`, fill: 'none' }, roadLayer);
   const swimClip = el('clipPath', { id: 'swimClip' }, svg.querySelector('defs')!);
