@@ -86,9 +86,9 @@ const TALL = (rows: string[]) => rows.slice(0, 12).concat([rows[12]], rows.slice
 const SHORT_HAIR = ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HSSSSSSSSH...', '...SSESSSSESS...', '...SSSSSSSSSS...', '...SSSSMMSSSS...', '....SSSSSSSS....', '......SSSS......'].concat(BODY.map((r, i) => (i === 0 ? '....TTTTTTTT....' : r)));
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
 // an open book held up in front of her: two white pages with lines, pink cover underneath
-const BOOK = ['.PPPPPPP.PPPPPPP.', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
+const BOOK = ['SPPPPPPPKPPPPPPPS', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', '.PPPPPPP.PPPPPPP.'];
 const BOOK_C: Palette = { K: '#C9B9A6', W: '#FFFDF5', L: '#B9C2CC', P: '#C8332D', S: '#D39A72' };
-const BOOK_TURN = ['.PPPPPPP.....PP..', 'PWWWWWWWK..PWWWP.', 'PWLLLLLWK.PWLLWP.', 'PWWWWWWWKPWWWWWP.', 'PWLLLLWWKWWLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
+const BOOK_TURN = ['SPPPPPPPKPPPPPPPS', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWWLLLWWP', 'PWWWWWWWKPWWWWWP.', 'PWLLLLLWK.PWLLWP.', 'PWWWWWWWK..PWWWP.', '.PPPPPPP.....PP..'];
 const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
 const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
 const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
@@ -359,7 +359,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
-      if (x > 980 && x < 1110 && y > 190 && y < 330) return; // Luna's tree
+      if (x > 1060 && x < 1200 && y > 230 && y < 370) return; // Luna's tree
+      if (x > 960 && x < 1110 && y > 190 && y < 330) return; // a little space beside the tent
       if (x > 330 && x < 790 && y > 500 && y < 740) return; // the family's house and the photo spot
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
@@ -424,7 +425,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
-  const LUNA_TREE: Pt = { x: 1060, y: 300 }; // bottom middle of Luna's favorite pine, east of the tent
+  const LUNA_TREE: Pt = { x: 1150, y: 340 }; // bottom middle of Luna's favorite pine, east of the tent
   const BOOMBOX_AT: Pt = { x: CENTER.x - 92, y: CENTER.y + 40 }; // bottom left of the boombox, on the plaza
   const DANCE_AT: Pt = { x: CENTER.x + 6, y: CENTER.y + 8 }; // people dance in the town centre
   const CASA_DOOR: Pt = { x: 490, y: 716 }; // the family's green house, south shore
