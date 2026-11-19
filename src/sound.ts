@@ -77,7 +77,8 @@ const LIGHTS: [number, number][] = [[62, 0.5], [65, 0.5], [62, 0.5], [60, 0.5], 
 // M.A.S.H.: the first phrase of the space tune (MIDI_Audio.mid)
 const SPACE: [number, number][] = [[62, 0.5], [60, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [65, 0.5], [61, 0.5], [60, 1]];
 // madebit: the call from higher.mid
-const CALL: [number, number][] = [[59, 0.47], [59, 1.47], [62, 1.1], [59, 0.6], [66, 1.17], [64, 1], [62, 0.53], [64, 1.17], [59, 1.1]];
+// [start tick, length in ticks, MIDI note], straight from the file, so the rests are kept
+const CALL: [number, number, number][] = [[192, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64], [913, 105, 59]];
 // the farm: the start of the desk keyboard tune (CF_Tones_Ah_A4_Falsetto_5.mid)
 const DESK: [number, number][] = [[43, 1.9], [45, 1.8], [48, 1.4], [50, 0.3], [48, 0.5], [43, 0.7]];
 
@@ -93,6 +94,16 @@ function melody(notes: [number, number][], beat: number, type: OscillatorType, v
   melodyEnd = a.currentTime + t;
 }
 
+/** A phrase timed by its MIDI start ticks (keeps the rests between notes). */
+function ticks(notes: [number, number, number][], tick: number, type: OscillatorType, vol: number) {
+  const a = audio();
+  if (!a) return;
+  const t0 = Math.max(0.02, melodyEnd - a.currentTime) - notes[0][0] * tick;
+  for (const [start, len, n] of notes) tone(hz(n), Math.max(0.08, len * tick), type, vol, t0 + start * tick);
+  const [s, l] = notes[notes.length - 1];
+  melodyEnd = a.currentTime + t0 + (s + l) * tick;
+}
+
 export const sfx = {
   /** one footstep; alternates feet */
   step(left: boolean) { tone(left ? 150 : 170, 0.05, 'triangle', 0.05); },
@@ -100,7 +111,7 @@ export const sfx = {
   arrive(id: string) {
     if (id === 'akta') melody(LIGHTS, 0.22, 'square', 0.035);
     else if (id === 'mash') melody(SPACE, 0.25, 'square', 0.035);
-    else if (id === 'madebit') melody(CALL, 0.28, 'triangle', 0.09);
+    else if (id === 'madebit') ticks(CALL, 0.0032, 'triangle', 0.09);
     else if (id === 'farm') melody(DESK.map(([n, l]) => [n + 12, l] as [number, number]), 0.22, 'triangle', 0.08);
   },
   splash() { noise(0.45, 0.25, 1800); tone(500, 0.25, 'sine', 0.08, 0, 140); },

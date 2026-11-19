@@ -62,8 +62,10 @@ const BENCH = ['KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK',
 const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.KK......KK.', '.KK..K...KK.', '.KK..K...KK.', '.KK..B...KK.', 'KKKKKKKKKKKK', 'KSSKSSKSSKSK', 'KSKSSKSSKSSK', 'KKKKKKKKKKKK'];
 const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
 const HEART = ['.KK.KK.', 'KPPKPPK', 'KPPPPPK', '.KPPPK.', '..KPK..', '...K...'];
-const BOOK = ['KKKKKKKK', 'KWWWKWWK', 'KWKWKWKK', 'KWWWKWWK', 'KPPPKPPK'];
-const BOOK_TURN = ['KKKKKKKK', 'KWWWKWK.', 'KWKWKWWK', 'KWWWKWWK', 'KPPPKPPK'];
+// an open book held up in front of her: two white pages with lines, pink cover underneath
+const BOOK = ['.PPPPPPP.PPPPPPP.', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLWWKWLLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
+const BOOK_C: Palette = { K: '#C9B9A6', W: '#FFFDF5', L: '#B9C2CC', P: '#C8332D', S: '#D39A72' };
+const BOOK_TURN = ['.PPPPPPP.....PP..', 'PWWWWWWWK..PWWWP.', 'PWLLLLLWK.PWLLWP.', 'PWWWWWWWKPWWWWWP.', 'PWLLLLWWKWWLLLWWP', 'PWWWWWWWKWWWWWWWP', 'PWLLLLLWKWLLLLLWP', 'SPPPPPPPKPPPPPPPS'];
 const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
 const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
 const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
@@ -415,8 +417,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     stepping = pix(ME_STEP, ME_C, -32, -80, 4, flip);
     stepping.style.display = 'none';
     seated = pix(ME_SIT, ME_C, -32, -72, 4, flip);
-    pageA = pix(BOOK, { K, W: '#FFFFFF', P: '#F77FA1' }, -16, -34, 4, seated);
-    pageB = pix(BOOK_TURN, { K, W: '#FFFFFF', P: '#F77FA1' }, -16, -34, 4, seated);
+    pageA = pix(BOOK, BOOK_C, -26, -42, 3, seated);
+    pageB = pix(BOOK_TURN, BOOK_C, -26, -42, 3, seated);
     pageB.style.display = 'none';
     seated.style.display = 'none';
     moveTo(CENTER.x, CENTER.y);
