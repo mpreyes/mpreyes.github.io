@@ -346,7 +346,6 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
       if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
-      if (x > 1010 && x < 1240 && y > 330 && y < 530) return; // the dance floor
       if (x > 330 && x < 560 && y > 560 && y < 730) return; // the family's house
       if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
       if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
@@ -411,10 +410,11 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
-  const BOOMBOX_AT: Pt = { x: 1150, y: 432 }; // bottom left of the boombox, east side of the island
-  const DANCE_AT: Pt = { x: 1125, y: 482 };
+  const BOOMBOX_AT: Pt = { x: CENTER.x - 92, y: CENTER.y + 40 }; // bottom left of the boombox, on the plaza
+  const DANCE_AT: Pt = { x: CENTER.x + 6, y: CENTER.y + 8 }; // people dance in the town centre
   const CASA_DOOR: Pt = { x: 470, y: 716 }; // the family's green house, south shore
-  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1' }, { hair: '#3B3B3B', shirt: '#5FA9CC' }, { hair: '#2A1B1B', shirt: '#F2B84B' }];
+  // mom, dad, Carlos, Steven, Robert
+  const FAMILY = [{ hair: '#2A1B1B', shirt: '#F77FA1' }, { hair: '#4A4A4A', shirt: '#5FA9CC' }, { hair: '#2A1B1B', shirt: '#93C78E' }, { hair: '#2A1B1B', shirt: '#F2B84B' }, { hair: '#3B2A1B', shirt: '#796AD8' }];
   const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
   const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
@@ -492,7 +492,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       let tx = pos.x + (flip.getAttribute('transform') ? 46 : -46), ty = pos.y + 8;
       if (at === 'lake' && !walking) { tx = LAKE_SHORE.x + 60; ty = LAKE_SHORE.y + 10; }
       if (pos.y < 250) { tx = 600; ty = 250; } // she won't climb
-      if (lunaParty) { tx = DANCE_AT.x - 56; ty = DANCE_AT.y + 4 - (Math.floor(now / 270) % 2 ? 10 : 0); }
+      if (lunaParty) { tx = DANCE_AT.x + 52; ty = DANCE_AT.y + 4 - (Math.floor(now / 270) % 2 ? 10 : 0); }
       const dx = tx - lx, dy = ty - ly, d = Math.hypot(dx, dy);
       const moving = d > 3;
       if (moving) { const k = Math.min(1, (reduced ? 1 : 0.06)); lx += dx * k; ly += dy * k; if (Math.abs(dx) > 1) faceLeft = dx < 0; }
@@ -671,13 +671,13 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const out = el<SVGGElement>('g', {}, root);
     FAMILY.forEach((f, i) => {
       const g = el<SVGGElement>('g', {}, out);
-      pix(PERSON, { H: f.hair, S: '#D39A72', K, T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x - 46 + i * 30, CASA_DOOR.y - 24, 3, g);
+      pix(PERSON, { H: f.hair, S: '#D39A72', K, T: f.shirt, D: '#2B3A4A', B: K }, CASA_DOOR.x - 100 + i * 34, CASA_DOOR.y - 36, 4, g);
       g.animate?.([{ transform: 'translateY(6px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { duration: 300, delay: i * 150, fill: 'both' });
     });
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       const h = el<SVGGElement>('g', {}, root);
       pix(HEART, { P: '#F77FA1', K }, -10, -8, 3, h);
-      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x - 30 + i * 20 + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
+      setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x - 62 + i * 20 + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
     }
     say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 96);
     await wait(2600);
@@ -821,20 +821,17 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   roads.carrot = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${(CENTER.x + digSpot.x) / 2} ${CENTER.y + 10} ${digSpot.x} ${digSpot.y}`, fill: 'none' }, roadLayer);
   const swimClip = el('clipPath', { id: 'swimClip' }, svg.querySelector('defs')!);
   el('rect', { x: -40, y: -90, width: 80, height: 58 }, swimClip);
-  // ---------- dance floor ----------
-  const floor = el('g', {}, roadLayer);
-  for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++)
-    el('rect', { x: DANCE_AT.x - 70 + i * 28, y: DANCE_AT.y - 40 + j * 20, width: 28, height: 20, fill: (i + j) % 2 ? '#F77FA1' : '#F8F6EF', stroke: K, 'stroke-width': 1 }, floor);
+  // ---------- boombox on the plaza ----------
   const boombox = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Dance' }, root);
   pix(BOOMBOX, { K, R: '#796AD8', Y: '#F2B84B', W: '#F8F6EF' }, BOOMBOX_AT.x, BOOMBOX_AT.y - 36, 4, el('g', { class: 'lift' }, boombox));
   boombox.addEventListener('click', (e) => { e.preventDefault(); go('dance', dance); });
-  roads.dance = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${(CENTER.x + DANCE_AT.x) / 2} ${CENTER.y + 50} ${DANCE_AT.x} ${DANCE_AT.y}`, fill: 'none' }, roadLayer);
+  roads.dance = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} L${DANCE_AT.x} ${DANCE_AT.y}`, fill: 'none' }, roadLayer);
 
   // ---------- the family's green house ----------
   const casa = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Visit the family' }, root);
   pix(CASA, CASA_C, CASA_DOOR.x - 66, CASA_DOOR.y - 78, 6, el('g', { class: 'lift' }, casa));
   casa.addEventListener('click', (e) => { e.preventDefault(); go('casa', visitFamily); });
-  roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 120} ${CENTER.y + 120} ${CASA_DOOR.x + 104} ${CASA_DOOR.y + 4}`, fill: 'none' }, roadLayer);
+  roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 140} ${CENTER.y + 120} ${CASA_DOOR.x + 116} ${CASA_DOOR.y + 4}`, fill: 'none' }, roadLayer);
 
   compass();
   drawLuna();
