@@ -106,6 +106,7 @@ export const sfx = {
   splash() { noise(0.45, 0.25, 1800); tone(500, 0.25, 'sine', 0.08, 0, 140); },
   bloop() { tone(300 + Math.random() * 200, 0.12, 'sine', 0.06, 0, 700); },
   dig() { noise(0.12, 0.2, 600); tone(110, 0.1, 'triangle', 0.08); },
+  water() { for (let i = 0; i < 8; i++) tone(900 + Math.random() * 600, 0.05, 'sine', 0.03, i * 0.06); },
   chomp() { tone(220, 0.08, 'square', 0.05); tone(160, 0.1, 'square', 0.05, 0.1); },
   fanfare() { [[67, 0], [72, 0.12], [76, 0.24], [79, 0.36], [84, 0.5]].forEach(([n, t]) => tone(hz(n), n === 84 ? 0.5 : 0.14, 'square', 0.04, t)); },
   pop() { [72, 76, 79, 84].forEach((n, i) => tone(hz(n), 0.12, 'square', 0.04, i * 0.07)); },

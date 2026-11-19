@@ -53,6 +53,10 @@ const PINE = ['...KK...', '..KGGK..', '..KGGK..', '.KGGLGK.', '.KGLGGK.', 'KGGGG
 const PINE_C: Palette = { K, G: '#2F6B3A', L: '#3F8A4A', B: '#8A4A3A' };
 const CARROT = ['.G..G.', '..GG..', '.GGGG.', '.OOOO.', '.OKOO.', '..OO..', '..OK..', '...O..'];
 const CARROT_C: Palette = { G: '#4E9A3A', O: '#F28C28', K: '#C9661A' };
+const GREENHOUSE = ['.....KKKKKKKK.....', '...KKBBKBBKBBKK...', '..KBBBBKBBKBBBBK..', '.KBBBBBKBBKBBBBBK.', 'KKKKKKKKKKKKKKKKKK', 'KBBBBKBBBBBKBBBBBK', 'KBPBBKBGGBBKBBPBBK', 'KGGGBKBGGGBKBGGGBK', 'KGGGGKBKKKBKGGGGGK', 'KGGGGKBKDKBKGGGGGK', 'KKKKKKKKKKKKKKKKKK'];
+const GREENHOUSE_C: Palette = { K, B: '#CFEFF7', G: '#5E9A4A', P: '#F77FA1', D: '#F2B84B' };
+const FLOWER = ['.P.', 'PYP', '.P.', '.G.', 'GG.'];
+const LAMP = ['KKK', 'KYK', 'KKK', '.K.', '.K.', '.K.', '.K.', '.K.', 'KKK'];
 const SHARK = ['.......KK.......', '......KGGK......', 'K....KGGGGKKKKK.', 'KGKKKGGGGGGGGEGK', 'KGGGGGGGGGGGGGGK', 'KGKKWWWWWWWWWKK.', 'K...KKKKKKKKK...'];
 const SHARK_C: Palette = { K, G: '#6E7C8C', W: '#E8EEF2', E: '#fff' };
 const MOUNTAIN = ['.........KK.........', '........KWWK........', '.......KWWWWK.......', '......KWWKWWWK......', '.....KGWKGKWWGK.....', '....KGGKGGGKGGGK....', '...KGGGGGDGGGGGGK...', '..KGGDGGGGGGGDGGGK..', '.KGGGGGGDGGGGGGGGGK.', 'KGGGGGGGGGGGGGDGGGGK'];
@@ -196,7 +200,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     for (let i = 0; i < n; i++) {
       const x = 20 + rnd() * 1240, y = 120 + rnd() * 600;
       if (!onLand(x, y) || !onLand(x, y + 14)) continue;
-      if (PLACES.some((p) => Math.hypot(p.x + 40 - x, p.y + 30 - y) < 120) || Math.hypot(CENTER.x - x, CENTER.y - y) < 70) continue;
+      if (PLACES.some((p) => Math.hypot(p.x + 40 - x, p.y + 30 - y) < 120) || Math.hypot(CENTER.x - x, CENTER.y - y) < 90 || (x > 520 && x < 780 && y > 440 && y < 620)) continue;
       const r = rnd();
       if (r < 0.55) el('path', { d: `M${x} ${y} l3 -7 l3 7 l3 -6 l3 6`, fill: 'none', stroke: '#3F7F3A', 'stroke-width': 2, 'stroke-linejoin': 'round' }, root);
       else if (r < 0.95) el('circle', { cx: x, cy: y, r: 3, fill: ['#F77FA1', '#F2B84B', '#fff'][i % 3], stroke: K, 'stroke-width': 1 }, root);
@@ -320,6 +324,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
       if (PLACES.some((p) => p.box && x > p.box.l - 40 && x < p.box.r + 10 && y > p.box.t - 70 && y < p.box.b + 30)) return;
       if (x > 420 && x < 960 && y < 300) return; // keep the mountains and lake clear
+      if (x > 500 && x < 790 && y > 380 && y < 630) return; // and the town centre
       if (!(onLand(x + 20, y + 36) && onLand(x - 10, y) && onLand(x + 50, y))) return;
       const pine = i % 3 === 0;
       pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 5, layer);
@@ -338,6 +343,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
+  const GH_DOOR: Pt = { x: 640, y: 580 };
+  const GH_STAND: Pt = { x: 548, y: 586 }; // she stands beside the greenhouse, not in front of it
   const roads: Record<string, SVGPathElement> = {};
   let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement;
   let at: string | null = null;
@@ -427,6 +434,32 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     moveTo(LAKE_SHORE.x, LAKE_SHORE.y);
   }
 
+  /** Water the plants: a little rain, and a new flower blooms by the greenhouse. */
+  const BLOOMS: Pt[] = [{ x: 700, y: 576 }, { x: 610, y: 604 }, { x: 680, y: 606 }, { x: 645, y: 612 }, { x: 702, y: 548 }, { x: 580, y: 610 }];
+  let bloomed = 0;
+  async function water() {
+    sfx.water();
+    for (let i = 0; i < 10; i++) {
+      const drop = el('rect', { x: GH_DOOR.x - 50 + Math.random() * 100, y: GH_DOOR.y - 150, width: 3, height: 7, fill: '#5FA9CC' }, root);
+      const t0 = performance.now() + i * 60;
+      const fall = (now: number) => {
+        const t = Math.max(0, (now - t0) / 1000);
+        drop.setAttribute('transform', `translate(0 ${t * 220})`);
+        if (t < 0.45) requestAnimationFrame(fall); else drop.remove();
+      };
+      requestAnimationFrame(fall);
+    }
+    await wait(700);
+    if (bloomed < BLOOMS.length) {
+      const b = BLOOMS[bloomed++];
+      const f = pix(FLOWER, { P: ['#F77FA1', '#F2B84B', '#796AD8'][bloomed % 3], Y: '#fff', G: '#4E9A3A' }, b.x, b.y - 20, 4, root);
+      f.style.transformOrigin = `${b.x + 6}px ${b.y}px`;
+      f.animate?.([{ transform: 'scale(0)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: reduced ? 1 : 400 });
+    }
+    sfx.pop();
+    await wait(300);
+  }
+
   /** At the top: plant a flag (once) and celebrate. */
   let flagged = false;
   async function summit() {
@@ -485,6 +518,23 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     el('path', { d: roadPath(p), fill: 'none', stroke: '#E8D7A8', 'stroke-width': 26, 'stroke-linecap': 'round' }, roadLayer);
     roads[p.id] = el<SVGPathElement>('path', { d: roadPath(p), fill: 'none', stroke: '#B99E6B', 'stroke-width': 3, 'stroke-dasharray': '2 12', 'stroke-linecap': 'round' }, roadLayer);
   });
+  // ---------- town centre ----------
+  seed = 88;
+  el('ellipse', { cx: CENTER.x, cy: CENTER.y + 4, rx: 74, ry: 40, fill: '#E2D6B6', stroke: '#C9B98F', 'stroke-width': 2 }, roadLayer);
+  for (let i = 0; i < 40; i++) {
+    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
+    el('rect', { x: CENTER.x + Math.cos(a) * 64 * r - 4, y: CENTER.y + 4 + Math.sin(a) * 32 * r - 2, width: 8, height: 5, rx: 2, fill: '#CDBF9A' }, roadLayer);
+  }
+  pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 92, CENTER.y - 46, 6, root);
+  // a little bench
+  el('rect', { x: CENTER.x + 50, y: CENTER.y - 18, width: 46, height: 8, fill: '#B98B5E', stroke: K, 'stroke-width': 2 }, root);
+  el('rect', { x: CENTER.x + 54, y: CENTER.y - 10, width: 5, height: 12, fill: K }, root);
+  el('rect', { x: CENTER.x + 87, y: CENTER.y - 10, width: 5, height: 12, fill: K }, root);
+  const gh = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Water the plants in the greenhouse' }, root);
+  pix(GREENHOUSE, GREENHOUSE_C, GH_DOOR.x - 63, GH_DOOR.y - 77, 7, el('g', { class: 'lift' }, gh));
+  gh.addEventListener('click', (e) => { e.preventDefault(); go('greenhouse', water); });
+  roads.greenhouse = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${GH_STAND.x + 20} ${CENTER.y + 50} ${GH_STAND.x} ${GH_STAND.y}`, fill: 'none' }, roadLayer);
+
   // up the left side of the big mountain in little switchbacks
   roads.mountain = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} C560 400 535 300 596 205 L632 165 L652 150 L670 122 L688 104 L${PEAK.x} ${PEAK.y}`, fill: 'none' }, roadLayer);
   roads.lake = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CENTER.x - 30} ${CENTER.y - 40} ${LAKE_SHORE.x} ${LAKE_SHORE.y}`, fill: 'none' }, roadLayer);
