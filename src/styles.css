@@ -16,7 +16,7 @@ body { margin: 0; height: 100dvh; display: flex; flex-direction: column; overflo
   background-image: linear-gradient(#b8c9da 1.5px, transparent 1.5px), linear-gradient(90deg, #b8c9da 1.5px, transparent 1.5px), linear-gradient(#cfdbe7 1px, transparent 1px), linear-gradient(90deg, #cfdbe7 1px, transparent 1px);
   background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px; }
 header { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; padding: 16px 20px; border-bottom: 2px solid var(--ink); background: var(--cream); }
-header { align-items: center; }
+header { align-items: center; gap: 10px; }
 #sound { font-family: var(--pixel); font-size: 10px; background: #fff; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); padding: 8px 10px; cursor: pointer; }
 #sound[aria-pressed="false"] { background: #ddd; }
 header h1 { margin: 0; font-family: var(--pixel); font-size: 16px; line-height: 1.5; }
@@ -40,3 +40,6 @@ svg { display: block; width: 100%; height: 100%; }
 footer { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center; padding: 12px 20px; border-top: 2px solid var(--ink); background: var(--cream); }
 footer a { font-family: var(--pixel); font-size: 10px; color: var(--ink); text-decoration: none; padding: 10px 4px; }
 footer a:hover { color: #c8332d; }
+#coins { font-family: var(--pixel); font-size: 10px; background: var(--gold); border: 2px solid var(--ink); padding: 8px 10px; margin-left: auto; }
+#coins[hidden] { display: none; }
+.tree { cursor: pointer; }

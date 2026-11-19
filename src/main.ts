@@ -10,6 +10,7 @@ const title = document.getElementById('card-title')!;
 const sub = document.getElementById('card-sub')!;
 
 const go = document.getElementById('card-go') as HTMLAnchorElement;
+const coinsEl = document.getElementById('coins')!;
 
 // Click a building -> she walks there -> this card opens -> VISIT takes you to the site.
 mountTown(
@@ -22,6 +23,11 @@ mountTown(
     card.hidden = false;
   },
   () => { card.hidden = true; },
+  (n) => {
+    try { localStorage.setItem('coins', String(n)); } catch { /* private mode */ }
+    coinsEl.hidden = n <= 0;
+    coinsEl.textContent = `COINS ${n}`;
+  },
 );
 
 // Sound: browsers only allow it after a tap, so switch it on with the first one.

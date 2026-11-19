@@ -36,6 +36,7 @@ export const PLACES: Place[] = [
 
 // ---------- pixel art (one letter per pixel, '.' is empty) ----------
 const ME = ['.....PPPPPP.....', '....PHHHHHHP....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '.PPHSSSSSSSSHPP.', '.PPSSESSSSESSPP.', '.PPSSSSSSSSSSPP.', '..HSSSSMMSSSSH..', '..HHSSSSSSSSHH..', '..HHH.SSSS.HHH..', '...HTTTTTTTTH...', '..TTTTTTTTTTTT..', '.STTTTTTTTTTTTS.', '.STTTTTTTTTTTTS.', '..TTTTTTTTTTTT..', '...DDDDDDDDDD...', '...DDDD..DDDD...', '...DDDD..DDDD...', '...BBBB..BBBB...', '..BBBBB..BBBBB..'];
+const ME_SIT = ['.....PPPPPP.....', '....PHHHHHHP....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '.PPHSSSSSSSSHPP.', '.PPSSESSSSESSPP.', '.PPSSSSSSSSSSPP.', '..HSSSSMMSSSSH..', '..HHSSSSSSSSHH..', '..HHH.SSSS.HHH..', '...HTTTTTTTTH...', '..TTTTTTTTTTTT..', '.STTTTTTTTTTTTS.', '.STTTTTTTTTTTTS.', '..TTTTTTTTTTTT..', '...DDDDDDDDDDDD.', '...DDDDDDDDDDDDD', '............BBB'];
 const ME_STEP = ME.slice(0, 15).concat(['...DDDDDDDDDD...', '....DDDD.DDDD...', '...DDDD...DDD...', '...BBBB...BBB...', '..BBBBB...BBBB..']);
 const ME_C: Palette = { H: '#2A1B1B', S: '#D39A72', E: K, P: '#F77FA1', T: '#9DBE3D', D: '#187489', B: K, M: '#8A4A3A' };
 const AKTA = ['....KKKKKKKK....', '...KPPPPPPPPK...', '..KPPPPPPPPPPK..', '.KKKKKKKKKKKKKK.', '.KCCCCCCCCCCCCK.', '.KCKKKKCCRRCRCK.', '.KCKWWKCCRRRRCK.', '.KCKWWKCCCRRCCK.', '.KCKKKKCCCCCCCK.', '.KCCCCCKKKKCCCK.', '.KCCCCCKYYKCCCK.', '.KCCCCCKYYKCCCK.', '.KKKKKKKKKKKKKK.'];
@@ -56,7 +57,13 @@ const CARROT_C: Palette = { G: '#4E9A3A', O: '#F28C28', K: '#C9661A' };
 const GREENHOUSE = ['.....KKKKKKKK.....', '...KKBBKBBKBBKK...', '..KBBBBKBBKBBBBK..', '.KBBBBBKBBKBBBBBK.', 'KKKKKKKKKKKKKKKKKK', 'KBBBBKBBBBBKBBBBBK', 'KBPBBKBGGBBKBBPBBK', 'KGGGBKBGGGBKBGGGBK', 'KGGGGKBKKKBKGGGGGK', 'KGGGGKBKDKBKGGGGGK', 'KKKKKKKKKKKKKKKKKK'];
 const GREENHOUSE_C: Palette = { K, B: '#CFEFF7', G: '#5E9A4A', P: '#F77FA1', D: '#F2B84B' };
 const FLOWER = ['.P.', 'PYP', '.P.', '.G.', 'GG.'];
-const LAMP = ['KKK', 'KYK', 'KKK', '.K.', '.K.', '.K.', '.K.', '.K.', 'KKK'];
+const LAMP = ['.KKK.', 'KYYYK', 'KYYYK', '.KKK.', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '..K..', '.KKK.', 'KKKKK'];
+const BENCH = ['KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', 'KKKKKKKKKKKKKKKKKK', 'KWWWWWWWWWWWWWWWWK', 'KKKKKKKKKKKKKKKKKK', '.K..............K.', '.K..............K.'];
+const WELL = ['...KKKKKK...', '..KRRRRRRK..', '.KRRRRRRRRK.', 'KKKKKKKKKKKK', '.KK......KK.', '.KK..K...KK.', '.KK..K...KK.', '.KK..B...KK.', 'KKKKKKKKKKKK', 'KSSKSSKSSKSK', 'KSKSSKSSKSSK', 'KKKKKKKKKKKK'];
+const WELL_C: Palette = { K, R: '#C8332D', B: '#8A4A3A', S: '#B9B4A6' };
+const SQUIRREL = ['.....KK.', '....KBBK', 'KK.KBBBK', 'KBKBBBK.', '.KBBBBK.', '..K.K...'];
+const NUT = ['.KK.', 'KCCK', 'KNNK', 'KNNK', '.KK.'];
+const COIN = ['.KKK.', 'KYYYK', 'KYWYK', 'KYYYK', '.KKK.'];
 const SHARK = ['.......KK.......', '......KGGK......', 'K....KGGGGKKKKK.', 'KGKKKGGGGGGGGEGK', 'KGGGGGGGGGGGGGGK', 'KGKKWWWWWWWWWKK.', 'K...KKKKKKKKK...'];
 const SHARK_C: Palette = { K, G: '#6E7C8C', W: '#E8EEF2', E: '#fff' };
 const MOUNTAIN = ['.........KK.........', '........KWWK........', '.......KWWWWK.......', '......KWWKWWWK......', '.....KGWKGKWWGK.....', '....KGGKGGGKGGGK....', '...KGGGGGDGGGGGGK...', '..KGGDGGGGGGGDGGGK..', '.KGGGGGGDGGGGGGGGGK.', 'KGGGGGGGGGGGGGDGGGGK'];
@@ -137,7 +144,7 @@ function artBounds(p: Place) {
 }
 
 // ---------- the map ----------
-export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLeave: () => void) {
+export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLeave: () => void, onCoins: (n: number) => void = () => {}) {
   const ISLAND = { cx: 640, cy: 420, rx: 520 * WIDE, ry: 330 };
   let root!: SVGGElement;
   const wx = (x: number) => 640 + (x - 640) * WIDE; // spread an x out to the wider island
@@ -318,18 +325,60 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   function trees(layer: Element) {
     const spots: [number, number][] = [[220, 330], [250, 380], [600, 190], [1060, 420], [1090, 460], [300, 650], [740, 660], [780, 680], [520, 680], [190, 480], [1100, 300], [700, 560]];
     seed = 77;
-    const clusters: [number, number, number][] = [[200, 400, 14], [1080, 440, 12], [300, 230, 6], [1000, 240, 6], [600, 690, 10], [760, 690, 8], [160, 560, 6], [1120, 560, 6]];
-    clusters.forEach(([cx, cy, n]) => { for (let i = 0; i < n; i++) spots.push([cx + (rnd() - 0.5) * 120, cy + (rnd() - 0.5) * 90]); });
+    const clusters: [number, number, number][] = [[200, 400, 14], [1080, 440, 12], [300, 230, 6], [1000, 240, 6], [600, 690, 10], [760, 690, 8], [160, 560, 7], [1120, 560, 7], [430, 690, 6]];
+    clusters.forEach(([cx, cy, n]) => { for (let i = 0; i < n; i++) spots.push([cx + (rnd() - 0.5) * 170, cy + (rnd() - 0.5) * 110]); });
     spots.forEach((s) => { s[0] = wx(s[0]); });
     spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => {
-      if (PLACES.some((p) => p.box && x > p.box.l - 40 && x < p.box.r + 10 && y > p.box.t - 70 && y < p.box.b + 30)) return;
-      if (x > 420 && x < 960 && y < 300) return; // keep the mountains and lake clear
-      if (x > 500 && x < 790 && y > 380 && y < 630) return; // and the town centre
-      if (!(onLand(x + 20, y + 36) && onLand(x - 10, y) && onLand(x + 50, y))) return;
+      if (PLACES.some((p) => p.box && x > p.box.l - 64 && x < p.box.r + 10 && y > p.box.t - 90 && y < p.box.b + 20)) return;
+      if (x > 700 && x < 860 && y > 230 && y < 360) return; // the wishing well
+      if (x > 400 && x < 960 && y < 310) return; // keep the mountains and lake clear
+      if (x > 470 && x < 800 && y > 360 && y < 640) return; // and the town centre
+      if (!(onLand(x + 32, y + 60) && onLand(x - 10, y) && onLand(x + 74, y))) return;
       const pine = i % 3 === 0;
-      pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 5, layer);
+      const tree = pix(pine ? PINE : TREE, pine ? PINE_C : TREE_C, x, y, 8, layer);
+      tree.classList.add('tree');
+      tree.addEventListener('click', () => shakeTree(tree, x, y));
     });
   }
+
+  // Tap a tree: it shakes, and out comes a squirrel, a nut, or (sometimes) a coin.
+  function shakeTree(tree: SVGGElement, x: number, y: number) {
+    tree.animate?.([{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(0)' }], { duration: 240 });
+    const r = Math.random();
+    if (r < 0.35) coinFrom(x + 24, y + 10);
+    else if (r < 0.7) squirrelFrom(x + 50, y + 40);
+    else nutFrom(x + 28, y + 30);
+  }
+  function animateBits(node: SVGElement, dur: number, at: (t: number) => string, end?: () => void) {
+    const t0 = performance.now();
+    const f = (now: number) => {
+      const t = Math.min(1, (now - t0) / (reduced ? Math.min(dur, 300) : dur));
+      node.setAttribute('transform', at(t));
+      if (t < 1) requestAnimationFrame(f); else { node.remove(); end?.(); }
+    };
+    requestAnimationFrame(f);
+  }
+  function squirrelFrom(x: number, y: number) {
+    sfx.squeak();
+    const s = el<SVGGElement>('g', {}, root);
+    pix(SQUIRREL, { K, B: '#A0522D' }, -16, -24, 4, s);
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    animateBits(s, 1400, (t) => `translate(${x + dir * t * 160} ${y + (t < 0.15 ? -t * 60 : -9 + Math.abs(Math.sin(t * 20)) * -6)}) scale(${-dir} 1)`);
+  }
+  function nutFrom(x: number, y: number) {
+    const n = el<SVGGElement>('g', {}, root);
+    pix(NUT, { K, C: '#6B4226', N: '#C8873F' }, -8, -10, 4, n);
+    animateBits(n, 900, (t) => `translate(${x + t * 14} ${y + Math.min(1, t * 1.6) ** 2 * 60 - (t > 0.62 ? Math.sin((t - 0.62) * 8) * 12 : 0)})`);
+    setTimeout(() => sfx.plink(), reduced ? 100 : 560);
+  }
+  function coinFrom(x: number, y: number) {
+    sfx.coin();
+    const c = el<SVGGElement>('g', {}, root);
+    pix(COIN, { K, Y: '#F2B84B', W: '#fff' }, -10, -10, 4, c);
+    animateBits(c, 900, (t) => `translate(${x} ${y - t * 60}) scale(${Math.cos(t * 18)} 1)`, () => onCoins(++coins));
+  }
+  let coins = (() => { try { return Number(localStorage.getItem('coins')) || 0; } catch { return 0; } })();
+  setTimeout(() => onCoins(coins));
 
   function compass() {
     const c = el('g', { transform: 'translate(1290 80)', 'aria-hidden': 'true' }, root);
@@ -343,10 +392,12 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let digSpot: Pt = { x: 0, y: 0 };
   const LAKE_SHORE: Pt = { x: 640, y: 345 };
   const PEAK: Pt = { x: 705, y: 92 };
+  const BENCH_AT: Pt = { x: 742, y: 446 }; // bottom middle of the bench, east side of the plaza
+  const WELL_AT: Pt = { x: 806, y: 338 }; // bottom middle of the well, between the lake and the tent
   const GH_DOOR: Pt = { x: 640, y: 580 };
   const GH_STAND: Pt = { x: 548, y: 586 }; // she stands beside the greenhouse, not in front of it
   const roads: Record<string, SVGPathElement> = {};
-  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement;
+  let walker: SVGGElement, flip: SVGGElement, standing: SVGGElement, stepping: SVGGElement, seated: SVGGElement;
   let at: string | null = null;
   let walking = false;
 
@@ -357,6 +408,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     standing = pix(ME, ME_C, -32, -80, 4, flip);
     stepping = pix(ME_STEP, ME_C, -32, -80, 4, flip);
     stepping.style.display = 'none';
+    seated = pix(ME_SIT, ME_C, -32, -72, 4, flip);
+    seated.style.display = 'none';
     moveTo(CENTER.x, CENTER.y);
   }
   const moveTo = (x: number, y: number) => walker.setAttribute('transform', `translate(${x} ${y})`);
@@ -391,6 +444,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     if (walking) return;
     walking = true;
     onLeave();
+    standUp();
     if (at !== id) {
       if (at) await walkAlong(roads[at], true);
       await walkAlong(roads[id], false);
@@ -460,6 +514,61 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     await wait(300);
   }
 
+  /** Sit down on the bench and stay there until you send her somewhere else. */
+  let sitting = false;
+  async function sit() {
+    standing.style.display = 'none';
+    stepping.style.display = 'none';
+    seated.style.display = '';
+    flip.removeAttribute('transform');
+    moveTo(BENCH_AT.x, BENCH_AT.y - 6);
+    sitting = true;
+    sfx.plink();
+  }
+  function standUp() {
+    if (!sitting) return;
+    sitting = false;
+    seated.style.display = 'none';
+    standing.style.display = '';
+    moveTo(BENCH_AT.x, BENCH_AT.y + 8);
+  }
+
+  /** Toss a coin in the well: a rainbow over the island. No coins? Go shake some trees. */
+  async function wish() {
+    if (coins <= 0) {
+      say('no coins! try the trees', WELL_AT.x, WELL_AT.y - 100);
+      sfx.nope();
+      await wait(1400);
+      return;
+    }
+    onCoins(--coins);
+    const c = el<SVGGElement>('g', {}, root);
+    pix(COIN, { K, Y: '#F2B84B', W: '#fff' }, -10, -10, 4, c);
+    sfx.coin();
+    await new Promise<void>((done) => animateBits(c, 600, (t) => `translate(${WELL_AT.x - 50 + t * 50} ${WELL_AT.y - 70 - Math.sin(t * Math.PI) * 50 + t * 30})`, done));
+    sfx.plink();
+    await wait(300);
+    rainbow();
+    sfx.wish();
+    await wait(1200);
+  }
+  function rainbow() {
+    const g = el<SVGGElement>('g', { opacity: '0.85' }, root);
+    ['#C8332D', '#F28C28', '#F2B84B', '#93C78E', '#5FA9CC', '#796AD8'].forEach((c, i) => {
+      el('path', { d: `M${80 + i * 14} 520 A ${560 - i * 14} 420 0 0 1 ${1200 - i * 14} 520`, fill: 'none', stroke: c, 'stroke-width': 14 }, g);
+    });
+    g.animate?.([{ opacity: 0 }, { opacity: 0.85, offset: 0.2 }, { opacity: 0.85, offset: 0.75 }, { opacity: 0 }], { duration: reduced ? 1500 : 4500 });
+    setTimeout(() => g.remove(), reduced ? 1500 : 4500);
+  }
+  function say(text: string, x: number, y: number) {
+    const g = el('g', {}, root);
+    const w = text.length * 9 + 24;
+    el('rect', { x: x - w / 2, y: y - 24, width: w, height: 32, fill: '#F8F6EF', stroke: K, 'stroke-width': 2 }, g);
+    const t = el('text', { x, y: y - 4, 'text-anchor': 'middle', 'font-family': "'Press Start 2P', monospace", 'font-size': 9, fill: K }, g);
+    t.textContent = text;
+    setTimeout(() => g.remove(), 1800);
+  }
+
   /** At the top: plant a flag (once) and celebrate. */
   let flagged = false;
   async function summit() {
@@ -525,11 +634,15 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
     el('rect', { x: CENTER.x + Math.cos(a) * 64 * r - 4, y: CENTER.y + 4 + Math.sin(a) * 32 * r - 2, width: 8, height: 5, rx: 2, fill: '#CDBF9A' }, roadLayer);
   }
-  pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 92, CENTER.y - 46, 6, root);
-  // a little bench
-  el('rect', { x: CENTER.x + 50, y: CENTER.y - 18, width: 46, height: 8, fill: '#B98B5E', stroke: K, 'stroke-width': 2 }, root);
-  el('rect', { x: CENTER.x + 54, y: CENTER.y - 10, width: 5, height: 12, fill: K }, root);
-  el('rect', { x: CENTER.x + 87, y: CENTER.y - 10, width: 5, height: 12, fill: K }, root);
+  pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 112, CENTER.y - 92, 5, root); // about her height and a half
+  const bench = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Sit on the bench' }, root);
+  pix(BENCH, { K, W: '#B98B5E' }, BENCH_AT.x - 36, BENCH_AT.y - 36, 4, el('g', { class: 'lift' }, bench));
+  bench.addEventListener('click', (e) => { e.preventDefault(); go('bench', sit); });
+  const well = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Toss a coin in the wishing well' }, root);
+  pix(WELL, WELL_C, WELL_AT.x - 36, WELL_AT.y - 72, 6, el('g', { class: 'lift' }, well));
+  well.addEventListener('click', (e) => { e.preventDefault(); go('well', wish); });
+  roads.bench = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${BENCH_AT.x - 50} ${BENCH_AT.y + 14} ${BENCH_AT.x} ${BENCH_AT.y + 8}`, fill: 'none' }, roadLayer);
+  roads.well = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${WELL_AT.x - 60} ${CENTER.y - 10} ${WELL_AT.x - 56} ${WELL_AT.y + 6}`, fill: 'none' }, roadLayer);
   const gh = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Water the plants in the greenhouse' }, root);
   pix(GREENHOUSE, GREENHOUSE_C, GH_DOOR.x - 63, GH_DOOR.y - 77, 7, el('g', { class: 'lift' }, gh));
   gh.addEventListener('click', (e) => { e.preventDefault(); go('greenhouse', water); });
