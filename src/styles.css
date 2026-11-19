@@ -62,3 +62,14 @@ footer a:hover { color: #c8332d; }
 @media (prefers-reduced-motion: reduce) { .pan { animation: none; } }
 #map { touch-action: none; }
 @media (max-width: 480px) { footer { gap: 6px 14px; padding: 8px 12px; } footer a { font-size: 9px; padding: 8px 2px; } }
+
+/* night mode: the lamp switches it on */
+svg .night { opacity: 0; transition: opacity 0.9s; }
+svg .night.on { opacity: 1; }
+svg .night .star { animation: twinkle 3s ease-in-out infinite; }
+svg .night .fly { animation: drift 7s ease-in-out infinite; }
+@keyframes twinkle { 50% { opacity: 0.2; } }
+@keyframes drift { 0%, 100% { transform: translate(0, 0); opacity: 0.2; } 30% { transform: translate(14px, -10px); opacity: 1; } 60% { transform: translate(-8px, -18px); opacity: 0.6; } }
+body { transition: background-color 0.9s; }
+body.night { background-color: #2B3462; }
+@media (prefers-reduced-motion: reduce) { svg .night .star, svg .night .fly { animation: none; } }

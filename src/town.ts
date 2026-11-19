@@ -188,6 +188,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   let root!: SVGGElement;
   const wx = (x: number) => 640 + (x - 640) * WIDE; // spread an x out to the wider island
   let shore: [number, number][] = [];
+  const bulbs: Pt[] = []; // Akta's string lights, which glow at night
 
   function paper() {
     const defs = el('defs', {}, svg);
@@ -322,6 +323,7 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       for (let i = 1; i < 8; i++) {
         const t = i / 8, bx = p.x - 40 + 180 * t, by = p.y - 30 + 60 * t * (1 - t);
         el('circle', { cx: bx, cy: by + 3, r: 5, fill: ['#F2B84B', '#F77FA1', '#9FD3E8'][i % 3], stroke: K, 'stroke-width': 1.5 }, g);
+        bulbs.push({ x: bx, y: by + 3 });
       }
       pix(AKTA, AKTA_C, p.x, p.y - 20, 6, g);
     } else if (p.id === 'mash') {
@@ -506,6 +508,46 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
 
   // ---------- seasons: Dankesgiving in November, snow in December and January,
   // hearts in February, pumpkins in October. Try one any time with ?season=dankesgiving (or winter, valentine, spooky).
+  // ---------- night: a dark blue sky over the island, the lamp and Akta's lights glowing, stars and fireflies
+  let nightLayer: SVGGElement | null = null;
+  function night() {
+    const defs = svg.querySelector('defs')!;
+    const glow = (id: string, c: string) => {
+      const g = el('radialGradient', { id }, defs);
+      el('stop', { offset: '0', 'stop-color': c, 'stop-opacity': 0.75 }, g);
+      el('stop', { offset: '0.45', 'stop-color': c, 'stop-opacity': 0.3 }, g);
+      el('stop', { offset: '1', 'stop-color': c, 'stop-opacity': 0 }, g);
+    };
+    glow('lampglow', '#FFD27A'); glow('pinkglow', '#F77FA1'); glow('fly', '#F6FF9A');
+    const n = el<SVGGElement>('g', { class: 'night', transform: `translate(${SHIFT} 0)`, 'pointer-events': 'none', 'aria-hidden': 'true' });
+    root.after(n);
+    nightLayer = n;
+    el('rect', { x: -3000, y: -3000, width: 8000, height: 8000, fill: '#141B45', opacity: 0.55 }, n);
+    const lx = CENTER.x - 100, ly = CENTER.y - 82;
+    el('ellipse', { cx: lx, cy: ly + 60, rx: 150, ry: 110, fill: 'url(#lampglow)' }, n);
+    bulbs.forEach((b, i) => el('circle', { cx: b.x, cy: b.y, r: 22, fill: i % 2 ? 'url(#pinkglow)' : 'url(#lampglow)' }, n));
+    // stars twinkle out over the water
+    seed = 61;
+    for (let i = 0, made = 0; i < 400 && made < 70; i++) {
+      const x = -SHIFT + rnd() * 1440, y = rnd() * 800;
+      if (inside(shore, x, y) || Math.hypot((x - ISLAND.cx) / ISLAND.rx, (y - ISLAND.cy) / ISLAND.ry) < 1.15) continue;
+      const st = el('rect', { x, y, width: 3, height: 3, fill: '#FFF8D6', class: 'star' }, n);
+      st.style.animationDelay = `${(rnd() * 3).toFixed(2)}s`;
+      made++;
+    }
+    // fireflies drift around the island
+    for (let i = 0, made = 0; i < 300 && made < 18; i++) {
+      const x = ISLAND.cx + (rnd() - 0.5) * ISLAND.rx * 1.8, y = ISLAND.cy + (rnd() - 0.5) * ISLAND.ry * 1.6;
+      if (!inside(shore, x, y)) continue;
+      const f = el('g', { class: 'fly' }, el('g', { transform: `translate(${x.toFixed(0)} ${y.toFixed(0)})` }, n));
+      el('circle', { r: 10, fill: 'url(#fly)' }, f);
+      el('rect', { x: -1.5, y: -1.5, width: 3, height: 3, fill: '#F6FF9A' }, f);
+      f.style.animationDelay = `${(rnd() * -6).toFixed(2)}s`;
+      f.style.animationDuration = `${(5 + rnd() * 4).toFixed(1)}s`;
+      made++;
+    }
+  }
+
   function seasons() {
     const forced = new URLSearchParams(location.search).get('season');
     const m = new Date().getMonth();
@@ -1068,12 +1110,18 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   }
   const lamp = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Switch the lamp on or off' }, root);
   const lx = CENTER.x - 112 + 12, ly = CENTER.y - 92 + 10; // middle of the lantern
-  const glow = el('circle', { cx: lx, cy: ly, r: 46, fill: '#F2B84B', opacity: 0.28 }, lamp);
+  el('rect', { x: lx - 30, y: ly - 20, width: 60, height: 150, fill: 'transparent' }, lamp); // a bigger tap target
   const lampOn = pix(LAMP, { K, Y: '#F2B84B' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
   const lampOff = pix(LAMP, { K, Y: '#6F7B90' }, CENTER.x - 112, CENTER.y - 92, 5, lamp);
-  let lit = true;
-  const showLamp = () => { glow.style.display = lit ? '' : 'none'; lampOn.style.display = lit ? '' : 'none'; lampOff.style.display = lit ? 'none' : ''; lamp.setAttribute('aria-pressed', String(lit)); };
-  showLamp();
+  // the lamp is the light switch for the whole island: on means night falls
+  let lit = false;
+  const showLamp = () => {
+    lampOn.style.display = lit ? '' : 'none'; lampOff.style.display = lit ? 'none' : '';
+    lamp.setAttribute('aria-pressed', String(lit));
+    lamp.setAttribute('aria-label', lit ? 'Turn the lamp off and bring the day back' : 'Turn the lamp on and make it night');
+    nightLayer?.classList.toggle('on', lit);
+    document.body.classList.toggle('night', lit);
+  };
   lamp.addEventListener('click', (e) => { e.preventDefault(); lit = !lit; showLamp(); sfx.click(lit); });
   const bench = el<SVGAElement>('a', { href: '#', class: 'spot', 'aria-label': 'Sit on the bench' }, root);
   pix(BENCH, { K, W: '#B98B5E' }, BENCH_AT.x - 36, BENCH_AT.y - 36, 4, el('g', { class: 'lift' }, bench));
@@ -1112,6 +1160,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   roads.casa = el<SVGPathElement>('path', { d: `M${CENTER.x} ${CENTER.y} Q${CASA_DOOR.x + 60} ${CENTER.y + 160} ${CASA_DOOR.x} ${CASA_DOOR.y + 8}`, fill: 'none' }, roadLayer);
 
   seasons();
+  night();
+  showLamp();
   compass();
   drawLuna();
   drawWalker();
