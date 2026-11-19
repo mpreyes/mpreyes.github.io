@@ -19,7 +19,7 @@ header { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; j
 header { align-items: center; gap: 10px; }
 #sound { font-family: var(--pixel); font-size: 10px; background: #fff; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); padding: 8px 10px; cursor: pointer; }
 #sound[aria-pressed="false"] { background: #ddd; }
-header h1 { margin: 0; font-family: var(--pixel); font-size: 16px; line-height: 1.5; }
+header h1 { margin-right: auto !important; } header h1 { margin: 0; font-family: var(--pixel); font-size: 16px; line-height: 1.5; }
 main { flex: 1; min-height: 0; display: flex; }
 header, footer { flex-shrink: 0; }
 .stage { position: relative; flex: 1; min-height: 0; }
@@ -40,6 +40,15 @@ svg { display: block; width: 100%; height: 100%; }
 footer { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center; padding: 12px 20px; border-top: 2px solid var(--ink); background: var(--cream); }
 footer a { font-family: var(--pixel); font-size: 10px; color: var(--ink); text-decoration: none; padding: 10px 4px; }
 footer a:hover { color: #c8332d; }
-#coins { font-family: var(--pixel); font-size: 10px; background: var(--gold); border: 2px solid var(--ink); padding: 8px 10px; margin-left: auto; }
+#photo { font-family: var(--pixel); font-size: 10px; background: #fff; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); padding: 8px 10px; cursor: pointer; }
+#photo[hidden] { display: none; }
+#coins { font-family: var(--pixel); font-size: 10px; background: var(--gold); border: 2px solid var(--ink); padding: 8px 10px; }
 #coins[hidden] { display: none; }
 .tree { cursor: pointer; }
+#photo-dialog { border: 3px solid var(--ink); box-shadow: 0 8px 0 var(--ink); padding: 16px; background: var(--cream); max-width: min(92vw, 600px); }
+#photo-dialog::backdrop { background: rgba(17, 17, 17, 0.45); }
+#photo-img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.photo-actions { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.photo-actions a, .photo-actions button { font-family: var(--pixel); font-size: 11px; border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); padding: 10px 12px; color: var(--ink); text-decoration: none; cursor: pointer; background: #fff; }
+.photo-actions a { background: var(--pink); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

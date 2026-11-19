@@ -168,7 +168,7 @@ function artBounds(p: Place) {
 }
 
 // ---------- the map ----------
-export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLeave: () => void, onCoins: (n: number) => void = () => {}) {
+export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLeave: () => void, onCoins: (n: number) => void = () => {}, onPhoto: (png: string) => void = () => {}) {
   const ISLAND = { cx: 640, cy: 420, rx: 520 * WIDE, ry: 330 };
   let root!: SVGGElement;
   const wx = (x: number) => 640 + (x - 640) * WIDE; // spread an x out to the wider island
@@ -693,8 +693,51 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
       setTimeout(() => animateBits(h, 1600, (t) => `translate(${CASA_DOOR.x + [-178, -122, 124, 180, 236][i] + Math.sin(t * 8) * 5} ${CASA_DOOR.y - 50 - t * 90})`), i * 250);
     }
     say('¡hola familia!', CASA_DOOR.x, CASA_DOOR.y - 176);
-    await wait(2600);
+    await wait(1500);
+    // everyone holds still... say cheese!
+    say('say cheese!', CASA_DOOR.x, CASA_DOOR.y - 176);
+    await wait(900);
+    flash();
+    sfx.shutter();
+    onPhoto(familyPhoto());
+    await wait(1400);
     out.remove();
+  }
+
+  function flash() {
+    const f = el('rect', { x: -SHIFT, y: 0, width: W, height: H, fill: '#fff' }, root);
+    f.animate?.([{ opacity: 0.9 }, { opacity: 0 }], { duration: 450 });
+    setTimeout(() => f.remove(), 450);
+  }
+
+  /** Draws the family photo (the house, the five of them, her and Luna) as a little polaroid, returns a PNG. */
+  function familyPhoto(): string {
+    const c = document.createElement('canvas');
+    c.width = 560; c.height = 460;
+    const g = c.getContext('2d')!;
+    const px = (rows: string[], cols: Palette, x: number, y: number, s: number) =>
+      rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch !== '.' && cols[ch]) { g.fillStyle = cols[ch]; g.fillRect(x + i * s, y + j * s, s, s); } }));
+    // polaroid frame
+    g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, 560, 460);
+    g.strokeStyle = K; g.lineWidth = 4; g.strokeRect(2, 2, 556, 456);
+    // the picture: sky, grass, the house, everyone in a row
+    g.fillStyle = '#BFE3F2'; g.fillRect(24, 24, 512, 220);
+    g.fillStyle = '#8CC56E'; g.fillRect(24, 244, 512, 116);
+    g.strokeRect(24, 24, 512, 336);
+    px(CASA, CASA_C, 280 - 92, 60, 8);
+    const feet = 340;
+    FAMILY.slice(0, 2).forEach((f, i) => px(f.long ? LONG_HAIR : SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 40 + i * 64, feet - 80, 4));
+    px(ME, ME_C, 248, feet - 80, 4);
+    FAMILY.slice(2).forEach((f, i) => px(SHORT_HAIR, { H: f.hair, S: '#D39A72', E: K, M: '#8A4A3A', T: f.shirt, D: '#2B3A4A', B: K }, 328 + i * 64, feet - 80, 4));
+    px(LUNA, LUNA_C, 196, feet - 30, 3);
+    // caption
+    g.fillStyle = K;
+    g.font = "16px 'Press Start 2P', monospace";
+    g.textAlign = 'center';
+    g.fillText('la familia', 280, 400);
+    g.font = "18px 'Literata Variable', Georgia, serif";
+    g.fillText(new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }), 280, 432);
+    return c.toDataURL('image/png');
   }
 
   /** Toss a coin in the well and make a wish. No coins? Go shake some trees. */
@@ -713,8 +756,20 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
     sfx.plink();
     await wait(300);
     sparkles();
-    sfx.wish();
-    await wait(1200);
+    wishes++;
+    try { localStorage.setItem('wishes', String(wishes)); } catch { /* private mode */ }
+    if (wishes % WISHES_FOR_SONG === 0) {
+      // every third coin: the well plays my song
+      sfx.higher();
+      for (let i = 0; i < 10; i++) setTimeout(() => { sparkles(); floatNote(WELL_AT.x, WELL_AT.y - 60); }, i * 450);
+      say('♪ a song for you ♪', WELL_AT.x, WELL_AT.y - 110);
+      await wait(4500);
+    } else {
+      sfx.wish();
+      const left = WISHES_FOR_SONG - (wishes % WISHES_FOR_SONG);
+      say(`${left} more for a song`, WELL_AT.x, WELL_AT.y - 110);
+      await wait(1200);
+    }
   }
   // a wish: sparkles burst out of the well and little hearts float up
   function sparkles() {
@@ -775,6 +830,8 @@ export function mountTown(svg: SVGSVGElement, onArrive: (p: Place) => void, onLe
   }
   let carrots = 0;
   let lunaParty = false;
+  const WISHES_FOR_SONG = 3;
+  let wishes = (() => { try { return Number(localStorage.getItem('wishes')) || 0; } catch { return 0; } })();
   let danceFloor: SVGGElement;
   const tiles: SVGElement[] = [];
   const FLOOR = ['#F77FA1', '#F2B84B', '#93C78E', '#5FA9CC', '#796AD8', '#F8F6EF'];

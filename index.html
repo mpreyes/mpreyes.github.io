@@ -4,16 +4,61 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Madelyn Reyes</title>
-    <meta name="description" content="Madelyn Reyes: a little island map of the things she makes. Akta, M.A.S.H. Adventure, madebit, and the farm." />
+    <meta name="description" content="Madelyn Reyes is a software engineer, musician (madebit) and the founder of Akta. Explore a little pixel island of the things she makes." />
+    <link rel="canonical" href="https://mpreyes.github.io/" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#F8F6EF" />
+    <!-- link previews (iMessage, Slack, LinkedIn, X...) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mpreyes.github.io/" />
+    <meta property="og:title" content="Madelyn Reyes" />
+    <meta property="og:description" content="Software engineer, musician and founder of Akta. Come walk around my little island." />
+    <meta property="og:image" content="https://mpreyes.github.io/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A pixel art island with Madelyn, her husky Luna, and buildings for Akta, M.A.S.H. Adventure, madebit and the farm" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Madelyn Reyes" />
+    <meta name="twitter:description" content="Software engineer, musician and founder of Akta. Come walk around my little island." />
+    <meta name="twitter:image" content="https://mpreyes.github.io/og.png" />
+    <!-- tells Google who this site is about, and that these profiles are the same person -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Madelyn Reyes",
+        "url": "https://mpreyes.github.io/",
+        "image": "https://mpreyes.github.io/og.png",
+        "jobTitle": "Software Engineer",
+        "description": "Software engineer, musician (madebit) and founder of Akta.",
+        "sameAs": [
+          "https://www.linkedin.com/in/madelyn-reyes/",
+          "https://github.com/mpreyes",
+          "https://www.instagram.com/mpreyes09/",
+          "https://www.tiktok.com/@madelini38",
+          "https://madebit.studio",
+          "https://aktadating.com"
+        ]
+      }
+    </script>
   </head>
   <body>
     <header>
       <h1>Madelyn Reyes</h1>
       <span id="coins" hidden></span>
+      <button id="photo" type="button" hidden>PHOTO</button>
       <button id="sound" type="button" aria-pressed="true">SOUND ON</button>
     </header>
     <main>
+      <nav class="sr-only" aria-label="Projects">
+        <h2>Things I make</h2>
+        <ul>
+          <li><a href="https://aktadating.com">Akta</a>: singles events in Nashville</li>
+          <li><a href="https://mpreyes.github.io/mash-adventure-web/">M.A.S.H. Adventure</a>: a fortune telling story game</li>
+          <li><a href="https://madebit.studio">madebit</a>: my music</li>
+          <li>The farm: coming soon</li>
+        </ul>
+      </nav>
       <div class="stage">
         <svg id="map" viewBox="0 0 1440 800" role="img" aria-label="A little island town. Each building is one of Madelyn's projects."></svg>
         <div class="card" id="card" role="status" hidden>
@@ -29,6 +74,13 @@
       <a href="https://www.linkedin.com/in/madelyn-reyes/" target="_blank" rel="noreferrer">LinkedIn</a>
       <a href="https://github.com/mpreyes" target="_blank" rel="noreferrer">GitHub</a>
     </footer>
+    <dialog id="photo-dialog" aria-label="Family photo">
+      <img id="photo-img" alt="A pixel family photo: the family in front of their green house, with Madelyn and Luna" />
+      <div class="photo-actions">
+        <a id="photo-save" download="la-familia.png">SAVE</a>
+        <button type="button" id="photo-close">CLOSE</button>
+      </div>
+    </dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

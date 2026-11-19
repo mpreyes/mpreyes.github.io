@@ -81,6 +81,8 @@ const LIGHTS: [number, number][] = [[62, 0.5], [65, 0.5], [62, 0.5], [60, 0.5], 
 // M.A.S.H.: the first phrase of the space tune (MIDI_Audio.mid)
 const SPACE: [number, number][] = [[62, 0.5], [60, 0.5], [62, 0.5], [60, 0.5], [62, 0.5], [65, 0.5], [61, 0.5], [60, 1]];
 // madebit: the call from higher.mid
+// the response from higher_2.mid
+const RESPONSE: [number, number, number][] = [[1728, 60, 62], [1821, 93, 64], [1960, 73, 64], [2055, 85, 64], [2104, 98, 62], [2196, 98, 64], [2295, 60, 66], [2350, 107, 64], [2448, 141, 59]];
 // [start tick, length in ticks, MIDI note], straight from the file, so the rests are kept
 const CALL: [number, number, number][] = [[192, 45, 59], [287, 141, 59], [422, 108, 62], [526, 57, 59], [572, 112, 66], [669, 96, 64], [763, 51, 62], [807, 112, 64], [913, 105, 59]];
 // the farm: the start of the desk keyboard tune (CF_Tones_Ah_A4_Falsetto_5.mid)
@@ -142,6 +144,12 @@ export const sfx = {
     return length;
   },
   stopLoop() { stopAll(); },
+  /** The whole of higher.mid: the call, then the response. */
+  higher() {
+    const resp = RESPONSE.map(([st, l, n]) => [st - 560, l, n] as [number, number, number]);
+    ticks(CALL.concat(resp), 0.0034, 'triangle', 0.09);
+  },
+  shutter() { noise(0.05, 0.25, 6000); noise(0.08, 0.2, 3000, 0.09); },
   coin() { tone(hz(83), 0.07, 'square', 0.04); tone(hz(88), 0.25, 'square', 0.04, 0.07); },
   squeak() { tone(1800, 0.06, 'square', 0.025, 0, 2400); tone(2000, 0.06, 'square', 0.025, 0.09, 2600); },
   plink() { tone(hz(84), 0.12, 'triangle', 0.06); },
